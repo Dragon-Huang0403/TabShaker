@@ -4,7 +4,7 @@ import theme, { GlobalStyle } from './theme';
 import WidgetContainer from './components/WidgetContainer';
 
 const Wrapper = styled.div`
-  padding: 10px;
+  padding: 100px 150px;
 `;
 
 function App() {

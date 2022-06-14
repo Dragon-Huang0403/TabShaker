@@ -1,33 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import Resizer from './Resizer';
+import Resizers from './Resizers';
 
-const directions = ['top', 'bottom', 'left', 'right'] as const;
-
-interface WrapperProps {
-  width: number;
-  height: number;
-}
-
-const Wrapper = styled.div<WrapperProps>`
-  width: ${({ width }) => width}px;
-  height: ${({ height }) => height}px;
-  background: black;
-  color: white;
-  border-radius: 20px;
+const Wrapper = styled.div`
   position: relative;
+  width: 300px;
+  height: 300px;
 `;
 
 function WidgetContainer() {
-  const [width, setWidth] = useState(300);
-  const [height, setHeight] = useState(300);
   return (
-    <Wrapper width={width} height={height}>
-      {directions.map((direction) => (
-        <Resizer direction={direction} />
-      ))}
-      WidgetContainer
+    <Wrapper>
+      <Resizers defaultHeight={300} defaultWidth={300} />
     </Wrapper>
   );
 }
