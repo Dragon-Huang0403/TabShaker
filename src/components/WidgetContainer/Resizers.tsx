@@ -77,8 +77,10 @@ function Resizers({
   const onStartMousePositionY = useRef(0);
 
   const onMouseMove = (e: MouseEvent) => {
-    const heightDiff = onStartMousePositionY.current - e.clientY;
-    const widthDiff = onStartMousePositionX.current - e.clientX;
+    const clientX = e.clientX > 0 ? e.clientX : 0;
+    const clientY = e.clientY > 0 ? e.clientY : 0;
+    const heightDiff = onStartMousePositionY.current - clientY;
+    const widthDiff = onStartMousePositionX.current - clientX;
     // eslint-disable-next-line default-case
     switch (resizeDirection) {
       case 'top':

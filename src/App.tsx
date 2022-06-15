@@ -18,7 +18,16 @@ function App() {
     <ThemeProvider theme={globalTheme}>
       <GlobalStyle />
       <Wrapper>
-        <WidgetContainer rowStart={3} columnStart={3} rows={2} columns={2} />
+        <WidgetContainer
+          rowStart={3}
+          columnStart={3}
+          rows={2}
+          columns={2}
+          maxRows={5}
+          minRows={2}
+          maxColumns={5}
+          minColumns={2}
+        />
       </Wrapper>
     </ThemeProvider>
   );

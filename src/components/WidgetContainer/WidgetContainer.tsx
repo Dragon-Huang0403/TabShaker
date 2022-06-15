@@ -21,28 +21,50 @@ export type TOnSizeChange = (payload: {
   value: number;
 }) => void;
 
+interface ILimit {
+  maxRows: number;
+  minRows: number;
+  maxColumns: number;
+  minColumns: number;
+}
+
 export interface IAction {
-  widthDiff: number;
-  heightDiff: number;
-  resizeDirection: TDirection;
+  payload: {
+    widthDiff: number;
+    heightDiff: number;
+    resizeDirection: TDirection;
+  };
+  limit: ILimit;
 }
 
 function reducer(state: IWidgetSize, action: IAction) {
+  const { heightDiff, widthDiff, resizeDirection } = action.payload;
+  const { rowStart, rows, columnStart, columns } = state;
+  const { maxColumns, minColumns, maxRows, minRows } = action.limit;
+
+  const getNewRows = () => {
+    if (rows + heightDiff >= minRows) {
+      return Math.min(rows + heightDiff, maxRows);
+    }
+    return minRows;
+  };
+  const getNewColumns = () => {
+    if (columns + widthDiff >= minColumns) {
+      return Math.min(columns + widthDiff, maxColumns);
+    }
+    return minColumns;
+  };
+
+  const newRows = getNewRows();
+  const newColumns = getNewColumns();
   const newRowStart =
-    state.rowStart - action.heightDiff >= 1
-      ? state.rowStart - action.heightDiff
-      : 1;
-  const newRows =
-    state.rows + action.heightDiff >= 1 ? state.rows + action.heightDiff : 1;
+    rowStart + rows - newRows >= 1 ? rowStart + rows - newRows : 1;
   const newColumnStart =
-    state.columnStart - action.widthDiff >= 1
-      ? state.columnStart - action.widthDiff
+    columnStart + columns - newColumns >= 1
+      ? columnStart + columns - newColumns
       : 1;
-  const newColumns =
-    state.columns + action.widthDiff >= 1
-      ? state.columns + action.widthDiff
-      : 1;
-  switch (action.resizeDirection) {
+
+  switch (resizeDirection) {
     case 'top':
       return {
         ...state,
@@ -97,12 +119,18 @@ function reducer(state: IWidgetSize, action: IAction) {
   }
 }
 
+interface IWidgetContainer extends IWidgetSize, ILimit {}
+
 function WidgetContainer({
   rowStart,
   rows,
   columnStart,
   columns,
-}: IWidgetSize) {
+  maxRows,
+  minRows,
+  maxColumns,
+  minColumns,
+}: IWidgetContainer) {
   const { gridUnit } = globalTheme;
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, dispatch] = useReducer(reducer, defaultSize);
@@ -112,7 +140,10 @@ function WidgetContainer({
     heightDiff,
     resizeDirection,
   ) => {
-    dispatch({ widthDiff, heightDiff, resizeDirection });
+    dispatch({
+      payload: { widthDiff, heightDiff, resizeDirection },
+      limit: { maxRows, minRows, maxColumns, minColumns },
+    });
   };
   return (
     <Wrapper
