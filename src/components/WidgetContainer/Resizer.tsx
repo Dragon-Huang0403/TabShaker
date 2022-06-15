@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 interface IResizerStyle {
   width: string;
@@ -80,36 +80,10 @@ export type TDirection =
   | 'bottomLeft'
   | 'bottomRight';
 
-const ResizerWrapper = styled.div<IResizerStyle>`
+const ResizerWrapper = styled.div`
   position: absolute;
   user-select: none;
   z-index: 100;
-  width: ${({ width }) => width};
-  height: ${({ height }) => height};
-  cursor: ${({ cursor }) => cursor};
-  ${({ top }) =>
-    top &&
-    css`
-      top: ${top};
-    `}
-
-  ${({ bottom }) =>
-    bottom &&
-    css`
-      bottom: ${bottom};
-    `}
-
-  ${({ left }) =>
-    left &&
-    css`
-      left: ${left};
-    `}
-
-  ${({ right }) =>
-    right &&
-    css`
-      right: ${right};
-    `}
 `;
 
 interface IResizerProps {
@@ -125,20 +99,8 @@ function Resizer(props: IResizerProps) {
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     onResizeStart(e, direction);
   };
-  const { width, height, top, bottom, left, right, cursor } =
-    resizerStyles[direction];
-  return (
-    <ResizerWrapper
-      width={width}
-      height={height}
-      cursor={cursor}
-      top={top}
-      bottom={bottom}
-      left={left}
-      right={right}
-      onMouseDown={onMouseDown}
-    />
-  );
+  const style = resizerStyles[direction];
+  return <ResizerWrapper style={style} onMouseDown={onMouseDown} />;
 }
 
 export default Resizer;

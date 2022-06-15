@@ -2,17 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { ThemeProvider, css } from 'styled-components';
-import Resizer, { TDirection } from './Resizer';
+import Resizer from './Resizer';
+import type { TDirection } from './Resizer';
 import Dot from './Dot';
 import defaultTheme from './defaultTheme';
 
 interface IWrapperStyle {
   width: number;
   height: number;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 }
 
 const directions = [
@@ -47,52 +48,66 @@ const fixedPosition = {
   bottomRight: ['top', 'left'],
 } as const;
 
+export type THandleOnSizeChange = (
+  widthDiff: number,
+  heightDiff: number,
+  resizeDirection: TDirection,
+) => void;
+
 interface IResizersProps {
   defaultWidth: number;
   defaultHeight: number;
+  gridUnit: number;
+  handleOnSizeChange: THandleOnSizeChange;
 }
 
-function Resizers({ defaultWidth, defaultHeight }: IResizersProps) {
+function Resizers({
+  defaultWidth,
+  defaultHeight,
+  gridUnit,
+  handleOnSizeChange,
+}: IResizersProps) {
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
+  const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<TDirection | null>(
     null,
   );
-  const clientXRef = useRef(0);
-  const clientYRef = useRef(0);
-  const startedXSize = useRef(0);
-  const startedYSize = useRef(0);
+  const onStartMousePositionX = useRef(0);
+  const onStartMousePositionY = useRef(0);
 
   const onMouseMove = (e: MouseEvent) => {
+    const heightDiff = onStartMousePositionY.current - e.clientY;
+    const widthDiff = onStartMousePositionX.current - e.clientX;
     // eslint-disable-next-line default-case
     switch (resizeDirection) {
       case 'top':
-        setHeight(clientYRef.current - e.clientY + startedYSize.current);
+        setHeight(heightDiff + defaultHeight);
         return;
       case 'bottom':
-        setHeight(e.clientY - clientYRef.current + startedYSize.current);
+        setHeight(defaultHeight - heightDiff);
         return;
       case 'right':
-        setWidth(e.clientX - clientXRef.current + startedXSize.current);
+        setWidth(defaultWidth - widthDiff);
         return;
       case 'left':
-        setWidth(clientXRef.current - e.clientX + startedXSize.current);
+        setWidth(widthDiff + defaultWidth);
         return;
       case 'topLeft':
-        setWidth(clientXRef.current - e.clientX + startedXSize.current);
-        setHeight(clientYRef.current - e.clientY + startedYSize.current);
+        setWidth(widthDiff + defaultWidth);
+        setHeight(heightDiff + defaultHeight);
         return;
       case 'topRight':
-        setWidth(e.clientX - clientXRef.current + startedXSize.current);
-        setHeight(clientYRef.current - e.clientY + startedYSize.current);
+        setWidth(defaultWidth - widthDiff);
+        setHeight(heightDiff + defaultHeight);
         return;
       case 'bottomLeft':
-        setWidth(clientXRef.current - e.clientX + startedXSize.current);
-        setHeight(e.clientY - clientYRef.current + startedYSize.current);
+        setWidth(widthDiff + defaultWidth);
+        setHeight(defaultHeight - heightDiff);
         return;
       case 'bottomRight':
-        setWidth(e.clientX - clientXRef.current + startedXSize.current);
-        setHeight(e.clientY - clientYRef.current + startedYSize.current);
+        setWidth(defaultWidth - widthDiff);
+        setHeight(defaultHeight - heightDiff);
     }
   };
 
@@ -100,21 +115,18 @@ function Resizers({ defaultWidth, defaultHeight }: IResizersProps) {
     e: React.MouseEvent<HTMLDivElement>,
     direction: TDirection,
   ) => {
-    clientXRef.current = e.clientX;
-    clientYRef.current = e.clientY;
-    const target = e.target as HTMLDivElement;
-    const parent = target.parentNode as HTMLDivElement;
-    startedXSize.current = parent.clientWidth;
-    startedYSize.current = parent.clientHeight;
+    onStartMousePositionX.current = e.clientX;
+    onStartMousePositionY.current = e.clientY;
     setResizeDirection(direction);
+    setIsResizing(true);
   };
 
   const onMouseUp = (e: MouseEvent) => {
-    setResizeDirection(null);
+    setIsResizing(false);
   };
 
   useEffect(() => {
-    if (!resizeDirection) return undefined;
+    if (!isResizing) return undefined;
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
@@ -123,7 +135,25 @@ function Resizers({ defaultWidth, defaultHeight }: IResizersProps) {
       window.removeEventListener('mouseup', onMouseUp);
     };
     return removeEvent;
-  }, [resizeDirection]);
+  }, [isResizing]);
+
+  useEffect(() => {
+    if (isResizing) return;
+    if (!resizeDirection) return;
+    const widthDiff = Math.round((width - defaultWidth) / gridUnit);
+    const heightDiff = Math.round((height - defaultHeight) / gridUnit);
+    if (widthDiff || heightDiff) {
+      handleOnSizeChange(widthDiff, heightDiff, resizeDirection);
+    }
+    setResizeDirection(null);
+    setWidth(defaultWidth);
+    setHeight(defaultHeight);
+  }, [resizeDirection, width, height, isResizing]);
+
+  useEffect(() => {
+    setWidth(defaultWidth);
+    setHeight(defaultHeight);
+  }, [defaultWidth, defaultHeight]);
 
   const wrapperStyle: IWrapperStyle = {
     width,
@@ -136,11 +166,17 @@ function Resizers({ defaultWidth, defaultHeight }: IResizersProps) {
 
   if (resizeDirection) {
     const [verPosition, horPosition] = fixedPosition[resizeDirection];
-    if (verPosition) {
-      wrapperStyle[verPosition] = `${startedYSize.current - defaultHeight}px`;
+    if (verPosition === 'top') {
+      wrapperStyle[verPosition] = 0;
     }
-    if (horPosition) {
-      wrapperStyle[horPosition] = `${startedXSize.current - defaultWidth}px`;
+    if (verPosition === 'bottom') {
+      wrapperStyle[verPosition] = 0;
+    }
+    if (horPosition === 'left') {
+      wrapperStyle[horPosition] = 0;
+    }
+    if (horPosition === 'right') {
+      wrapperStyle[horPosition] = 0;
     }
   }
 
