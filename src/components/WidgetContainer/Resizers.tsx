@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import styled, { css } from 'styled-components';
 import Resizer from './Resizer';
 import type { TDirection } from './Resizer';
@@ -71,6 +71,7 @@ function Resizers({
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
   const [isResizing, setIsResizing] = useState(false);
+
   const [resizeDirection, setResizeDirection] = useState<TDirection | null>(
     null,
   );
@@ -126,6 +127,7 @@ function Resizers({
 
   const onMouseUp = (e: MouseEvent) => {
     setIsResizing(false);
+    setResizeDirection(null);
   };
 
   useEffect(() => {
@@ -142,15 +144,18 @@ function Resizers({
 
   useEffect(() => {
     if (isResizing) return;
+    setHeight(defaultHeight);
+    setWidth(defaultWidth);
+  }, [defaultWidth, defaultHeight, isResizing]);
+
+  useEffect(() => {
     if (!resizeDirection) return;
-    const widthDiff = Math.round((width - defaultWidth) / gridUnit);
-    const heightDiff = Math.round((height - defaultHeight) / gridUnit);
+    if (!isResizing) return;
+    const widthDiff = Math.floor((width - defaultWidth) / gridUnit);
+    const heightDiff = Math.floor((height - defaultHeight) / gridUnit);
     if (widthDiff || heightDiff) {
       handleOnSizeChange(widthDiff, heightDiff, resizeDirection);
     }
-    setResizeDirection(null);
-    setWidth(defaultWidth);
-    setHeight(defaultHeight);
   }, [resizeDirection, width, height, isResizing]);
 
   useEffect(() => {
@@ -199,5 +204,10 @@ function Resizers({
     </Wrapper>
   );
 }
+
+// export default memo(
+//   Resizers,
+//   (prev, next) => prev.isResizing === next.isResizing,
+// );
 
 export default Resizers;
