@@ -1,11 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { ThemeProvider, css } from 'styled-components';
+import styled, { css } from 'styled-components';
 import Resizer from './Resizer';
 import type { TDirection } from './Resizer';
 import Dot from './Dot';
-import defaultTheme from './defaultTheme';
 
 interface IWrapperStyle {
   width: number;
@@ -54,7 +53,7 @@ export type THandleOnSizeChange = (
   resizeDirection: TDirection,
 ) => void;
 
-interface IResizersProps {
+interface ResizersProps {
   defaultWidth: number;
   defaultHeight: number;
   gridUnit: number;
@@ -66,7 +65,7 @@ function Resizers({
   defaultHeight,
   gridUnit,
   handleOnSizeChange,
-}: IResizersProps) {
+}: ResizersProps) {
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
   const [isResizing, setIsResizing] = useState(false);
@@ -183,20 +182,18 @@ function Resizers({
   }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Wrapper style={wrapperStyle}>
-        {directions.map((direction, index) => (
-          <Resizer
-            direction={direction}
-            onResizeStart={onResizeStart}
-            key={index}
-          />
-        ))}
-        {dotPositions.map((position, index) => (
-          <Dot key={index} position={position} />
-        ))}
-      </Wrapper>
-    </ThemeProvider>
+    <Wrapper style={wrapperStyle}>
+      {directions.map((direction, index) => (
+        <Resizer
+          direction={direction}
+          onResizeStart={onResizeStart}
+          key={index}
+        />
+      ))}
+      {dotPositions.map((position, index) => (
+        <Dot key={index} position={position} />
+      ))}
+    </Wrapper>
   );
 }
 

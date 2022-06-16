@@ -27,7 +27,9 @@ function App() {
           minRows={2}
           maxColumns={5}
           minColumns={2}
-        />
+        >
+          <div>Hi~</div>
+        </WidgetContainer>
       </Wrapper>
     </ThemeProvider>
   );

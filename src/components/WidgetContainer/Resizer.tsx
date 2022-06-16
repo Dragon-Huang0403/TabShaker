@@ -86,7 +86,7 @@ const ResizerWrapper = styled.div`
   z-index: 100;
 `;
 
-interface IResizerProps {
+interface ResizerProps {
   direction: TDirection;
   onResizeStart: (
     e: React.MouseEvent<HTMLDivElement>,
@@ -94,7 +94,7 @@ interface IResizerProps {
   ) => void;
 }
 
-function Resizer(props: IResizerProps) {
+function Resizer(props: ResizerProps) {
   const { direction, onResizeStart } = props;
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     onResizeStart(e, direction);
