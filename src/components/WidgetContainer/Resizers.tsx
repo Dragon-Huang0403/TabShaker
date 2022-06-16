@@ -28,12 +28,14 @@ const directions = [
 
 const dotPositions = ['top', 'bottom', 'left', 'right'] as const;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isResizing: boolean }>`
   position: absolute;
-  ${({ theme }) => css`
-    border: ${`${theme.borderSize}px solid ${theme.color}`};
-    border-radius: ${theme.borderRadius}px;
-  `}
+  ${({ theme, isResizing }) =>
+    isResizing &&
+    css`
+      border: ${`${theme.borderSize}px solid ${theme.color}`};
+      border-radius: ${theme.borderRadius}px;
+    `}
 `;
 
 const fixedPosition = {
@@ -182,7 +184,7 @@ function Resizers({
   }
 
   return (
-    <Wrapper style={wrapperStyle}>
+    <Wrapper style={wrapperStyle} isResizing={isResizing}>
       {directions.map((direction, index) => (
         <Resizer
           direction={direction}
@@ -190,9 +192,10 @@ function Resizers({
           key={index}
         />
       ))}
-      {dotPositions.map((position, index) => (
-        <Dot key={index} position={position} />
-      ))}
+      {isResizing &&
+        dotPositions.map((position, index) => (
+          <Dot key={index} position={position} />
+        ))}
     </Wrapper>
   );
 }
