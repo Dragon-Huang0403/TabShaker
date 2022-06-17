@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import Resizers from './Resizers';
 import Dragger from './Dragger';
@@ -8,6 +8,7 @@ import type { TDirection } from './Resizer';
 import defaultTheme from './defaultTheme';
 
 const Wrapper = styled.div`
+  user-select: none;
   position: relative;
   display: flex;
   justify-content: center;
@@ -135,20 +136,25 @@ function reducer(state: IWidgetSize, action: IAction) {
   return state;
 }
 
-interface WidgetContainerProps extends IWidgetSize, ILimit {
+interface WidgetContainerProps extends IWidgetSize {
   children: JSX.Element;
+  onChange: (newWidgetSize: IWidgetSize) => void;
+  getConflictItems: (newWidgetSize: IWidgetSize) => IWidgetSize[];
 }
+
+const maxRows = 5;
+const minRows = 2;
+const maxColumns = 5;
+const minColumns = 2;
 
 function WidgetContainer({
   rowStart,
   rows,
   columnStart,
   columns,
-  maxRows,
-  minRows,
-  maxColumns,
-  minColumns,
   children,
+  onChange,
+  getConflictItems,
 }: WidgetContainerProps) {
   const { gridUnit } = globalTheme;
   const defaultSize = { rowStart, rows, columnStart, columns };
@@ -166,11 +172,24 @@ function WidgetContainer({
   };
 
   const handleOnMove = (widthDiff: number, heightDiff: number) => {
+    const newRowStart = rowStart + heightDiff >= 1 ? rowStart + heightDiff : 1;
+    const newColumnStart =
+      columnStart + widthDiff >= 1 ? columnStart + widthDiff : 1;
+    const conflictITems = getConflictItems({
+      ...widgetSize,
+      rowStart: newRowStart,
+      columnStart: newColumnStart,
+    });
+    if (conflictITems.length > 0) return;
     dispatch({
       payload: { widthDiff, heightDiff, type: 'move' },
       limit: { maxRows, minRows, maxColumns, minColumns },
     });
   };
+
+  useEffect(() => {
+    onChange(widgetSize);
+  }, [widgetSize]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
