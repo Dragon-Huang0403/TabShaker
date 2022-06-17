@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
-import type { IWidgetSize } from './components/WidgetContainer';
+import type { WidgetSize } from './components/WidgetContainer';
+import { calculateOverlapArea } from './utils/lib';
 
 const Wrapper = styled.div`
   display: grid;
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
   height: 100%;
 `;
 
-const defaultWidgets: IWidgetSize[] = [
+const defaultWidgets: WidgetSize[] = [
   {
     rowStart: 3,
     columnStart: 3,
@@ -29,49 +30,58 @@ const defaultWidgets: IWidgetSize[] = [
   },
 ];
 
-type TRec = [number, number, number, number];
+interface ConflictItem extends WidgetSize {
+  row: number;
+  column: number;
+}
 
-function isRectangleOverlap(rec1: TRec, rec2: TRec) {
-  const height = Math.max(
-    0,
-    Math.min(rec1[2], rec2[2]) - Math.max(rec1[0], rec2[0]),
-  );
-  const width = Math.max(
-    0,
-    Math.min(rec1[3], rec2[3]) - Math.max(rec1[1], rec2[1]),
-  );
-  return height > 0 && width > 0;
+function getConflictItems(
+  targetIndex: number,
+  newWidgetSize: WidgetSize,
+  widgets: WidgetSize[],
+) {
+  const { rowStart, columnStart, rows, columns } = newWidgetSize;
+  const newWidgetSizeRect = [
+    rowStart,
+    columnStart,
+    rowStart + rows,
+    columnStart + columns,
+  ];
+  const conflictItems = widgets.reduce((accu, widget, index) => {
+    if (targetIndex === index) return accu;
+    const widgetSizeRect = [
+      widget.rowStart,
+      widget.columnStart,
+      widget.rowStart + widget.rows,
+      widget.columnStart + widget.columns,
+    ];
+    const overlayArea = calculateOverlapArea(newWidgetSizeRect, widgetSizeRect);
+    if (overlayArea) {
+      return [...accu, { ...widget, ...overlayArea }];
+    }
+    return accu;
+  }, [] as ConflictItem[]);
+  return conflictItems;
 }
 
 function Widgets() {
   const [widgets, setWidgets] = useState(defaultWidgets);
 
-  const onChange = (index: number, newWidgetSize: IWidgetSize) => {
+  const onChange = (index: number, newWidgetSize: WidgetSize) => {
     const newWidgets = widgets.map((widget, i) =>
       i === index ? { ...newWidgetSize } : widget,
     );
     setWidgets(newWidgets);
   };
-  const getConflictItems = (index: number, newWidgetSize: IWidgetSize) => {
-    const { rowStart, columnStart, rows, columns } = newWidgetSize;
-    const newWidgetSizeRect: TRec = [
-      rowStart,
-      columnStart,
-      rowStart + rows,
-      columnStart + columns,
-    ];
-    const conflictItems = widgets.filter((widget, i) => {
-      if (index === i) return false;
-      const widgetSizeRect: TRec = [
-        widget.rowStart,
-        widget.columnStart,
-        widget.rowStart + widget.rows,
-        widget.columnStart + widget.columns,
-      ];
-      return isRectangleOverlap(newWidgetSizeRect, widgetSizeRect);
-    });
-    return conflictItems;
+
+  const canWidgetMove = (targetIndex: number, newWidgetSize: WidgetSize) => {
+    const conflictItems = getConflictItems(targetIndex, newWidgetSize, widgets);
+    if (conflictItems.length === 0) {
+      return true;
+    }
+    return false;
   };
+
   return (
     <Wrapper>
       {widgets.map((widget, index) => (
@@ -81,11 +91,11 @@ function Widgets() {
           columnStart={widget.columnStart}
           rows={widget.rows}
           columns={widget.columns}
-          onChange={(newWidgetSize: IWidgetSize) =>
+          onChange={(newWidgetSize: WidgetSize) =>
             onChange(index, newWidgetSize)
           }
-          getConflictItems={(newWidgetSize: IWidgetSize) =>
-            getConflictItems(index, newWidgetSize)
+          canWidgetMove={(newWidgetSize: WidgetSize) =>
+            canWidgetMove(index, newWidgetSize)
           }
         >
           <div>{index}</div>

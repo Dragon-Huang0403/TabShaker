@@ -1,19 +1,10 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import Resizer from './Resizer';
-import type { TDirection } from './Resizer';
+import { hasDirection } from './util';
+import type { Direction } from './types';
 import Dot from './Dot';
-
-interface IWrapperStyle {
-  width: number;
-  height: number;
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-}
 
 const directions = [
   'top',
@@ -38,28 +29,37 @@ const Wrapper = styled.div<{ isResizing: boolean }>`
     `}
 `;
 
-const fixedPosition = {
-  top: ['bottom', ''],
-  bottom: ['top', ''],
-  left: ['', 'right'],
-  right: ['', 'left'],
-  topLeft: ['bottom', 'right'],
-  topRight: ['bottom', 'left'],
-  bottomLeft: ['top', 'right'],
-  bottomRight: ['top', 'left'],
-} as const;
+interface FixedPositionStyle {
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+}
 
-export type THandleOnSizeChange = (
-  widthDiff: number,
-  heightDiff: number,
-  resizeDirection: TDirection,
-) => void;
+interface ResizersStyle extends FixedPositionStyle {
+  width: number;
+  height: number;
+}
+
+function getFixedPositionStyle(direction: Direction | null) {
+  if (!direction) return {};
+  const style: FixedPositionStyle = {};
+  if (hasDirection('top', direction)) style.bottom = 0;
+  if (hasDirection('bottom', direction)) style.top = 0;
+  if (hasDirection('left', direction)) style.right = 0;
+  if (hasDirection('right', direction)) style.left = 0;
+  return style;
+}
 
 interface ResizersProps {
   defaultWidth: number;
   defaultHeight: number;
   gridUnit: number;
-  handleOnSizeChange: THandleOnSizeChange;
+  handleOnSizeChange: (
+    columnsDiff: number,
+    rowsDiff: number,
+    direction: Direction,
+  ) => void;
 }
 
 function Resizers({
@@ -71,63 +71,45 @@ function Resizers({
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
   const [isResizing, setIsResizing] = useState(false);
-
-  const [resizeDirection, setResizeDirection] = useState<TDirection | null>(
-    null,
-  );
-  const onStartMousePositionX = useRef(0);
-  const onStartMousePositionY = useRef(0);
+  const [direction, setDirection] = useState<Direction | null>(null);
+  const onStartMousePosition = useRef({ x: 0, y: 0 });
 
   const onMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!direction) return;
     const clientX = e.clientX > 0 ? e.clientX : 0;
     const clientY = e.clientY > 0 ? e.clientY : 0;
-    const heightDiff = onStartMousePositionY.current - clientY;
-    const widthDiff = onStartMousePositionX.current - clientX;
-    // eslint-disable-next-line default-case
-    switch (resizeDirection) {
-      case 'top':
-        setHeight(heightDiff + defaultHeight);
-        return;
-      case 'bottom':
-        setHeight(defaultHeight - heightDiff);
-        return;
-      case 'right':
-        setWidth(defaultWidth - widthDiff);
-        return;
-      case 'left':
-        setWidth(widthDiff + defaultWidth);
-        return;
-      case 'topLeft':
-        setWidth(widthDiff + defaultWidth);
-        setHeight(heightDiff + defaultHeight);
-        return;
-      case 'topRight':
-        setWidth(defaultWidth - widthDiff);
-        setHeight(heightDiff + defaultHeight);
-        return;
-      case 'bottomLeft':
-        setWidth(widthDiff + defaultWidth);
-        setHeight(defaultHeight - heightDiff);
-        return;
-      case 'bottomRight':
-        setWidth(defaultWidth - widthDiff);
-        setHeight(defaultHeight - heightDiff);
+    const heightDiff = onStartMousePosition.current.y - clientY;
+    const widthDiff = onStartMousePosition.current.x - clientX;
+
+    if (hasDirection('top', direction)) {
+      setHeight(heightDiff + defaultHeight);
+    }
+    if (hasDirection('bottom', direction)) {
+      setHeight(defaultHeight - heightDiff);
+    }
+    if (hasDirection('left', direction)) {
+      setWidth(widthDiff + defaultWidth);
+    }
+    if (hasDirection('right', direction)) {
+      setWidth(defaultWidth - widthDiff);
     }
   };
 
-  const onResizeStart = (
+  const onMouseDown = (
     e: React.MouseEvent<HTMLDivElement>,
-    direction: TDirection,
+    newDirection: Direction,
   ) => {
-    onStartMousePositionX.current = e.clientX;
-    onStartMousePositionY.current = e.clientY;
-    setResizeDirection(direction);
+    onStartMousePosition.current.x = e.clientX;
+    onStartMousePosition.current.y = e.clientY;
+    setDirection(newDirection);
     setIsResizing(true);
   };
 
-  const onMouseUp = (e: MouseEvent) => {
+  const onMouseUp = () => {
     setIsResizing(false);
-    setResizeDirection(null);
+    setDirection(null);
   };
 
   useEffect(() => {
@@ -149,53 +131,27 @@ function Resizers({
   }, [defaultWidth, defaultHeight, isResizing]);
 
   useEffect(() => {
-    if (!resizeDirection) return;
+    if (!direction) return;
     if (!isResizing) return;
-    const widthDiff = Math.floor((width - defaultWidth) / gridUnit);
-    const heightDiff = Math.floor((height - defaultHeight) / gridUnit);
-    if (widthDiff || heightDiff) {
-      handleOnSizeChange(widthDiff, heightDiff, resizeDirection);
+    const columnsDiff = Math.floor((width - defaultWidth) / gridUnit);
+    const rowsDiff = Math.floor((height - defaultHeight) / gridUnit);
+    if (columnsDiff || rowsDiff) {
+      handleOnSizeChange(columnsDiff, rowsDiff, direction);
     }
-  }, [resizeDirection, width, height, isResizing]);
+  }, [direction, width, height, isResizing]);
 
-  useEffect(() => {
-    setWidth(defaultWidth);
-    setHeight(defaultHeight);
-  }, [defaultWidth, defaultHeight]);
+  const fixedPositionStyle = getFixedPositionStyle(direction);
 
-  const wrapperStyle: IWrapperStyle = {
+  const style: ResizersStyle = {
+    ...fixedPositionStyle,
     width,
     height,
-    top: undefined,
-    bottom: undefined,
-    left: undefined,
-    right: undefined,
   };
 
-  if (resizeDirection) {
-    const [verPosition, horPosition] = fixedPosition[resizeDirection];
-    if (verPosition === 'top') {
-      wrapperStyle[verPosition] = 0;
-    }
-    if (verPosition === 'bottom') {
-      wrapperStyle[verPosition] = 0;
-    }
-    if (horPosition === 'left') {
-      wrapperStyle[horPosition] = 0;
-    }
-    if (horPosition === 'right') {
-      wrapperStyle[horPosition] = 0;
-    }
-  }
-
   return (
-    <Wrapper style={wrapperStyle} isResizing={isResizing}>
-      {directions.map((direction, index) => (
-        <Resizer
-          direction={direction}
-          onResizeStart={onResizeStart}
-          key={index}
-        />
+    <Wrapper style={style} isResizing={isResizing}>
+      {directions.map((dir, index) => (
+        <Resizer direction={dir} onResizeStart={onMouseDown} key={index} />
       ))}
       {isResizing &&
         dotPositions.map((position, index) => (
@@ -204,10 +160,5 @@ function Resizers({
     </Wrapper>
   );
 }
-
-// export default memo(
-//   Resizers,
-//   (prev, next) => prev.isResizing === next.isResizing,
-// );
 
 export default Resizers;

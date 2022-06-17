@@ -1,11 +1,11 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import Resizers from './Resizers';
 import Dragger from './Dragger';
 import globalTheme from '../../theme';
-import type { THandleOnSizeChange } from './Resizers';
-import type { TDirection } from './Resizer';
+import type { Direction, WidgetSizeLimit, WidgetSize } from './types';
 import defaultTheme from './defaultTheme';
+import { getNewWidgetSize } from './util';
 
 const Wrapper = styled.div`
   user-select: none;
@@ -15,137 +15,18 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-export interface IWidgetSize {
-  rowStart: number;
-  columnStart: number;
-  rows: number;
-  columns: number;
-}
-
-export type TOnSizeChange = (payload: {
-  type: keyof IWidgetSize;
-  value: number;
-}) => void;
-
-interface ILimit {
-  maxRows: number;
-  minRows: number;
-  maxColumns: number;
-  minColumns: number;
-}
-
-export interface IAction {
-  payload: {
-    type: 'resize' | 'move';
-    widthDiff: number;
-    heightDiff: number;
-    resizeDirection?: TDirection;
-  };
-  limit: ILimit;
-}
-
-function reducer(state: IWidgetSize, action: IAction) {
-  const { heightDiff, widthDiff, resizeDirection, type } = action.payload;
-  const { rowStart, rows, columnStart, columns } = state;
-  const { maxColumns, minColumns, maxRows, minRows } = action.limit;
-
-  if (type === 'resize') {
-    const getNewRows = () => {
-      if (rows + heightDiff >= minRows) {
-        return Math.min(rows + heightDiff, maxRows);
-      }
-      return minRows;
-    };
-    const getNewColumns = () => {
-      if (columns + widthDiff >= minColumns) {
-        return Math.min(columns + widthDiff, maxColumns);
-      }
-      return minColumns;
-    };
-
-    const newRows = getNewRows();
-    const newColumns = getNewColumns();
-    const newRowStart =
-      rowStart + rows - newRows >= 1 ? rowStart + rows - newRows : 1;
-    const newColumnStart =
-      columnStart + columns - newColumns >= 1
-        ? columnStart + columns - newColumns
-        : 1;
-
-    switch (resizeDirection) {
-      case 'top':
-        return {
-          ...state,
-          rowStart: newRowStart,
-          rows: newRows,
-        };
-      case 'bottom':
-        return {
-          ...state,
-          rows: newRows,
-        };
-      case 'left':
-        return {
-          ...state,
-          columnStart: newColumnStart,
-          columns: newColumns,
-        };
-      case 'right':
-        return {
-          ...state,
-          columns: newColumns,
-        };
-      case 'topLeft':
-        return {
-          rowStart: newRowStart,
-          rows: newRows,
-          columnStart: newColumnStart,
-          columns: newColumns,
-        };
-      case 'topRight':
-        return {
-          ...state,
-          rowStart: newRowStart,
-          rows: newRows,
-          columns: newColumns,
-        };
-      case 'bottomLeft':
-        return {
-          ...state,
-          rows: newRows,
-          columnStart: newColumnStart,
-          columns: newColumns,
-        };
-      case 'bottomRight':
-        return {
-          ...state,
-          rows: newRows,
-          columns: newColumns,
-        };
-      default:
-        return state;
-    }
-  }
-
-  if (type === 'move') {
-    const newRowStart = rowStart + heightDiff >= 1 ? rowStart + heightDiff : 1;
-    const newColumnStart =
-      columnStart + widthDiff >= 1 ? columnStart + widthDiff : 1;
-    return { ...state, rowStart: newRowStart, columnStart: newColumnStart };
-  }
-  return state;
-}
-
-interface WidgetContainerProps extends IWidgetSize {
+interface WidgetContainerProps extends WidgetSize {
   children: JSX.Element;
-  onChange: (newWidgetSize: IWidgetSize) => void;
-  getConflictItems: (newWidgetSize: IWidgetSize) => IWidgetSize[];
+  onChange: (newWidgetSize: WidgetSize) => void;
+  canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
 }
 
-const maxRows = 5;
-const minRows = 2;
-const maxColumns = 5;
-const minColumns = 2;
+const limit: WidgetSizeLimit = {
+  maxRows: 5,
+  minRows: 2,
+  maxColumns: 5,
+  minColumns: 2,
+};
 
 function WidgetContainer({
   rowStart,
@@ -154,37 +35,34 @@ function WidgetContainer({
   columns,
   children,
   onChange,
-  getConflictItems,
+  canWidgetMove,
 }: WidgetContainerProps) {
   const { gridUnit } = globalTheme;
   const defaultSize = { rowStart, rows, columnStart, columns };
-  const [widgetSize, dispatch] = useReducer(reducer, defaultSize);
+  const [widgetSize, setWidgetSize] = useState(defaultSize);
 
-  const handleOnSizeChange: THandleOnSizeChange = (
-    widthDiff,
-    heightDiff,
-    resizeDirection,
+  const handleOnSizeChange = (
+    columnsDiff: number,
+    rowsDiff: number,
+    direction: Direction,
   ) => {
-    dispatch({
-      payload: { widthDiff, heightDiff, resizeDirection, type: 'resize' },
-      limit: { maxRows, minRows, maxColumns, minColumns },
-    });
+    const changes = { columnsDiff, rowsDiff, direction };
+    const newWidgetSize = getNewWidgetSize(widgetSize, limit, changes);
+    if (!canWidgetMove(newWidgetSize)) return;
+    setWidgetSize(newWidgetSize);
   };
 
   const handleOnMove = (widthDiff: number, heightDiff: number) => {
     const newRowStart = rowStart + heightDiff >= 1 ? rowStart + heightDiff : 1;
     const newColumnStart =
       columnStart + widthDiff >= 1 ? columnStart + widthDiff : 1;
-    const conflictITems = getConflictItems({
+    const newWidgetSize = {
       ...widgetSize,
       rowStart: newRowStart,
       columnStart: newColumnStart,
-    });
-    if (conflictITems.length > 0) return;
-    dispatch({
-      payload: { widthDiff, heightDiff, type: 'move' },
-      limit: { maxRows, minRows, maxColumns, minColumns },
-    });
+    };
+    if (!canWidgetMove(newWidgetSize)) return;
+    setWidgetSize(newWidgetSize);
   };
 
   useEffect(() => {

@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import type { Direction } from './types';
 
-interface IResizerStyle {
+interface ResizerStyleProps {
   width: string;
   height: string;
   cursor: string;
@@ -11,7 +12,7 @@ interface IResizerStyle {
   right?: string;
 }
 
-const resizerStyles: { [direction: string]: IResizerStyle } = {
+const resizerStyles: { [direction: string]: ResizerStyleProps } = {
   top: {
     height: '10px',
     width: '100%',
@@ -70,16 +71,6 @@ const resizerStyles: { [direction: string]: IResizerStyle } = {
   },
 } as const;
 
-export type TDirection =
-  | 'top'
-  | 'bottom'
-  | 'left'
-  | 'right'
-  | 'topLeft'
-  | 'topRight'
-  | 'bottomLeft'
-  | 'bottomRight';
-
 const ResizerWrapper = styled.div`
   position: absolute;
   user-select: none;
@@ -87,10 +78,10 @@ const ResizerWrapper = styled.div`
 `;
 
 interface ResizerProps {
-  direction: TDirection;
+  direction: Direction;
   onResizeStart: (
     e: React.MouseEvent<HTMLDivElement>,
-    direction: TDirection,
+    direction: Direction,
   ) => void;
 }
 
