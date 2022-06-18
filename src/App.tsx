@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import globalTheme, { GlobalStyle } from './theme';
+import NavBar from './NavBar';
 import Widgets from './Widgets';
 
 const Wrapper = styled.div`
@@ -13,6 +14,7 @@ function App() {
     <ThemeProvider theme={globalTheme}>
       <GlobalStyle />
       <Wrapper>
+        <NavBar />
         <Widgets />
       </Wrapper>
     </ThemeProvider>

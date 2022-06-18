@@ -28,6 +28,12 @@ const defaultWidgets: WidgetSize[] = [
     rows: 2,
     columns: 2,
   },
+  {
+    rowStart: 9,
+    columnStart: 3,
+    rows: 2,
+    columns: 2,
+  },
 ];
 
 interface ConflictItem extends WidgetSize {

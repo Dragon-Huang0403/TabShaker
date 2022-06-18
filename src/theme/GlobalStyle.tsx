@@ -9,6 +9,11 @@ const GlobalStyle = createGlobalStyle`
     margin: 0px;
     font-family: 'Lato', sans-serif;
   }
+
+  a, a:visited, a:hover, a:active {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 
 export default GlobalStyle;
