@@ -1,5 +1,7 @@
 import WidgetContainer from './WidgetContainer';
-import type { WidgetSize } from './types';
+import { hasDirection } from './util';
+import type { WidgetSize, Direction } from './types';
 
 export default WidgetContainer;
-export type { WidgetSize };
+export { hasDirection };
+export type { WidgetSize, Direction };

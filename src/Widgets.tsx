@@ -1,9 +1,9 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
 import type { WidgetSize } from './components/WidgetContainer';
-import { calculateOverlapArea } from './utils/lib';
+import { calculateOverlapArea, createArray } from './utils/lib';
 
 const Wrapper = styled.div`
   display: grid;
@@ -31,15 +31,16 @@ const defaultWidgets: WidgetSize[] = [
 ];
 
 interface ConflictItem extends WidgetSize {
-  row: number;
-  column: number;
+  overLayRows: number;
+  overLayColumns: number;
+  index: number;
 }
 
 function getConflictItems(
   targetIndex: number,
   newWidgetSize: WidgetSize,
   widgets: WidgetSize[],
-) {
+): ConflictItem[] {
   const { rowStart, columnStart, rows, columns } = newWidgetSize;
   const newWidgetSizeRect = [
     rowStart,
@@ -57,7 +58,7 @@ function getConflictItems(
     ];
     const overlayArea = calculateOverlapArea(newWidgetSizeRect, widgetSizeRect);
     if (overlayArea) {
-      return [...accu, { ...widget, ...overlayArea }];
+      return [...accu, { ...widget, ...overlayArea, index }];
     }
     return accu;
   }, [] as ConflictItem[]);
@@ -66,6 +67,13 @@ function getConflictItems(
 
 function Widgets() {
   const [widgets, setWidgets] = useState(defaultWidgets);
+  const switchedWidgetsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    if (switchedWidgetsRef.current.length !== widgets.length) {
+      switchedWidgetsRef.current = createArray(widgets.length);
+    }
+  }, [widgets]);
 
   const onChange = (index: number, newWidgetSize: WidgetSize) => {
     const newWidgets = widgets.map((widget, i) =>
@@ -74,12 +82,102 @@ function Widgets() {
     setWidgets(newWidgets);
   };
 
-  const canWidgetMove = (targetIndex: number, newWidgetSize: WidgetSize) => {
-    const conflictItems = getConflictItems(targetIndex, newWidgetSize, widgets);
-    if (conflictItems.length === 0) {
-      return true;
-    }
-    return false;
+  const canWidgetMove = (
+    targetIndex: number,
+    newWidgetSize: WidgetSize,
+  ): boolean => {
+    const { rowStart, columnStart } = newWidgetSize;
+    if (rowStart <= 0 || columnStart <= 0) return false;
+    const conflictWidgets = getConflictItems(
+      targetIndex,
+      newWidgetSize,
+      widgets,
+    );
+    return conflictWidgets.length === 0;
+  };
+
+  const switchWidgets = (targetOneIndex: number, targetTwoIndex: number) => {
+    const newWidgets = [...widgets];
+    newWidgets[targetOneIndex] = widgets[targetTwoIndex];
+    newWidgets[targetTwoIndex] = widgets[targetOneIndex];
+    setWidgets(newWidgets);
+  };
+
+  const handleConflict = (targetIndex: number, newWidgetSize: WidgetSize) => {
+    const conflictWidgets = getConflictItems(
+      targetIndex,
+      newWidgetSize,
+      widgets,
+    );
+    if (conflictWidgets.length === 0) return;
+
+    conflictWidgets.forEach((conflictWidget) => {
+      if (!switchedWidgetsRef.current[conflictWidget.index]) {
+        switchedWidgetsRef.current[conflictWidget.index] = 'firstConflict';
+        setTimeout(() => {
+          switchedWidgetsRef.current[conflictWidget.index] = 'canMove';
+        }, 500);
+        return;
+      }
+
+      if (switchedWidgetsRef.current[conflictWidget.index] !== 'canMove')
+        return;
+
+      const {
+        rowStart,
+        columnStart,
+        rows,
+        columns,
+        overLayColumns,
+        overLayRows,
+      } = conflictWidget;
+
+      if (
+        rows === newWidgetSize.rows &&
+        columns === newWidgetSize.columns &&
+        rows === overLayRows &&
+        columns === overLayColumns
+      ) {
+        switchWidgets(conflictWidget.index, targetIndex);
+        return;
+      }
+
+      const newConflictWidgetSize = { rowStart, columnStart, rows, columns };
+
+      if (overLayRows < overLayColumns) {
+        if (rowStart > newWidgetSize.rowStart) {
+          newConflictWidgetSize.rowStart += overLayRows;
+        } else {
+          newConflictWidgetSize.rowStart -= overLayRows;
+        }
+        if (canWidgetMove(conflictWidget.index, newConflictWidgetSize)) {
+          switchedWidgetsRef.current[conflictWidget.index] = '';
+          setWidgets((prevWidgets) =>
+            prevWidgets.map((prevWidget, index) =>
+              index === conflictWidget.index
+                ? newConflictWidgetSize
+                : prevWidget,
+            ),
+          );
+          return;
+        }
+        newConflictWidgetSize.rowStart = rowStart;
+      }
+
+      if (columnStart > newWidgetSize.columnStart) {
+        newConflictWidgetSize.columnStart += overLayColumns;
+      } else {
+        newConflictWidgetSize.columnStart -= overLayColumns;
+      }
+
+      if (!canWidgetMove(conflictWidget.index, newConflictWidgetSize)) return;
+      switchedWidgetsRef.current[conflictWidget.index] = '';
+      setWidgets((prevWidgets) =>
+        prevWidgets.map((prevWidget, index) =>
+          index === conflictWidget.index ? newConflictWidgetSize : prevWidget,
+        ),
+      );
+    });
   };
 
   return (
@@ -91,11 +189,10 @@ function Widgets() {
           columnStart={widget.columnStart}
           rows={widget.rows}
           columns={widget.columns}
-          onChange={(newWidgetSize: WidgetSize) =>
-            onChange(index, newWidgetSize)
-          }
-          canWidgetMove={(newWidgetSize: WidgetSize) =>
-            canWidgetMove(index, newWidgetSize)
+          onChange={(newWidgetSize) => onChange(index, newWidgetSize)}
+          canWidgetMove={(newWidgetSize) => canWidgetMove(index, newWidgetSize)}
+          handleConflict={(newWidgetSize) =>
+            handleConflict(index, newWidgetSize)
           }
         >
           <div>{index}</div>

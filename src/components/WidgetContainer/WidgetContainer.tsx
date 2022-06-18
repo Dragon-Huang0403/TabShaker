@@ -19,6 +19,7 @@ interface WidgetContainerProps extends WidgetSize {
   children: JSX.Element;
   onChange: (newWidgetSize: WidgetSize) => void;
   canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
+  handleConflict: (newWidgetSize: WidgetSize) => void;
 }
 
 const limit: WidgetSizeLimit = {
@@ -36,10 +37,13 @@ function WidgetContainer({
   children,
   onChange,
   canWidgetMove,
+  handleConflict,
 }: WidgetContainerProps) {
   const { gridUnit } = globalTheme;
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, setWidgetSize] = useState(defaultSize);
+  const [updateDragger, setUpdateDragger] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleOnSizeChange = (
     columnsDiff: number,
@@ -52,22 +56,34 @@ function WidgetContainer({
     setWidgetSize(newWidgetSize);
   };
 
-  const handleOnMove = (widthDiff: number, heightDiff: number) => {
-    const newRowStart = rowStart + heightDiff >= 1 ? rowStart + heightDiff : 1;
+  const handleOnDrag = (
+    columnsDiff: number,
+    rowsDiff: number,
+    status: string,
+  ) => {
+    const newRowStart = rowStart + rowsDiff >= 1 ? rowStart + rowsDiff : 1;
     const newColumnStart =
-      columnStart + widthDiff >= 1 ? columnStart + widthDiff : 1;
+      columnStart + columnsDiff >= 1 ? columnStart + columnsDiff : 1;
     const newWidgetSize = {
       ...widgetSize,
       rowStart: newRowStart,
       columnStart: newColumnStart,
     };
-    if (!canWidgetMove(newWidgetSize)) return;
-    setWidgetSize(newWidgetSize);
+    if (status === 'end' && canWidgetMove(newWidgetSize)) {
+      setWidgetSize(newWidgetSize);
+      return;
+    }
+    handleConflict(newWidgetSize);
   };
 
   useEffect(() => {
     onChange(widgetSize);
   }, [widgetSize]);
+
+  useEffect(() => {
+    setWidgetSize({ rowStart, columnStart, rows, columns });
+    setUpdateDragger((prev) => !prev);
+  }, [rowStart, columnStart, rows, columns]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -84,8 +100,14 @@ function WidgetContainer({
           gridUnit={gridUnit}
           handleOnSizeChange={handleOnSizeChange}
         />
-        <Dragger gridUnit={gridUnit} handleOnMove={handleOnMove} />
-        {children}
+        <Dragger
+          gridUnit={gridUnit}
+          handleOnDrag={handleOnDrag}
+          updateDragger={updateDragger}
+          isDragging={isDragging}
+          setIsDragging={setIsDragging}
+        />
+        {!isDragging && children}
       </Wrapper>
     </ThemeProvider>
   );
