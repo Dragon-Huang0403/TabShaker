@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
-import appIcon from './images/icons/app.svg';
+import { AppIcon, SettingsIcon, DeleteIcon, AddIcon } from './components/Icons';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -12,7 +12,30 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const LeftPart = styled.div``;
+const LeftPart = styled.div`
+  display: flex;
+  padding: 5px 10px;
+  align-self: flex-start;
+  border-radius: 20px;
+  transition: all 0.5s;
+
+  & > div:not(:first-child) {
+    opacity: 0;
+  }
+
+  &:hover {
+    background: #0009;
+
+    & > div:not(:first-child) {
+      opacity: 1;
+    }
+
+    & svg {
+      fill: #3498db;
+    }
+  }
+`;
+
 const MiddlePart = styled.div``;
 const RightPart = styled.div`
   padding-right: 10px;
@@ -29,19 +52,32 @@ const GoogleMenuWrapper = styled.div`
   top: 0;
 `;
 
-const AppIcon = styled.img`
-  margin-left: 15px;
-  width: 30px;
+const IconContainer = styled.div`
+  padding: 3px;
   height: 30px;
+  width: 30px;
+  & > svg {
+    width: 24px;
+    height: 24px;
+    fill: ${({ theme }) => theme.black};
+  }
+
   :hover {
     cursor: pointer;
     background: #3332;
-    border-radius: 5px;
+    border-radius: 50%;
   }
 `;
 
+const AppIconContainer = styled(IconContainer)`
+  height: 36px;
+  width: 36px;
+  padding: 6px;
+`;
+
 const Link = styled.a`
-  margin-left: 15px;
+  user-select: none;
+  margin-right: 20px;
   &,
   &:visited {
     color: ${({ theme }) => theme.black};
@@ -55,20 +91,30 @@ const Link = styled.a`
 function Header() {
   const [idGoogleMenuOpen, setIsGoogleMenuOpen] = useState(false);
 
+  const toggleGoogleMenuOpen = () => {
+    setIsGoogleMenuOpen((prev) => !prev);
+  };
+
   return (
     <Wrapper>
-      <LeftPart />
+      <LeftPart>
+        <IconContainer>
+          <SettingsIcon />
+        </IconContainer>
+        <IconContainer>
+          <AddIcon />
+        </IconContainer>
+        <IconContainer>
+          <DeleteIcon />
+        </IconContainer>
+      </LeftPart>
       <MiddlePart />
       <RightPart>
         <Link href="https://mail.google.com/mail/">Gmail</Link>
         <Link href="https://www.google.com.tw/imghp">Images</Link>
-        <AppIcon
-          src={appIcon}
-          alt=""
-          onClick={() => {
-            setIsGoogleMenuOpen((prev) => !prev);
-          }}
-        />
+        <AppIconContainer onClick={toggleGoogleMenuOpen}>
+          <AppIcon />
+        </AppIconContainer>
         <GoogleMenuWrapper>
           {idGoogleMenuOpen && <GoogleMenu />}
         </GoogleMenuWrapper>
