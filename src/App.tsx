@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 60px;
 `;
 
 function App() {
