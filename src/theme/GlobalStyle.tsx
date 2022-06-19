@@ -5,6 +5,10 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  html {
+    background: black;
+  }
+
   body {
     margin: 0px;
     font-family: 'Lato', sans-serif;

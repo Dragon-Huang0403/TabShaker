@@ -18,6 +18,7 @@ const LeftPart = styled.div`
   align-self: flex-start;
   border-radius: 20px;
   transition: all 0.5s;
+  z-index: 1;
 
   & > div:not(:first-child) {
     opacity: 0;
@@ -59,12 +60,12 @@ const IconContainer = styled.div`
   & > svg {
     width: 24px;
     height: 24px;
-    fill: ${({ theme }) => theme.black};
+    fill: white;
   }
 
   :hover {
     cursor: pointer;
-    background: #3332;
+    background: #fff3;
     border-radius: 50%;
   }
 `;
@@ -80,7 +81,7 @@ const Link = styled.a`
   margin-right: 20px;
   &,
   &:visited {
-    color: ${({ theme }) => theme.black};
+    color: white;
   }
   &:hover {
     font-weight: 500;
