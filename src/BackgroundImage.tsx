@@ -26,7 +26,27 @@ interface Photo {
 function BackgroundImage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   useEffect(() => {
-    unsplashApi().then(setPhotos);
+    const rawData = window.localStorage.getItem('backgroundImages');
+    const currentTime = new Date();
+    if (rawData) {
+      const data = JSON.parse(rawData);
+      const lastPhotoUpdateTime = Number(data.updateTime);
+      if (currentTime.getTime() - lastPhotoUpdateTime < 3600000) {
+        const oldPhotos = data.photos;
+        setPhotos(oldPhotos);
+        return;
+      }
+    }
+    unsplashApi().then((newPhotos) => {
+      setPhotos(newPhotos);
+      window.localStorage.setItem(
+        'backgroundImages',
+        JSON.stringify({
+          photos: newPhotos,
+          updateTime: currentTime.getTime(),
+        }),
+      );
+    });
   }, []);
   return <BackgroundImg url={photos[0]?.imageUrl || ''} />;
 }
