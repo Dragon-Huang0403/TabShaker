@@ -4,14 +4,14 @@ import styled, { css } from 'styled-components';
 const Wrapper = styled.div<{
   isDragging: boolean;
 }>`
-  background-color: ${({ theme }) => theme.color}33;
+  background-color: ${({ theme }) => theme.color};
   position: absolute;
   width: 100%;
   height: 100%;
   ${({ isDragging, theme }) =>
     isDragging &&
     css`
-      background: transparent;
+      background: white;
       border: 2px solid ${theme.color};
       border-radius: ${theme.borderRadius}px;
     `}

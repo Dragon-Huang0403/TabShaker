@@ -1,9 +1,12 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import unsplashApi from './utils/unsplashApi';
 import { ArrowBack, ArrowForward, PlayArrow, Pause } from './components/Icons';
+import useInterval from './hooks/useSetInterval';
 
 const TIME_TO_GET_NEW_PHOTOS = 3600000;
+const TIME_TO_NEXT_PHOTO = 10000;
 
 const Wrapper = styled.div`
   position: absolute;
@@ -16,19 +19,27 @@ const Wrapper = styled.div`
   justify-content: center;
 `;
 
-const BackgroundImg = styled.div<{ url: string }>`
+const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  transition: opacity 0.5s;
+  visibility: visible;
+  background-size: cover;
+  background-position: 50% 50%;
+  opacity: 0.8;
   ${({ url }) =>
     url &&
     css`
       background-image: url(${url});
-      background-size: cover;
-      background-position: 50% 50%;
-      opacity: 0.8;
+    `}
+  ${({ isCurrentPhoto }) =>
+    !isCurrentPhoto &&
+    css`
+      visibility: hidden;
+      opacity: 0;
     `}
 `;
 
@@ -63,8 +74,19 @@ interface Photo {
 
 function BackgroundImage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [isPlay, setIsPlay] = useState(false);
+  const [isPlay, setIsPlay] = useState(true);
   const [currentPhoto, setCurrentPhoto] = useState(0);
+  const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
+  const prevPhoto =
+    currentPhoto - 1 >= 0 ? currentPhoto - 1 : photos.length - 1;
+
+  useInterval(
+    () => {
+      setCurrentPhoto(nextPhoto);
+    },
+    isPlay ? TIME_TO_NEXT_PHOTO : null,
+  );
+
   useEffect(() => {
     const rawData = window.localStorage.getItem('backgroundImages');
     const currentTime = new Date();
@@ -91,20 +113,16 @@ function BackgroundImage() {
       );
     });
   }, []);
-  const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
-  const prevPhoto =
-    currentPhoto - 1 >= 0 ? currentPhoto - 1 : photos.length - 1;
+
   return (
     <Wrapper>
-      <BackgroundImg
-        url={photos[prevPhoto]?.imageUrl || ''}
-        style={{ visibility: 'hidden' }}
-      />
-      <BackgroundImg url={photos[currentPhoto]?.imageUrl || ''} />
-      <BackgroundImg
-        url={photos[nextPhoto]?.imageUrl || ''}
-        style={{ visibility: 'hidden' }}
-      />
+      {photos.map((photo, index) => (
+        <BackgroundImg
+          key={index}
+          url={photo?.imageUrl || ''}
+          isCurrentPhoto={index === currentPhoto}
+        />
+      ))}
       <IconsWrapper>
         <IconStyle
           onClick={() => {
@@ -116,7 +134,7 @@ function BackgroundImage() {
         {isPlay ? (
           <IconStyle
             onClick={() => {
-              setIsPlay(true);
+              setIsPlay(false);
             }}
           >
             <Pause />
@@ -124,7 +142,7 @@ function BackgroundImage() {
         ) : (
           <IconStyle
             onClick={() => {
-              setIsPlay(false);
+              setIsPlay(true);
             }}
           >
             <PlayArrow />
