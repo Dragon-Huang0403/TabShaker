@@ -23,6 +23,7 @@
 build.crx
 build.pem
 build.zip
+.vscode
 
 npm-debug.log*
 yarn-debug.log*

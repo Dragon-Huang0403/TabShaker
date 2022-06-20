@@ -1,14 +1,20 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import theme, { GlobalStyle } from './theme';
+import globalTheme, { GlobalStyle } from './theme';
+import Widgets from './Widgets';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={globalTheme}>
       <GlobalStyle />
-      <Wrapper>Hi~</Wrapper>
+      <Wrapper>
+        <Widgets />
+      </Wrapper>
     </ThemeProvider>
   );
 }
