@@ -3,9 +3,10 @@ import React, { useRef, useEffect } from 'react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import styled from 'styled-components';
 
-function isStartWithNumber(str: string) {
-  const re = /^\d+/;
-  return re.test(str);
+function startWithNumber(str: string) {
+  const re = /^\d+[\s.]*/;
+  const result = str.match(re);
+  return result;
 }
 
 const Wrapper = styled.div`
@@ -40,6 +41,7 @@ const Wrapper = styled.div`
     height: 100%;
     border: none;
     outline: none;
+    white-space: pre;
   }
 `;
 
@@ -50,32 +52,30 @@ interface ContentProps {
 }
 
 function Content({ content, setContent, contentRef }: ContentProps) {
-  const nextLineOpening = useRef('');
+  const nextLineOpening = useRef<string[] | null>(null);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.code !== 'Enter') return;
     const selection = window.getSelection();
-    const textContent = selection?.focusNode?.textContent;
+    const focusNode = selection?.focusNode;
+    if (!focusNode) return;
+    const textContent = focusNode?.textContent;
     if (!textContent) return;
-    if (!isStartWithNumber(textContent)) return;
-    const numberRe = /^\d+/;
-    const number = textContent.match(numberRe);
-    const numberLength = String(number).length;
-
-    let followingFiller = '';
-    if (number?.index !== undefined && number?.index <= textContent.length) {
-      const followingFillerRe = /^./;
-      [followingFiller] = textContent
-        .slice(number.index + numberLength)
-        .match(followingFillerRe) || [''];
+    const testResult = startWithNumber(textContent);
+    if (!testResult) return;
+    const lineOpening = testResult[0];
+    if (textContent.length === lineOpening.length) {
+      focusNode.textContent = '';
+      return;
     }
+    const numberRe = /^\d+/;
+    const number = lineOpening.match(numberRe)![0];
+    const followingFiller = lineOpening.slice(number.length);
+    const nextNumber = String(Number(number) + 1);
+    const newNextLineOpening = nextNumber + followingFiller;
 
-    const nextNumber = Number(number![0]) + 1;
-    const newLineOpening = String(`${nextNumber}`) + followingFiller;
-
-    if (!newLineOpening) return;
-    nextLineOpening.current = newLineOpening;
-    selection.focusNode.textContent += newLineOpening;
+    nextLineOpening.current = [newNextLineOpening, nextNumber, followingFiller];
+    focusNode.textContent += newNextLineOpening;
   };
 
   const onChange = (e: ContentEditableEvent) => {
@@ -86,11 +86,13 @@ function Content({ content, setContent, contentRef }: ContentProps) {
     if (!nextLineOpening.current) return;
     const selection = window.getSelection();
     const range = document.createRange();
+    const focusNode = selection?.focusNode;
     const textContent = selection?.focusNode?.textContent;
-    if (!textContent || textContent.length < nextLineOpening.current.length)
-      return;
-    range.setStart(selection?.focusNode!, nextLineOpening.current.length);
-    nextLineOpening.current = '';
+    if (!focusNode || !textContent) return;
+    if (textContent.length < nextLineOpening.current[0].length) return;
+    if (textContent.length < nextLineOpening.current[0].length) return;
+    range.setStart(focusNode, nextLineOpening.current[0].length);
+    nextLineOpening.current = null;
     selection?.removeAllRanges();
     selection?.addRange(range);
   }, [content]);
