@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
 import type { WidgetSize } from './components/WidgetContainer';
 import { calculateOverlapArea, createArray } from './utils/lib';
+import Note from './components/Widget';
 
 const Wrapper = styled.div`
   display: grid;
@@ -19,20 +20,8 @@ const defaultWidgets: WidgetSize[] = [
   {
     rowStart: 3,
     columnStart: 3,
-    rows: 2,
-    columns: 2,
-  },
-  {
-    rowStart: 6,
-    columnStart: 3,
-    rows: 2,
-    columns: 2,
-  },
-  {
-    rowStart: 9,
-    columnStart: 3,
-    rows: 2,
-    columns: 2,
+    rows: 5,
+    columns: 5,
   },
 ];
 
@@ -201,7 +190,7 @@ function Widgets() {
             handleConflict(index, newWidgetSize)
           }
         >
-          <div>{index}</div>
+          <Note />
         </WidgetContainer>
       ))}
     </Wrapper>

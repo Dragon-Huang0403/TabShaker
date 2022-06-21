@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 const Wrapper = styled.div<{
   isDragging: boolean;
 }>`
-  background-color: ${({ theme }) => theme.color};
   position: absolute;
   width: 100%;
   height: 100%;

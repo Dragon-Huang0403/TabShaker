@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 5px;
 `;
 
 interface WidgetContainerProps extends WidgetSize {
