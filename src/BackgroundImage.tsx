@@ -6,7 +6,7 @@ import { ArrowBack, ArrowForward, PlayArrow, Pause } from './components/Icons';
 import useInterval from './hooks/useSetInterval';
 
 const TIME_TO_GET_NEW_PHOTOS = 3600000;
-const TIME_TO_NEXT_PHOTO = 10000;
+const TIME_TO_NEXT_PHOTO = 60000;
 
 const Wrapper = styled.div`
   position: absolute;
@@ -74,7 +74,7 @@ interface Photo {
 
 function BackgroundImage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [isPlay, setIsPlay] = useState(true);
+  const [isPlay, setIsPlay] = useState(false);
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
   const prevPhoto =

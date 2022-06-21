@@ -6,14 +6,33 @@ import globalTheme from '../../theme';
 import type { Direction, WidgetSizeLimit, WidgetSize } from './types';
 import defaultTheme from './defaultTheme';
 import { getNewWidgetSize } from './util';
+import { MoreDots } from '../Icons';
 
 const Wrapper = styled.div`
   user-select: none;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
+`;
+
+const IconWrapper = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  z-index: 10;
+  fill: ${({ theme }) => theme.white};
+  border-radius: 50%;
+
+  &:hover {
+    background: ${({ theme }) => theme.blackHoverBackgroundColor};
+    cursor: pointer;
+  }
+
+  & > svg {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 interface WidgetContainerProps extends WidgetSize {
@@ -44,6 +63,7 @@ function WidgetContainer({
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, setWidgetSize] = useState(defaultSize);
   const [updateDragger, setUpdateDragger] = useState(false);
+  const [isHover, setIsHover] = useState(false);
 
   const handleOnSizeChange = (
     columnsDiff: number,
@@ -93,7 +113,18 @@ function WidgetContainer({
             widgetSize.rowStart + widgetSize.rows
           } / ${widgetSize.columnStart + widgetSize.columns}`,
         }}
+        onMouseEnter={() => {
+          setIsHover(true);
+        }}
+        onMouseLeave={() => {
+          setIsHover(false);
+        }}
       >
+        {isHover && (
+          <IconWrapper>
+            <MoreDots />
+          </IconWrapper>
+        )}
         <Resizers
           defaultHeight={widgetSize.rows * gridUnit}
           defaultWidth={widgetSize.columns * gridUnit}
