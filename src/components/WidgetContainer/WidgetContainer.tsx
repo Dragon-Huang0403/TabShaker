@@ -44,7 +44,6 @@ function WidgetContainer({
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, setWidgetSize] = useState(defaultSize);
   const [updateDragger, setUpdateDragger] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
 
   const handleOnSizeChange = (
     columnsDiff: number,
@@ -105,10 +104,9 @@ function WidgetContainer({
           gridUnit={gridUnit}
           handleOnDrag={handleOnDrag}
           updateDragger={updateDragger}
-          isDragging={isDragging}
-          setIsDragging={setIsDragging}
-        />
-        {!isDragging && children}
+        >
+          {children}
+        </Dragger>
       </Wrapper>
     </ThemeProvider>
   );
