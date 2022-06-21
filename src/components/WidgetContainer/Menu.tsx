@@ -45,7 +45,11 @@ const Item = styled.div`
   }
 `;
 
-function Menu() {
+interface MenuProps {
+  deleteWidget: () => void;
+}
+
+function Menu({ deleteWidget }: MenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -77,7 +81,7 @@ function Menu() {
       {isMenuOpen && (
         <MenuWrapper ref={menuRef}>
           <Item>Edit</Item>
-          <Item>Delete</Item>
+          <Item onClick={deleteWidget}>Delete</Item>
         </MenuWrapper>
       )}
     </Wrapper>

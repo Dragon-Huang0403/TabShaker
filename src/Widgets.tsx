@@ -70,6 +70,12 @@ function Widgets() {
     }
   }, [widgets]);
 
+  const deleteWidget = (targetIndex: number) => {
+    setWidgets((prevWidgets) =>
+      prevWidgets.filter((_, index) => index !== targetIndex),
+    );
+  };
+
   const onChange = (index: number, newWidgetSize: WidgetSize) => {
     const newWidgets = widgets.map((widget, i) =>
       i === index ? { ...newWidgetSize } : widget,
@@ -189,6 +195,7 @@ function Widgets() {
           handleConflict={(newWidgetSize) =>
             handleConflict(index, newWidgetSize)
           }
+          deleteWidget={() => deleteWidget(index)}
         >
           <Note />
         </WidgetContainer>

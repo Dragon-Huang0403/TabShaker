@@ -13,19 +13,20 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-interface WidgetContainerProps extends WidgetSize {
-  children: JSX.Element;
-  onChange: (newWidgetSize: WidgetSize) => void;
-  canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
-  handleConflict: (newWidgetSize: WidgetSize) => void;
-}
-
 const limit: WidgetSizeLimit = {
   maxRows: 5,
   minRows: 2,
   maxColumns: 5,
   minColumns: 2,
 };
+
+interface WidgetContainerProps extends WidgetSize {
+  children: JSX.Element;
+  onChange: (newWidgetSize: WidgetSize) => void;
+  canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
+  handleConflict: (newWidgetSize: WidgetSize) => void;
+  deleteWidget: () => void;
+}
 
 function WidgetContainer({
   rowStart,
@@ -36,6 +37,7 @@ function WidgetContainer({
   onChange,
   canWidgetMove,
   handleConflict,
+  deleteWidget,
 }: WidgetContainerProps) {
   const { gridUnit } = globalTheme;
   const defaultSize = { rowStart, rows, columnStart, columns };
@@ -98,7 +100,7 @@ function WidgetContainer({
           setIsHover(false);
         }}
       >
-        {isHover && <Menu />}
+        {isHover && <Menu deleteWidget={deleteWidget} />}
         <Resizers
           defaultHeight={widgetSize.rows * gridUnit}
           defaultWidth={widgetSize.columns * gridUnit}
