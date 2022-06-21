@@ -6,33 +6,11 @@ import globalTheme from '../../theme';
 import type { Direction, WidgetSizeLimit, WidgetSize } from './types';
 import defaultTheme from './defaultTheme';
 import { getNewWidgetSize } from './util';
-import { MoreDots } from '../Icons';
+import Menu from './Menu';
 
 const Wrapper = styled.div`
   user-select: none;
   position: relative;
-`;
-
-const IconWrapper = styled.div`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  padding: 6px;
-  z-index: 10;
-  fill: ${({ theme }) => theme.white};
-  border-radius: 50%;
-
-  &:hover {
-    background: ${({ theme }) => theme.blackHoverBackgroundColor};
-    cursor: pointer;
-  }
-
-  & > svg {
-    width: 24px;
-    height: 24px;
-  }
 `;
 
 interface WidgetContainerProps extends WidgetSize {
@@ -116,15 +94,11 @@ function WidgetContainer({
         onMouseEnter={() => {
           setIsHover(true);
         }}
-        onMouseLeave={() => {
+        onBlur={() => {
           setIsHover(false);
         }}
       >
-        {isHover && (
-          <IconWrapper>
-            <MoreDots />
-          </IconWrapper>
-        )}
+        {isHover && <Menu />}
         <Resizers
           defaultHeight={widgetSize.rows * gridUnit}
           defaultWidth={widgetSize.columns * gridUnit}

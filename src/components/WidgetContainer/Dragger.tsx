@@ -12,7 +12,6 @@ const Wrapper = styled.div<{
     isDragging &&
     css`
       opacity: 0.5;
-      border: 5px solid ${theme.borderColor};
       border-radius: ${theme.borderRadius}px;
     `}
 `;
