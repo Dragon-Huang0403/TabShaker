@@ -1,18 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 const Wrapper = styled.div<{
   isDragging: boolean;
 }>`
-  background-color: ${({ theme }) => theme.color};
   position: absolute;
   width: 100%;
   height: 100%;
   ${({ isDragging, theme }) =>
     isDragging &&
     css`
-      background: white;
-      border: 2px solid ${theme.color};
+      opacity: 0.5;
+      border: 5px solid ${theme.borderColor};
       border-radius: ${theme.borderRadius}px;
     `}
 `;
@@ -21,17 +20,17 @@ interface DraggerProps {
   gridUnit: number;
   handleOnDrag: (columnsDiff: number, rowsDiff: number, status: string) => void;
   updateDragger: boolean;
-  isDragging: boolean;
-  setIsDragging: (bool: boolean) => void;
+  children: JSX.Element;
 }
 
 function Dragger({
   gridUnit,
   handleOnDrag,
   updateDragger,
-  isDragging,
-  setIsDragging,
+  children,
 }: DraggerProps) {
+  const [isDragging, setIsDragging] = useState(false);
+
   const onDragStartMousePosition = useRef({ x: 0, y: 0 });
 
   const onDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
@@ -88,7 +87,9 @@ function Dragger({
       onDragEnd={onDragEnd}
       draggable
       isDragging={isDragging}
-    />
+    >
+      {children}
+    </Wrapper>
   );
 }
 
