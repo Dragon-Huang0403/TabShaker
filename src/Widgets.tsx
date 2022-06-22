@@ -9,8 +9,8 @@ import Note from './components/Widget';
 const Wrapper = styled.div`
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, ${({ theme }) => theme.gridUnit}px);
-  grid-template-rows: repeat(auto-fill, ${({ theme }) => theme.gridUnit}px);
+  grid-template-columns: repeat(36, ${({ theme }) => theme.gridUnit}px);
+  grid-template-rows: repeat(19, ${({ theme }) => theme.gridUnit}px);
   padding: 0px 50px;
   width: 100%;
   height: 100%;

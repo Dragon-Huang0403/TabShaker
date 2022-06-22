@@ -85,14 +85,16 @@ function WidgetContainer({
     setUpdateDragger((prev) => !prev);
   }, [rowStart, columnStart, rows, columns]);
 
+  const style = {
+    gridArea: `${widgetSize.rowStart} / ${widgetSize.columnStart} / ${
+      widgetSize.rowStart + widgetSize.rows
+    } / ${widgetSize.columnStart + widgetSize.columns}`,
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Wrapper
-        style={{
-          gridArea: `${widgetSize.rowStart} / ${widgetSize.columnStart} / ${
-            widgetSize.rowStart + widgetSize.rows
-          } / ${widgetSize.columnStart + widgetSize.columns}`,
-        }}
+        style={style}
         onMouseEnter={() => {
           setIsHover(true);
         }}
