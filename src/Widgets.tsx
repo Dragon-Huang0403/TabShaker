@@ -1,8 +1,8 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
-import type { WidgetSize } from './components/WidgetContainer';
+import type { WidgetSize } from './components/WidgetContainer/types';
 import { calculateOverlapArea, createArray } from './utils/lib';
 import Note from './components/Widget';
 
@@ -15,15 +15,6 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 `;
-
-const defaultWidgets: WidgetSize[] = [
-  {
-    rowStart: 3,
-    columnStart: 3,
-    rows: 5,
-    columns: 5,
-  },
-];
 
 interface ConflictItem extends WidgetSize {
   overLayRows: number;
@@ -60,8 +51,12 @@ function getConflictItems(
   return conflictItems;
 }
 
-function Widgets() {
-  const [widgets, setWidgets] = useState(defaultWidgets);
+interface WidgetsProps {
+  widgets: WidgetSize[];
+  setWidgets: React.Dispatch<React.SetStateAction<WidgetSize[]>>;
+}
+
+function Widgets({ widgets, setWidgets }: WidgetsProps) {
   const switchedWidgetsRef = useRef<string[]>([]);
 
   useEffect(() => {

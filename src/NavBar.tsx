@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
 import { AppIcon, SettingsIcon, DeleteIcon, AddIcon } from './components/Icons';
+import type { NewWidget } from './components/WidgetContainer/types';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -89,11 +90,19 @@ const Link = styled.a`
   }
 `;
 
-function NavBar() {
+interface NavBarProps {
+  addWidget: (newWidget: NewWidget) => void;
+}
+
+function NavBar({ addWidget }: NavBarProps) {
   const [idGoogleMenuOpen, setIsGoogleMenuOpen] = useState(false);
 
   const toggleGoogleMenuOpen = () => {
     setIsGoogleMenuOpen((prev) => !prev);
+  };
+
+  const handleAddWidget = () => {
+    addWidget({ rows: 5, columns: 5, type: 'note' });
   };
 
   return (
@@ -102,7 +111,7 @@ function NavBar() {
         <IconContainer>
           <SettingsIcon />
         </IconContainer>
-        <IconContainer>
+        <IconContainer onClick={handleAddWidget}>
           <AddIcon />
         </IconContainer>
         <IconContainer>
