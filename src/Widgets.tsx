@@ -2,8 +2,8 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
-import type { WidgetSize } from './components/WidgetContainer/types';
-import { getConflictItems, createArray } from './utils/lib';
+import type { WidgetSize, Widget } from './components/WidgetContainer/types';
+import { getConflictedWidgets, createArray } from './utils/lib';
 import Note from './components/Widget';
 
 const Wrapper = styled.div`
@@ -41,8 +41,8 @@ const Wrapper = styled.div`
 `;
 
 interface WidgetsProps {
-  widgets: WidgetSize[];
-  setWidgets: React.Dispatch<React.SetStateAction<WidgetSize[]>>;
+  widgets: Widget[];
+  setWidgets: React.Dispatch<React.SetStateAction<Widget[]>>;
 }
 
 function Widgets({ widgets, setWidgets }: WidgetsProps) {
@@ -60,9 +60,9 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
     );
   };
 
-  const onChange = (index: number, newWidgetSize: WidgetSize) => {
+  const onChange = (index: number, newWidget: Widget) => {
     const newWidgets = widgets.map((widget, i) =>
-      i === index ? { ...newWidgetSize } : widget,
+      i === index ? { ...newWidget } : widget,
     );
     setWidgets(newWidgets);
   };
@@ -73,7 +73,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
   ): boolean => {
     const { rowStart, columnStart } = newWidgetSize;
     if (rowStart <= 0 || columnStart <= 0) return false;
-    const conflictWidgets = getConflictItems(
+    const conflictWidgets = getConflictedWidgets(
       targetIndex,
       newWidgetSize,
       widgets,
@@ -88,10 +88,10 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
     setWidgets(newWidgets);
   };
 
-  const handleConflict = (targetIndex: number, newWidgetSize: WidgetSize) => {
-    const conflictWidgets = getConflictItems(
+  const handleConflict = (targetIndex: number, newWidget: Widget) => {
+    const conflictWidgets = getConflictedWidgets(
       targetIndex,
-      newWidgetSize,
+      newWidget,
       widgets,
     );
     if (conflictWidgets.length === 0) return;
@@ -118,8 +118,8 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
       } = conflictWidget;
 
       if (
-        rows === newWidgetSize.rows &&
-        columns === newWidgetSize.columns &&
+        rows === newWidget.rows &&
+        columns === newWidget.columns &&
         rows === overLayRows &&
         columns === overLayColumns
       ) {
@@ -130,7 +130,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
       const newConflictWidgetSize = { rowStart, columnStart, rows, columns };
 
       if (overLayRows < overLayColumns) {
-        if (rowStart > newWidgetSize.rowStart) {
+        if (rowStart > newWidget.rowStart) {
           newConflictWidgetSize.rowStart += overLayRows;
         } else {
           newConflictWidgetSize.rowStart -= overLayRows;
@@ -140,7 +140,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
           setWidgets((prevWidgets) =>
             prevWidgets.map((prevWidget, index) =>
               index === conflictWidget.index
-                ? newConflictWidgetSize
+                ? { ...newWidget, ...newConflictWidgetSize }
                 : prevWidget,
             ),
           );
@@ -149,7 +149,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
         newConflictWidgetSize.rowStart = rowStart;
       }
 
-      if (columnStart > newWidgetSize.columnStart) {
+      if (columnStart > newWidget.columnStart) {
         newConflictWidgetSize.columnStart += overLayColumns;
       } else {
         newConflictWidgetSize.columnStart -= overLayColumns;
@@ -159,7 +159,9 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
       switchedWidgetsRef.current[conflictWidget.index] = '';
       setWidgets((prevWidgets) =>
         prevWidgets.map((prevWidget, index) =>
-          index === conflictWidget.index ? newConflictWidgetSize : prevWidget,
+          index === conflictWidget.index
+            ? { ...newWidget, ...newConflictWidgetSize }
+            : prevWidget,
         ),
       );
     });
@@ -174,10 +176,12 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
           columnStart={widget.columnStart}
           rows={widget.rows}
           columns={widget.columns}
-          onChange={(newWidgetSize) => onChange(index, newWidgetSize)}
+          onChange={(newWidgetSize) =>
+            onChange(index, { ...widget, ...newWidgetSize })
+          }
           canWidgetMove={(newWidgetSize) => canWidgetMove(index, newWidgetSize)}
           handleConflict={(newWidgetSize) =>
-            handleConflict(index, newWidgetSize)
+            handleConflict(index, { ...widget, ...newWidgetSize })
           }
           deleteWidget={() => deleteWidget(index)}
         >
