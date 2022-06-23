@@ -1,29 +1,20 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
-import type { WidgetSize } from './components/WidgetContainer';
+import type { WidgetSize } from './components/WidgetContainer/types';
 import { calculateOverlapArea, createArray } from './utils/lib';
 import Note from './components/Widget';
 
 const Wrapper = styled.div`
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, ${({ theme }) => theme.gridUnit}px);
-  grid-template-rows: repeat(auto-fill, ${({ theme }) => theme.gridUnit}px);
+  grid-template-columns: repeat(36, ${({ theme }) => theme.gridUnit}px);
+  grid-template-rows: repeat(19, ${({ theme }) => theme.gridUnit}px);
   padding: 0px 50px;
   width: 100%;
   height: 100%;
 `;
-
-const defaultWidgets: WidgetSize[] = [
-  {
-    rowStart: 3,
-    columnStart: 3,
-    rows: 5,
-    columns: 5,
-  },
-];
 
 interface ConflictItem extends WidgetSize {
   overLayRows: number;
@@ -60,8 +51,12 @@ function getConflictItems(
   return conflictItems;
 }
 
-function Widgets() {
-  const [widgets, setWidgets] = useState(defaultWidgets);
+interface WidgetsProps {
+  widgets: WidgetSize[];
+  setWidgets: React.Dispatch<React.SetStateAction<WidgetSize[]>>;
+}
+
+function Widgets({ widgets, setWidgets }: WidgetsProps) {
   const switchedWidgetsRef = useRef<string[]>([]);
 
   useEffect(() => {
@@ -69,6 +64,12 @@ function Widgets() {
       switchedWidgetsRef.current = createArray(widgets.length);
     }
   }, [widgets]);
+
+  const deleteWidget = (targetIndex: number) => {
+    setWidgets((prevWidgets) =>
+      prevWidgets.filter((_, index) => index !== targetIndex),
+    );
+  };
 
   const onChange = (index: number, newWidgetSize: WidgetSize) => {
     const newWidgets = widgets.map((widget, i) =>
@@ -189,6 +190,7 @@ function Widgets() {
           handleConflict={(newWidgetSize) =>
             handleConflict(index, newWidgetSize)
           }
+          deleteWidget={() => deleteWidget(index)}
         >
           <Note />
         </WidgetContainer>

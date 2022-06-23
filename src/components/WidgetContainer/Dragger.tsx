@@ -7,11 +7,11 @@ const Wrapper = styled.div<{
   position: absolute;
   width: 100%;
   height: 100%;
+  padding: 5px;
   ${({ isDragging, theme }) =>
     isDragging &&
     css`
       opacity: 0.5;
-      border: 5px solid ${theme.borderColor};
       border-radius: ${theme.borderRadius}px;
     `}
 `;

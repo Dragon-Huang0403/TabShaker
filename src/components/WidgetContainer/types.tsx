@@ -1,5 +1,7 @@
 type BasicDirection = 'top' | 'bottom' | 'left' | 'right';
 
+type WidgetType = 'note';
+
 type Direction =
   | 'top'
   | 'bottom'
@@ -10,11 +12,23 @@ type Direction =
   | 'bottomLeft'
   | 'bottomRight';
 
+interface NewWidget {
+  rows: number;
+  columns: number;
+  type: WidgetType;
+}
+
 interface WidgetSize {
   rowStart: number;
   columnStart: number;
   rows: number;
   columns: number;
+}
+
+interface Widget extends WidgetSize {
+  type: WidgetType;
+  style?: {};
+  data?: {};
 }
 
 interface WidgetSizeLimit {
@@ -24,4 +38,11 @@ interface WidgetSizeLimit {
   minColumns: number;
 }
 
-export type { BasicDirection, Direction, WidgetSize, WidgetSizeLimit };
+export type {
+  NewWidget,
+  BasicDirection,
+  Direction,
+  WidgetSize,
+  WidgetSizeLimit,
+  Widget,
+};

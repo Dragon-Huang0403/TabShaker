@@ -6,22 +6,12 @@ import globalTheme from '../../theme';
 import type { Direction, WidgetSizeLimit, WidgetSize } from './types';
 import defaultTheme from './defaultTheme';
 import { getNewWidgetSize } from './util';
+import Menu from './Menu';
 
 const Wrapper = styled.div`
   user-select: none;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
 `;
-
-interface WidgetContainerProps extends WidgetSize {
-  children: JSX.Element;
-  onChange: (newWidgetSize: WidgetSize) => void;
-  canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
-  handleConflict: (newWidgetSize: WidgetSize) => void;
-}
 
 const limit: WidgetSizeLimit = {
   maxRows: 5,
@@ -29,6 +19,14 @@ const limit: WidgetSizeLimit = {
   maxColumns: 5,
   minColumns: 2,
 };
+
+interface WidgetContainerProps extends WidgetSize {
+  children: JSX.Element;
+  onChange: (newWidgetSize: WidgetSize) => void;
+  canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
+  handleConflict: (newWidgetSize: WidgetSize) => void;
+  deleteWidget: () => void;
+}
 
 function WidgetContainer({
   rowStart,
@@ -39,11 +37,13 @@ function WidgetContainer({
   onChange,
   canWidgetMove,
   handleConflict,
+  deleteWidget,
 }: WidgetContainerProps) {
   const { gridUnit } = globalTheme;
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, setWidgetSize] = useState(defaultSize);
   const [updateDragger, setUpdateDragger] = useState(false);
+  const [isHover, setIsHover] = useState(false);
 
   const handleOnSizeChange = (
     columnsDiff: number,
@@ -85,15 +85,24 @@ function WidgetContainer({
     setUpdateDragger((prev) => !prev);
   }, [rowStart, columnStart, rows, columns]);
 
+  const style = {
+    gridArea: `${widgetSize.rowStart} / ${widgetSize.columnStart} / ${
+      widgetSize.rowStart + widgetSize.rows
+    } / ${widgetSize.columnStart + widgetSize.columns}`,
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Wrapper
-        style={{
-          gridArea: `${widgetSize.rowStart} / ${widgetSize.columnStart} / ${
-            widgetSize.rowStart + widgetSize.rows
-          } / ${widgetSize.columnStart + widgetSize.columns}`,
+        style={style}
+        onMouseEnter={() => {
+          setIsHover(true);
+        }}
+        onBlur={() => {
+          setIsHover(false);
         }}
       >
+        {isHover && <Menu deleteWidget={deleteWidget} />}
         <Resizers
           defaultHeight={widgetSize.rows * gridUnit}
           defaultWidth={widgetSize.columns * gridUnit}
