@@ -1,6 +1,6 @@
 type BasicDirection = 'top' | 'bottom' | 'left' | 'right';
 
-type WidgetType = 'note';
+type WidgetType = 'note' | 'todo';
 
 type Direction =
   | 'top'
