@@ -13,15 +13,13 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const limit: WidgetSizeLimit = {
-  maxRows: 5,
-  minRows: 2,
-  maxColumns: 5,
-  minColumns: 2,
-};
+// 偵測視窗大小改變 >> addEventListener on window resize
+// 透過視窗大小，得到現在畫面上可包含幾個網格，算出那些元件可以在畫面上
+// offset 網格起始位置，render畫面
 
 interface WidgetContainerProps extends WidgetSize {
   children: JSX.Element;
+  limit: WidgetSizeLimit;
   onChange: (newWidgetSize: WidgetSize) => void;
   canWidgetMove: (newWidgetSize: WidgetSize) => boolean;
   handleConflict: (newWidgetSize: WidgetSize) => void;
@@ -29,6 +27,7 @@ interface WidgetContainerProps extends WidgetSize {
 }
 
 function WidgetContainer({
+  limit,
   rowStart,
   rows,
   columnStart,
@@ -86,9 +85,10 @@ function WidgetContainer({
   }, [rowStart, columnStart, rows, columns]);
 
   const style = {
-    gridArea: `${widgetSize.rowStart} / ${widgetSize.columnStart} / ${
-      widgetSize.rowStart + widgetSize.rows
-    } / ${widgetSize.columnStart + widgetSize.columns}`,
+    gridColumnStart: widgetSize.columnStart,
+    gridColumnEnd: `span ${widgetSize.columns}`,
+    gridRowStart: widgetSize.rowStart,
+    gridRowEnd: `span ${widgetSize.rows}`,
   };
 
   return (

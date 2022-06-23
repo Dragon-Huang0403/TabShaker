@@ -1,3 +1,3 @@
-import Note from './Note';
+import Widget from './Widget';
 
-export default Note;
+export default Widget;
