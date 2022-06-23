@@ -38,16 +38,13 @@ function calcTwoWidgetOverlapArea(widget1: WidgetSize, widget2: WidgetSize) {
 interface ConflictedWidget extends Widget {
   overLayRows: number;
   overLayColumns: number;
+  id: string;
   index: number;
 }
 
-export function getConflictedWidgets(
-  targetIndex: number,
-  newWidget: WidgetSize,
-  widgets: Widget[],
-) {
+export function getConflictedWidgets(newWidget: Widget, widgets: Widget[]) {
   const conflictWidgets = widgets.reduce((accu, widget, index) => {
-    if (targetIndex === index) return accu;
+    if (newWidget.id === widget.id) return accu;
     const overlayArea = calcTwoWidgetOverlapArea(newWidget, widget);
     if (overlayArea) {
       return [...accu, { ...widget, ...overlayArea, index }];

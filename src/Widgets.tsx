@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
-import type { WidgetSize, Widget } from './components/WidgetContainer/types';
+import type { Widget } from './components/WidgetContainer/types';
 import { getConflictedWidgets, createArray } from './utils/lib';
 import Note from './components/Widget';
 
@@ -54,30 +54,23 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
     }
   }, [widgets]);
 
-  const deleteWidget = (targetIndex: number) => {
+  const deleteWidget = (id: string) => {
     setWidgets((prevWidgets) =>
-      prevWidgets.filter((_, index) => index !== targetIndex),
+      prevWidgets.filter((prevWidget) => prevWidget.id !== id),
     );
   };
 
-  const onChange = (index: number, newWidget: Widget) => {
-    const newWidgets = widgets.map((widget, i) =>
-      i === index ? { ...newWidget } : widget,
+  const onChange = (newWidget: Widget) => {
+    const newWidgets = widgets.map((widget) =>
+      widget.id === newWidget.id ? { ...newWidget } : widget,
     );
     setWidgets(newWidgets);
   };
 
-  const canWidgetMove = (
-    targetIndex: number,
-    newWidgetSize: WidgetSize,
-  ): boolean => {
-    const { rowStart, columnStart } = newWidgetSize;
+  const canWidgetMove = (newWidget: Widget): boolean => {
+    const { rowStart, columnStart } = newWidget;
     if (rowStart <= 0 || columnStart <= 0) return false;
-    const conflictWidgets = getConflictedWidgets(
-      targetIndex,
-      newWidgetSize,
-      widgets,
-    );
+    const conflictWidgets = getConflictedWidgets(newWidget, widgets);
     return conflictWidgets.length === 0;
   };
 
@@ -89,11 +82,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
   };
 
   const handleConflict = (targetIndex: number, newWidget: Widget) => {
-    const conflictWidgets = getConflictedWidgets(
-      targetIndex,
-      newWidget,
-      widgets,
-    );
+    const conflictWidgets = getConflictedWidgets(newWidget, widgets);
     if (conflictWidgets.length === 0) return;
 
     conflictWidgets.forEach((conflictWidget) => {
@@ -127,7 +116,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
         return;
       }
 
-      const newConflictWidgetSize = { rowStart, columnStart, rows, columns };
+      const newConflictWidgetSize = { ...conflictWidget };
 
       if (overLayRows < overLayColumns) {
         if (rowStart > newWidget.rowStart) {
@@ -135,7 +124,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
         } else {
           newConflictWidgetSize.rowStart -= overLayRows;
         }
-        if (canWidgetMove(conflictWidget.index, newConflictWidgetSize)) {
+        if (canWidgetMove(newConflictWidgetSize)) {
           switchedWidgetsRef.current[conflictWidget.index] = '';
           setWidgets((prevWidgets) =>
             prevWidgets.map((prevWidget, index) =>
@@ -155,7 +144,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
         newConflictWidgetSize.columnStart -= overLayColumns;
       }
 
-      if (!canWidgetMove(conflictWidget.index, newConflictWidgetSize)) return;
+      if (!canWidgetMove(newConflictWidgetSize)) return;
       switchedWidgetsRef.current[conflictWidget.index] = '';
       setWidgets((prevWidgets) =>
         prevWidgets.map((prevWidget, index) =>
@@ -177,13 +166,15 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
           rows={widget.rows}
           columns={widget.columns}
           onChange={(newWidgetSize) =>
-            onChange(index, { ...widget, ...newWidgetSize })
+            onChange({ ...widget, ...newWidgetSize })
           }
-          canWidgetMove={(newWidgetSize) => canWidgetMove(index, newWidgetSize)}
+          canWidgetMove={(newWidgetSize) =>
+            canWidgetMove({ ...widget, ...newWidgetSize })
+          }
           handleConflict={(newWidgetSize) =>
             handleConflict(index, { ...widget, ...newWidgetSize })
           }
-          deleteWidget={() => deleteWidget(index)}
+          deleteWidget={() => deleteWidget(widget.id)}
         >
           <Note />
         </WidgetContainer>

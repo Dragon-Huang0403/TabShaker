@@ -20,7 +20,10 @@ function App() {
   const [widgets, setWidgets] = useState<Widget[]>([]);
   const addWidget = (newWidget: NewWidget) => {
     const newWidgetSize = getAvailablePosition(widgets, newWidget);
-    if (!newWidgetSize) return;
+    if (!newWidgetSize) {
+      // No space for new Widget
+      return;
+    }
     setWidgets([...widgets, { ...newWidget, ...newWidgetSize, id: v4() }]);
   };
   return (
