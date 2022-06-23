@@ -86,9 +86,10 @@ function WidgetContainer({
   }, [rowStart, columnStart, rows, columns]);
 
   const style = {
-    gridArea: `${widgetSize.rowStart} / ${widgetSize.columnStart} / ${
-      widgetSize.rowStart + widgetSize.rows
-    } / ${widgetSize.columnStart + widgetSize.columns}`,
+    gridColumnStart: widgetSize.columnStart,
+    gridColumnEnd: `span ${widgetSize.columns}`,
+    gridRowStart: widgetSize.rowStart,
+    gridRowEnd: `span ${widgetSize.rows}`,
   };
 
   return (

@@ -27,6 +27,7 @@ interface WidgetSize {
 
 interface Widget extends WidgetSize {
   type: WidgetType;
+  id: string;
   style?: {};
   data?: {};
 }

@@ -3,53 +3,42 @@ import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import WidgetContainer from './components/WidgetContainer';
 import type { WidgetSize } from './components/WidgetContainer/types';
-import { calculateOverlapArea, createArray } from './utils/lib';
+import { getConflictItems, createArray } from './utils/lib';
 import Note from './components/Widget';
 
 const Wrapper = styled.div`
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(36, ${({ theme }) => theme.gridUnit}px);
-  grid-template-rows: repeat(19, ${({ theme }) => theme.gridUnit}px);
-  padding: 0px 50px;
   width: 100%;
   height: 100%;
+  grid-template-columns: repeat(10, ${({ theme }) => theme.gridUnit}px);
+  grid-template-rows: repeat(auto-fill, ${({ theme }) => theme.gridUnit}px);
+
+  @media (min-width: 1000px) {
+    grid-template-columns:
+      repeat(5, ${({ theme }) => theme.gridUnit}px [left-side]) repeat(
+        10,
+        ${({ theme }) => theme.gridUnit}px [main]
+      )
+      repeat(5, ${({ theme }) => theme.gridUnit}px [right-side]);
+  }
+  @media (min-width: 1500px) {
+    grid-template-columns:
+      repeat(10, ${({ theme }) => theme.gridUnit}px [left-side]) repeat(
+        10,
+        ${({ theme }) => theme.gridUnit}px [main]
+      )
+      repeat(10, ${({ theme }) => theme.gridUnit}px [right-side]);
+  }
+  @media (min-width: 1800px) {
+    grid-template-columns:
+      repeat(13, ${({ theme }) => theme.gridUnit}px [left-side]) repeat(
+        10,
+        ${({ theme }) => theme.gridUnit}px [main]
+      )
+      repeat(13, ${({ theme }) => theme.gridUnit}px [right-side]);
+  }
 `;
-
-interface ConflictItem extends WidgetSize {
-  overLayRows: number;
-  overLayColumns: number;
-  index: number;
-}
-
-function getConflictItems(
-  targetIndex: number,
-  newWidgetSize: WidgetSize,
-  widgets: WidgetSize[],
-): ConflictItem[] {
-  const { rowStart, columnStart, rows, columns } = newWidgetSize;
-  const newWidgetSizeRect = [
-    rowStart,
-    columnStart,
-    rowStart + rows,
-    columnStart + columns,
-  ];
-  const conflictItems = widgets.reduce((accu, widget, index) => {
-    if (targetIndex === index) return accu;
-    const widgetSizeRect = [
-      widget.rowStart,
-      widget.columnStart,
-      widget.rowStart + widget.rows,
-      widget.columnStart + widget.columns,
-    ];
-    const overlayArea = calculateOverlapArea(newWidgetSizeRect, widgetSizeRect);
-    if (overlayArea) {
-      return [...accu, { ...widget, ...overlayArea, index }];
-    }
-    return accu;
-  }, [] as ConflictItem[]);
-  return conflictItems;
-}
 
 interface WidgetsProps {
   widgets: WidgetSize[];
@@ -180,7 +169,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
     <Wrapper>
       {widgets.map((widget, index) => (
         <WidgetContainer
-          key={index}
+          key={widget.id}
           rowStart={widget.rowStart}
           columnStart={widget.columnStart}
           rows={widget.rows}
