@@ -4,8 +4,8 @@ import type {
   NewWidget,
 } from '../components/WidgetContainer/types';
 
-const maxNumberOfColumns = 36;
-const maxNumberOfRows = 19;
+export const maxNumberOfColumns = 36;
+export const maxNumberOfRows = 19;
 
 function calcTwoWidgetOverlapArea(widget1: WidgetSize, widget2: WidgetSize) {
   const rec1 = [
