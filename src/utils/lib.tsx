@@ -1,6 +1,6 @@
 import type {
   WidgetSize,
-  Widget,
+  WidgetData,
   NewWidget,
 } from '../components/WidgetContainer/types';
 
@@ -35,14 +35,17 @@ function calcTwoWidgetOverlapArea(widget1: WidgetSize, widget2: WidgetSize) {
   return null;
 }
 
-interface ConflictedWidget extends Widget {
+interface ConflictedWidget extends WidgetData {
   overLayRows: number;
   overLayColumns: number;
   id: string;
   index: number;
 }
 
-export function getConflictedWidgets(newWidget: Widget, widgets: Widget[]) {
+export function getConflictedWidgets(
+  newWidget: WidgetData,
+  widgets: WidgetData[],
+) {
   const conflictWidgets = widgets.reduce((accu, widget, index) => {
     if (newWidget.id === widget.id) return accu;
     const overlayArea = calcTwoWidgetOverlapArea(newWidget, widget);
@@ -55,7 +58,7 @@ export function getConflictedWidgets(newWidget: Widget, widgets: Widget[]) {
 }
 
 export function getAvailablePosition(
-  widgets: Widget[],
+  widgets: WidgetData[],
   newWidget: NewWidget,
   newWidgetStartRow = 1,
   newWidgetStartColumn = 1,

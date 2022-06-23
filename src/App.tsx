@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { v4 } from 'uuid';
-import type { NewWidget, Widget } from './components/WidgetContainer/types';
+import type { NewWidget, WidgetData } from './components/WidgetContainer/types';
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
 import Widgets from './Widgets';
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-  const [widgets, setWidgets] = useState<Widget[]>([]);
+  const [widgets, setWidgets] = useState<WidgetData[]>([]);
   const addWidget = (newWidget: NewWidget) => {
     const newWidgetSize = getAvailablePosition(widgets, newWidget);
     if (!newWidgetSize) {

@@ -1,10 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import WidgetContainer from './components/WidgetContainer';
-import type { Widget } from './components/WidgetContainer/types';
+import type { WidgetData } from './components/WidgetContainer/types';
 import { getConflictedWidgets, createArray } from './utils/lib';
-import Note from './components/Widget';
+import Widget from './components/Widget';
 
 const Wrapper = styled.div`
   display: grid;
@@ -41,8 +40,8 @@ const Wrapper = styled.div`
 `;
 
 interface WidgetsProps {
-  widgets: Widget[];
-  setWidgets: React.Dispatch<React.SetStateAction<Widget[]>>;
+  widgets: WidgetData[];
+  setWidgets: React.Dispatch<React.SetStateAction<WidgetData[]>>;
 }
 
 function Widgets({ widgets, setWidgets }: WidgetsProps) {
@@ -60,14 +59,14 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
     );
   };
 
-  const onChange = (newWidget: Widget) => {
+  const onChange = (newWidget: WidgetData) => {
     const newWidgets = widgets.map((widget) =>
       widget.id === newWidget.id ? { ...newWidget } : widget,
     );
     setWidgets(newWidgets);
   };
 
-  const canWidgetMove = (newWidget: Widget): boolean => {
+  const canWidgetMove = (newWidget: WidgetData): boolean => {
     const { rowStart, columnStart } = newWidget;
     if (rowStart <= 0 || columnStart <= 0) return false;
     const conflictWidgets = getConflictedWidgets(newWidget, widgets);
@@ -81,7 +80,7 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
     setWidgets(newWidgets);
   };
 
-  const handleConflict = (targetIndex: number, newWidget: Widget) => {
+  const handleConflict = (targetIndex: number, newWidget: WidgetData) => {
     const conflictWidgets = getConflictedWidgets(newWidget, widgets);
     if (conflictWidgets.length === 0) return;
 
@@ -159,25 +158,14 @@ function Widgets({ widgets, setWidgets }: WidgetsProps) {
   return (
     <Wrapper>
       {widgets.map((widget, index) => (
-        <WidgetContainer
+        <Widget
           key={widget.id}
-          rowStart={widget.rowStart}
-          columnStart={widget.columnStart}
-          rows={widget.rows}
-          columns={widget.columns}
-          onChange={(newWidgetSize) =>
-            onChange({ ...widget, ...newWidgetSize })
-          }
-          canWidgetMove={(newWidgetSize) =>
-            canWidgetMove({ ...widget, ...newWidgetSize })
-          }
-          handleConflict={(newWidgetSize) =>
-            handleConflict(index, { ...widget, ...newWidgetSize })
-          }
-          deleteWidget={() => deleteWidget(widget.id)}
-        >
-          <Note />
-        </WidgetContainer>
+          widget={widget}
+          onChange={onChange}
+          canWidgetMove={canWidgetMove}
+          handleConflict={(newWidget) => handleConflict(index, newWidget)}
+          deleteWidget={deleteWidget}
+        />
       ))}
     </Wrapper>
   );

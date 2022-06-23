@@ -25,7 +25,7 @@ interface WidgetSize {
   columns: number;
 }
 
-interface Widget extends WidgetSize {
+interface WidgetData extends WidgetSize {
   type: WidgetType;
   id: string;
   style?: {};
@@ -45,5 +45,5 @@ export type {
   Direction,
   WidgetSize,
   WidgetSizeLimit,
-  Widget,
+  WidgetData,
 };
