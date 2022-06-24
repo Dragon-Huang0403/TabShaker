@@ -42,7 +42,7 @@ function TodosContainer({
             <input
               type="checkbox"
               checked={todo.checked}
-              onClick={() => {
+              onChange={() => {
                 toggleChecked(todo.id);
               }}
             />

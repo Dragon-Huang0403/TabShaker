@@ -9,6 +9,11 @@ const Wrapper = styled.div`
 
   &:hover {
     background: ${({ theme }) => theme.transparentWhite};
+    cursor: pointer;
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.18);
   }
 
   & > svg {

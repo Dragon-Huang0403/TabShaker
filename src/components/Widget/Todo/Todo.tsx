@@ -14,6 +14,8 @@ export interface TodoData {
   time: Date;
 }
 
+type ShowMode = 'Inbox' | 'Active' | 'Uncompleted';
+
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -22,6 +24,8 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
+  padding-bottom: 5px;
+  margin: 5px 0px;
   margin-left: 10px;
   position: relative;
   display: flex;
@@ -44,6 +48,7 @@ const Input = styled.input`
 
 function Todo() {
   const [todos, setTodos] = useState<TodoData[]>([]);
+  const [showMode, setShowMode] = useState<ShowMode>('Inbox');
   const [inputText, setInputText] = useState('');
 
   const onTodoModify = (e: ContentEditableEvent, targetId: string) => {
@@ -85,19 +90,48 @@ function Todo() {
     );
   };
 
-  const menuItems = [{ text: 'Inbox', onClick: () => {} }];
+  const getTodosByShowMode = () => {
+    if (showMode === 'Uncompleted') {
+      return todos.filter((todo) => !todo.checked);
+    }
+    if (showMode === 'Active') {
+      return todos.filter((todo) => todo.checked);
+    }
+    return todos;
+  };
+
+  const menuItems = [
+    {
+      text: 'Inbox',
+      onClick: () => {
+        setShowMode('Inbox');
+      },
+    },
+    {
+      text: 'Active',
+      onClick: () => {
+        setShowMode('Active');
+      },
+    },
+    {
+      text: 'Uncompleted',
+      onClick: () => {
+        setShowMode('Uncompleted');
+      },
+    },
+  ];
 
   return (
     <Card>
       <Wrapper>
         <Header>
-          <Title>Inbox</Title>
-          <IconDropDownMenu items={menuItems} side="left">
+          <Title>{showMode}</Title>
+          <IconDropDownMenu items={menuItems} side="left" bulge>
             <ExpandMore />
           </IconDropDownMenu>
         </Header>
         <TodosContainer
-          todos={todos}
+          todos={getTodosByShowMode()}
           onTodoModify={onTodoModify}
           toggleChecked={toggleChecked}
         />
