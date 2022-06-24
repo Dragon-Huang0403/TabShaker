@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import Resizers from './Resizers';
 import Dragger from './Dragger';
@@ -8,6 +8,7 @@ import defaultTheme from './defaultTheme';
 import { getNewWidgetSize } from './util';
 import IconDropDownMenu from '../IconDropDownMenu';
 import { MoreDots } from '../Icons';
+import { useHover } from '../../hooks';
 
 const Wrapper = styled.div`
   user-select: none;
@@ -43,7 +44,8 @@ function WidgetContainer({
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, setWidgetSize] = useState(defaultSize);
   const [updateDragger, setUpdateDragger] = useState(false);
-  const [isHover, setIsHover] = useState(false);
+  const hoverRef = useRef<HTMLDivElement>(null);
+  const isHover = useHover(hoverRef);
 
   const handleOnSizeChange = (
     columnsDiff: number,
@@ -94,15 +96,7 @@ function WidgetContainer({
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Wrapper
-        style={style}
-        onMouseEnter={() => {
-          setIsHover(true);
-        }}
-        onMouseLeave={() => {
-          setIsHover(false);
-        }}
-      >
+      <Wrapper style={style} ref={hoverRef}>
         {isHover && (
           <IconDropDownMenu
             items={[{ text: 'Delete', onClick: deleteWidget }]}

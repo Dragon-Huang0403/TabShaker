@@ -4,8 +4,8 @@ import { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
 import IconDropDownMenu from '../../IconDropDownMenu';
 import { ExpandMore } from '../../Icons';
-import TodosContainer from './TodosContainer';
 import Card from '../../Card';
+import TodoItem from './TodoItem';
 
 export interface TodoData {
   id: string;
@@ -46,6 +46,18 @@ const Input = styled.input`
   padding: 8px 8px 4px;
 `;
 
+const TodosContainer = styled.div`
+  flex-grow: 1;
+  overflow: auto;
+`;
+
+const StyledUl = styled.ul`
+  margin: 0;
+  margin-left: 10px;
+  padding: 0;
+  list-style: none;
+`;
+
 function Todo() {
   const [todos, setTodos] = useState<TodoData[]>([]);
   const [showMode, setShowMode] = useState<ShowMode>('Inbox');
@@ -75,7 +87,9 @@ function Todo() {
 
   const onInputSubmit = (e: React.KeyboardEvent) => {
     if (e.code !== 'Enter') return;
-    addTodo();
+    if (inputText) {
+      addTodo();
+    }
     e.preventDefault();
     e.stopPropagation();
   };
@@ -88,6 +102,10 @@ function Todo() {
           : prevTodo,
       ),
     );
+  };
+
+  const deleteTodo = (id: string) => {
+    setTodos((prevTodos) => prevTodos.filter((prevTodo) => prevTodo.id !== id));
   };
 
   const getTodosByShowMode = () => {
@@ -121,6 +139,8 @@ function Todo() {
     },
   ];
 
+  const showedTodos = getTodosByShowMode();
+
   return (
     <Card>
       <Wrapper>
@@ -130,11 +150,19 @@ function Todo() {
             <ExpandMore />
           </IconDropDownMenu>
         </Header>
-        <TodosContainer
-          todos={getTodosByShowMode()}
-          onTodoModify={onTodoModify}
-          toggleChecked={toggleChecked}
-        />
+        <TodosContainer>
+          <StyledUl>
+            {showedTodos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                toggleChecked={toggleChecked}
+                onTodoModify={onTodoModify}
+                deleteTodo={deleteTodo}
+              />
+            ))}
+          </StyledUl>
+        </TodosContainer>
         <Input
           value={inputText}
           onChange={onInputChange}
