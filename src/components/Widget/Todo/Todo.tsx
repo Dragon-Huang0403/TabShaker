@@ -14,7 +14,7 @@ export interface TodoData {
   time: Date;
 }
 
-type ShowMode = 'Inbox' | 'Active' | 'Uncompleted';
+type ShowMode = 'Inbox' | 'Active' | 'Completed';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -89,6 +89,7 @@ function Todo() {
     if (e.code !== 'Enter') return;
     if (inputText) {
       addTodo();
+      if (showMode === 'Completed') setShowMode('Inbox');
     }
     e.preventDefault();
     e.stopPropagation();
@@ -109,11 +110,11 @@ function Todo() {
   };
 
   const getTodosByShowMode = () => {
-    if (showMode === 'Uncompleted') {
-      return todos.filter((todo) => !todo.checked);
+    if (showMode === 'Completed') {
+      return todos.filter((todo) => todo.checked);
     }
     if (showMode === 'Active') {
-      return todos.filter((todo) => todo.checked);
+      return todos.filter((todo) => !todo.checked);
     }
     return todos;
   };
@@ -132,9 +133,9 @@ function Todo() {
       },
     },
     {
-      text: 'Uncompleted',
+      text: 'Completed',
       onClick: () => {
-        setShowMode('Uncompleted');
+        setShowMode('Completed');
       },
     },
   ];

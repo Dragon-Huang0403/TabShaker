@@ -1,15 +1,21 @@
 import React, { useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import type { TodoData } from './Todo';
 import { Close } from '../../Icons';
 import { useHover } from '../../../hooks';
 
-const Wrapper = styled.li`
+const Wrapper = styled.li<{ checked: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 3px;
+  ${({ theme, checked }) =>
+    checked &&
+    css`
+      color: ${theme.lightGrey};
+      text-decoration: line-through;
+    `}
 `;
 
 const IconWrapper = styled.div`
@@ -52,7 +58,7 @@ function TodoItem({
   };
 
   return (
-    <Wrapper ref={wrapperRef}>
+    <Wrapper ref={wrapperRef} checked={checked}>
       <input
         type="checkbox"
         checked={checked}
