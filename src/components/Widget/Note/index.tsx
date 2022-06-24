@@ -1,5 +1,5 @@
 import Note from './Note';
-import config from './config';
+import limit from './limit';
 
 export default Note;
-export { config };
+export { limit };

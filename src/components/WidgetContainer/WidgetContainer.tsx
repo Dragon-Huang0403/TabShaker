@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import Resizers from './Resizers';
 import Dragger from './Dragger';
@@ -6,7 +6,9 @@ import globalTheme from '../../theme';
 import type { Direction, WidgetSizeLimit, WidgetSize } from './types';
 import defaultTheme from './defaultTheme';
 import { getNewWidgetSize } from './util';
-import Menu from './Menu';
+import IconDropDownMenu from '../IconDropDownMenu';
+import { MoreDots } from '../Icons';
+import { useHover } from '../../hooks';
 
 const Wrapper = styled.div`
   user-select: none;
@@ -42,7 +44,8 @@ function WidgetContainer({
   const defaultSize = { rowStart, rows, columnStart, columns };
   const [widgetSize, setWidgetSize] = useState(defaultSize);
   const [updateDragger, setUpdateDragger] = useState(false);
-  const [isHover, setIsHover] = useState(false);
+  const hoverRef = useRef<HTMLDivElement>(null);
+  const isHover = useHover(hoverRef);
 
   const handleOnSizeChange = (
     columnsDiff: number,
@@ -93,16 +96,15 @@ function WidgetContainer({
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Wrapper
-        style={style}
-        onMouseEnter={() => {
-          setIsHover(true);
-        }}
-        onBlur={() => {
-          setIsHover(false);
-        }}
-      >
-        {isHover && <Menu deleteWidget={deleteWidget} />}
+      <Wrapper style={style} ref={hoverRef}>
+        {isHover && (
+          <IconDropDownMenu
+            items={[{ text: 'Delete', onClick: deleteWidget }]}
+            style={{ top: '12px', right: '12px', position: 'absolute' }}
+          >
+            <MoreDots />
+          </IconDropDownMenu>
+        )}
         <Resizers
           defaultHeight={widgetSize.rows * gridUnit}
           defaultWidth={widgetSize.columns * gridUnit}
