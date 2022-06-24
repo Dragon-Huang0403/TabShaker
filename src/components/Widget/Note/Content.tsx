@@ -17,26 +17,6 @@ const Wrapper = styled.div`
   font-size: 1.25rem;
   overflow-y: auto;
 
-  &::-webkit-scrollbar {
-    height: 16px;
-    overflow: visible;
-    width: 12px;
-  }
-
-  $::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  $::-webkit-scrollbar-corner {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-with: 1px 1px 1px 2px;
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-
   & > div {
     height: 100%;
     border: none;

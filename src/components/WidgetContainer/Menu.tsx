@@ -63,7 +63,7 @@ function Menu({ deleteWidget }: MenuProps) {
 
     window.addEventListener('click', closeMenu, false);
     return () => {
-      window.removeEventListener('click', closeMenu);
+      window.removeEventListener('click', closeMenu, false);
     };
   }, [isMenuOpen]);
   return (

@@ -1,5 +1,6 @@
 import React from 'react';
 import WidgetContainer from '../WidgetContainer';
+
 import type { WidgetData } from '../WidgetContainer/types';
 import Note, * as note from './Note';
 import Todo, * as todo from './Todo';

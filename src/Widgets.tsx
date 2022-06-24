@@ -17,11 +17,11 @@ const Wrapper = styled.div`
   height: 100%;
   grid-template-columns: repeat(
     36,
-    minmax(15px, ${({ theme }) => theme.gridUnit}px)
+    minmax(50px, ${({ theme }) => theme.gridUnit}px)
   );
   grid-template-rows: repeat(
     19,
-    minmax(15px, ${({ theme }) => theme.gridUnit}px)
+    minmax(50px, ${({ theme }) => theme.gridUnit}px)
   );
 `;
 

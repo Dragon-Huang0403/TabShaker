@@ -18,6 +18,19 @@ const GlobalStyle = createGlobalStyle`
     color: inherit;
     text-decoration: none;
   }
+
+  *::-webkit-scrollbar {
+    overflow: visible;
+    width: 13px;
+    height: 13px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 `;
 
 export default GlobalStyle;

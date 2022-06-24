@@ -7,6 +7,7 @@ import ArrowBack from './ArrowBack';
 import PlayArrow from './PlayArrow';
 import Pause from './Pause';
 import MoreDots from './MoreDots';
+import ExpandMore from './ExpandMore';
 
 export {
   AppIcon,
@@ -18,4 +19,5 @@ export {
   PlayArrow,
   Pause,
   MoreDots,
+  ExpandMore,
 };
