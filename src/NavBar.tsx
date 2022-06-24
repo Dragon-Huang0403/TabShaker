@@ -102,7 +102,7 @@ function NavBar({ addWidget }: NavBarProps) {
   };
 
   const handleAddWidget = () => {
-    addWidget({ rows: 5, columns: 5, type: 'todo' });
+    addWidget({ rows: 8, columns: 8, type: 'clock' });
   };
 
   return (

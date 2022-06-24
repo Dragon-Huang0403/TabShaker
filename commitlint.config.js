@@ -1,6 +1,10 @@
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'scope-enum': [2, 'always', ['WidgetContainer', 'NavBar', 'Note', 'Todo']],
+    'scope-enum': [
+      2,
+      'always',
+      ['WidgetContainer', 'NavBar', 'Note', 'Todo', 'Clock'],
+    ],
   },
 };
