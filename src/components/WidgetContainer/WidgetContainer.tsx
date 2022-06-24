@@ -6,7 +6,8 @@ import globalTheme from '../../theme';
 import type { Direction, WidgetSizeLimit, WidgetSize } from './types';
 import defaultTheme from './defaultTheme';
 import { getNewWidgetSize } from './util';
-import Menu from './Menu';
+import IconDropDownMenu from '../IconDropDownMenu';
+import { MoreDots } from '../Icons';
 
 const Wrapper = styled.div`
   user-select: none;
@@ -98,11 +99,18 @@ function WidgetContainer({
         onMouseEnter={() => {
           setIsHover(true);
         }}
-        onBlur={() => {
+        onMouseLeave={() => {
           setIsHover(false);
         }}
       >
-        {isHover && <Menu deleteWidget={deleteWidget} />}
+        {isHover && (
+          <IconDropDownMenu
+            items={[{ text: 'Delete', onClick: deleteWidget }]}
+            style={{ top: '12px', right: '12px', position: 'absolute' }}
+          >
+            <MoreDots />
+          </IconDropDownMenu>
+        )}
         <Resizers
           defaultHeight={widgetSize.rows * gridUnit}
           defaultWidth={widgetSize.columns * gridUnit}

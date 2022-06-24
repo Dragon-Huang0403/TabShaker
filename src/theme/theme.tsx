@@ -2,7 +2,9 @@ const theme = {
   gridUnit: 50, // px
   black: '#202124',
   white: '#e8eaed',
-  blackHoverBackgroundColor: 'rgba(154,160,166,0.157)',
+  grey: '#333',
+  transparentBlack: 'rgba(15,15,15,0.925)',
+  transparentWhite: 'rgba(255,255,255, 0.15)',
 };
 
 export default theme;

@@ -13,8 +13,7 @@ const StyledUl = styled.ul`
   margin-left: 10px;
   padding: 0;
   list-style: none;
-  font-size: 1.2rem;
-  line-height: 1.5rem;
+  line-height: 1.2rem;
 `;
 
 interface TodosContainerProps {

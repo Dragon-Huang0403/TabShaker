@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
-import Menu from './Menu';
+import IconDropDownMenu from '../../IconDropDownMenu';
+import { ExpandMore } from '../../Icons';
 import TodosContainer from './TodosContainer';
 import Card from '../../Card';
 
@@ -20,13 +21,24 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
+const Header = styled.div`
+  margin-left: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const Title = styled.div`
+  margin-right: 5px;
+`;
+
 const Input = styled.input`
   width: 100%;
   background: transparent;
   color: ${({ theme }) => theme.white};
   border: none;
   outline: none;
-  font-size: 1.25rem;
+  font-size: 1rem;
   padding: 8px 8px 4px;
 `;
 
@@ -73,10 +85,17 @@ function Todo() {
     );
   };
 
+  const menuItems = [{ text: 'Inbox', onClick: () => {} }];
+
   return (
     <Card>
       <Wrapper>
-        <Menu />
+        <Header>
+          <Title>Inbox</Title>
+          <IconDropDownMenu items={menuItems} side="left">
+            <ExpandMore />
+          </IconDropDownMenu>
+        </Header>
         <TodosContainer
           todos={todos}
           onTodoModify={onTodoModify}
