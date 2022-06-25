@@ -24,7 +24,7 @@ const defaultWidget: WidgetData[] = [
     style: { showSeconds: true },
     data: {},
     rowStart: 2,
-    columnStart: 12,
+    columnStart: 9,
     id: '305d28ed-27d6-4941-b5ac-651c02e2eea8',
   },
   {
@@ -33,8 +33,8 @@ const defaultWidget: WidgetData[] = [
     rows: 4,
     style: {},
     data: { todos: [] },
-    rowStart: 12,
-    columnStart: 28,
+    rowStart: 11,
+    columnStart: 2,
     id: '6df09026-9e2e-40b9-9561-9ab84a6245fe',
   },
   {
@@ -43,8 +43,8 @@ const defaultWidget: WidgetData[] = [
     rows: 4,
     style: {},
     data: { title: '', content: '' },
-    rowStart: 12,
-    columnStart: 32,
+    rowStart: 11,
+    columnStart: 6,
     id: '411ddfa0-0f22-456d-a019-18fe0f323851',
   },
 ];
