@@ -16,6 +16,8 @@ interface NewWidget {
   rows: number;
   columns: number;
   type: WidgetType;
+  style?: {};
+  data?: {};
 }
 
 interface WidgetSize {
@@ -25,11 +27,9 @@ interface WidgetSize {
   columns: number;
 }
 
-interface WidgetData extends WidgetSize {
+interface WidgetData extends WidgetSize, NewWidget {
   type: WidgetType;
   id: string;
-  style?: {};
-  data?: {};
 }
 
 interface WidgetSizeLimit {
@@ -46,4 +46,5 @@ export type {
   WidgetSize,
   WidgetSizeLimit,
   WidgetData,
+  WidgetType,
 };
