@@ -1,7 +1,7 @@
 {
   "short_name": "TabShaker",
-  "name": "TabShaker: customized chrome new tab",
-  "description": "A customized chrome new tab. Users can select widgets to place anywhere they want to on their tab. Customizable Chrome New Tab is a browser extension that allows users to customize their new tab page. Users can add and remove widgets, and rearrange them on the page to create a custom layout. The extension includes a variety of widgets, including a clock, weather forecast.",
+  "name": "TabShaker",
+  "description": "A customized chrome new tab.",
   "author": "Dragon Huang",
   "chrome_url_overrides": {
     "newtab": "index.html"
