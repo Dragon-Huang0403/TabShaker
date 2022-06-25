@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0px;
     font-family: 'Lato', sans-serif;
+    overflow: hidden;
   }
 
   a, a:visited, a:hover, a:active {

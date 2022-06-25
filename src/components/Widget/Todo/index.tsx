@@ -1,5 +1,4 @@
 import Todo from './Todo';
-import { limit } from '../Note';
+import limit from './limit';
 
-export default Todo;
-export { limit };
+export default { RenderedWidget: Todo, limit };

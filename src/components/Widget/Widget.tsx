@@ -1,9 +1,9 @@
 import React from 'react';
 import WidgetContainer from '../WidgetContainer';
-
 import type { WidgetData } from '../WidgetContainer/types';
-import Note, * as note from './Note';
-import Todo, * as todo from './Todo';
+import note from './Note';
+import todo from './Todo';
+import clock from './Clock';
 
 interface WidgetProps {
   widget: WidgetData;
@@ -13,26 +13,7 @@ interface WidgetProps {
   deleteWidget: (id: string) => void;
 }
 
-function getWidget(type: string) {
-  switch (type) {
-    case 'note':
-      return <Note />;
-    case 'todo':
-      return <Todo />;
-    default:
-      return null;
-  }
-}
-function getWidgetLimit(type: string) {
-  switch (type) {
-    case 'note':
-      return note.limit;
-    case 'todo':
-      return todo.limit;
-    default:
-      return null;
-  }
-}
+const widgetType = { note, todo, clock };
 
 function Widget({
   widget,
@@ -42,12 +23,12 @@ function Widget({
   deleteWidget,
 }: WidgetProps) {
   const { type, id, rowStart, columnStart, rows, columns } = widget;
-  const renderedWidget = getWidget(type);
-  const widgetLimit = getWidgetLimit(type);
-  if (!renderedWidget || !widgetLimit) return null;
+  const renderedWidget = widgetType[type];
+  const { RenderedWidget, limit } = renderedWidget;
+
   return (
     <WidgetContainer
-      limit={widgetLimit}
+      limit={limit}
       rowStart={rowStart}
       columnStart={columnStart}
       rows={rows}
@@ -61,7 +42,7 @@ function Widget({
       }
       deleteWidget={() => deleteWidget(id)}
     >
-      {renderedWidget}
+      <RenderedWidget />
     </WidgetContainer>
   );
 }
