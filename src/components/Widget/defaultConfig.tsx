@@ -1,21 +1,21 @@
 export default {
   clock: {
-    columns: 5,
+    columns: 10,
     rows: 5,
     style: {
-      showSeconds: false,
+      showSeconds: true,
     },
     data: {},
   },
   todo: {
-    columns: 5,
-    rows: 5,
+    columns: 4,
+    rows: 4,
     style: {},
     data: { todos: [] },
   },
   note: {
-    columns: 5,
-    rows: 5,
+    columns: 4,
+    rows: 4,
     style: {},
     data: { title: '', content: '' },
   },

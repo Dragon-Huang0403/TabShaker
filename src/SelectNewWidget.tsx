@@ -43,6 +43,7 @@ function SelectNewWidget({
       <Wrapper onClick={hideSelectNewWidget}>
         {Object.keys(defaultConfig).map((widgetType) => (
           <WidgetOption
+            key={widgetType}
             onClick={() => {
               handleAddWidget(widgetType as WidgetType);
             }}
