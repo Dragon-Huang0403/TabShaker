@@ -16,8 +16,8 @@ interface NewWidget {
   rows: number;
   columns: number;
   type: WidgetType;
-  style?: {};
-  data?: {};
+  style: any;
+  data: any;
 }
 
 interface WidgetSize {

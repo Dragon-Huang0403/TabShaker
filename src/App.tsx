@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { v4 } from 'uuid';
 import type { NewWidget, WidgetData } from './components/WidgetContainer/types';
@@ -26,6 +26,17 @@ function App() {
     }
     setWidgets([...widgets, { ...newWidget, ...newWidgetSize, id: v4() }]);
   };
+  useEffect(() => {
+    const rawData = window.localStorage.getItem('widgetData');
+    if (!rawData) return;
+    const oldWidget = JSON.parse(rawData);
+    setWidgets(oldWidget);
+  }, []);
+
+  useEffect(() => {
+    if (widgets.length === 0) return;
+    window.localStorage.setItem('widgetData', JSON.stringify(widgets));
+  }, [widgets]);
   return (
     <ThemeProvider theme={globalTheme}>
       <GlobalStyle />

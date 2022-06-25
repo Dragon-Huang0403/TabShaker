@@ -58,17 +58,23 @@ const StyledUl = styled.ul`
   list-style: none;
 `;
 
-function Todo() {
-  const [todos, setTodos] = useState<TodoData[]>([]);
+interface TodoProps {
+  data: { todos: TodoData[] };
+  widgetOnChange: (onChangedData: { todos: TodoData[] }) => void;
+}
+
+function Todo({ data, widgetOnChange }: TodoProps) {
+  const { todos } = data;
+  const setTodos = (newTodos: TodoData[]) => {
+    widgetOnChange({ todos: newTodos });
+  };
   const [showMode, setShowMode] = useState<ShowMode>('Inbox');
   const [inputText, setInputText] = useState('');
 
   const onTodoModify = (e: ContentEditableEvent, targetId: string) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((prevTodo) =>
-        prevTodo.id === targetId
-          ? { ...prevTodo, text: e.target.value }
-          : prevTodo,
+    setTodos(
+      todos.map((todo) =>
+        todo.id === targetId ? { ...todo, text: e.target.value } : todo,
       ),
     );
   };
@@ -78,8 +84,8 @@ function Todo() {
   };
 
   const addTodo = () => {
-    setTodos((prevTodos) => [
-      ...prevTodos,
+    setTodos([
+      ...todos,
       { id: v4(), text: inputText, checked: false, time: new Date() },
     ]);
     setInputText('');
@@ -96,17 +102,15 @@ function Todo() {
   };
 
   const toggleChecked = (id: string) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((prevTodo) =>
-        prevTodo.id === id
-          ? { ...prevTodo, checked: !prevTodo.checked }
-          : prevTodo,
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, checked: !todo.checked } : todo,
       ),
     );
   };
 
   const deleteTodo = (id: string) => {
-    setTodos((prevTodos) => prevTodos.filter((prevTodo) => prevTodo.id !== id));
+    setTodos(todos.filter((todo) => todo.id !== id));
   };
 
   const getTodosByShowMode = () => {

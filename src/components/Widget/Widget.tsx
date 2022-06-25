@@ -42,7 +42,12 @@ function Widget({
       }
       deleteWidget={() => deleteWidget(id)}
     >
-      <RenderedWidget />
+      <RenderedWidget
+        widgetOnChange={(changedData) => {
+          onChange({ ...widget, data: { ...widget.data, ...changedData } });
+        }}
+        data={widget.data}
+      />
     </WidgetContainer>
   );
 }
