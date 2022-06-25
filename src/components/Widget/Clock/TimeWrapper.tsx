@@ -56,14 +56,14 @@ function TimeWrapper({ time }: { time: string }) {
   return (
     <Wrapper>
       <TopWrapper>
-        <svg height="18" width="18" viewBox="0 0 18 18">
+        <svg height="18" width="19" viewBox="0 0 19 18">
           <text x="0" y="15">
             {time}
           </text>
         </svg>
       </TopWrapper>
       <BottomWrapper>
-        <svg height="18" width="18" viewBox="0 0 18 18">
+        <svg height="18" width="19" viewBox="0 0 19 18">
           <text x="0" y="15">
             {time}
           </text>

@@ -13,7 +13,14 @@ const Wrapper = styled.div`
   gap: 5px;
 `;
 
-function Clock() {
+type ClockProps = {
+  style?: { showSeconds?: boolean };
+} & typeof defaultProps;
+
+const defaultProps = { style: { showSeconds: false } };
+
+function Clock({ style }: ClockProps) {
+  const { showSeconds } = style;
   const [time, setTime] = useState<Date>(() => new Date());
   useInterval(() => {
     setTime(new Date());
@@ -25,9 +32,11 @@ function Clock() {
     <Wrapper>
       <TimeWrapper time={hours} />
       <TimeWrapper time={mins} />
-      <TimeWrapper time={secs} />
+      {showSeconds && <TimeWrapper time={secs} />}
     </Wrapper>
   );
 }
+
+Clock.defaultProps = defaultProps;
 
 export default Clock;

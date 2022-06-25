@@ -13,18 +13,7 @@ interface WidgetProps {
   deleteWidget: (id: string) => void;
 }
 
-function getWidget(type: string) {
-  switch (type) {
-    case 'note':
-      return note;
-    case 'todo':
-      return todo;
-    case 'clock':
-      return clock;
-    default:
-      return null;
-  }
-}
+const widgetType = { note, todo, clock };
 
 function Widget({
   widget,
@@ -34,9 +23,8 @@ function Widget({
   deleteWidget,
 }: WidgetProps) {
   const { type, id, rowStart, columnStart, rows, columns } = widget;
-  const renderedWidget = getWidget(type);
-  if (!renderedWidget) return null;
-  const { component, limit } = renderedWidget;
+  const renderedWidget = widgetType[type];
+  const { RenderedWidget, limit } = renderedWidget;
 
   return (
     <WidgetContainer
@@ -54,7 +42,7 @@ function Widget({
       }
       deleteWidget={() => deleteWidget(id)}
     >
-      {component()}
+      <RenderedWidget />
     </WidgetContainer>
   );
 }

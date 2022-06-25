@@ -1,4 +1,4 @@
 import Note from './Note';
 import limit from './limit';
 
-export default { component: Note, limit };
+export default { RenderedWidget: Note, limit };
