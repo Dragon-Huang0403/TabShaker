@@ -13,6 +13,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0px;
     font-family: 'Lato', sans-serif;
     overflow: hidden;
+    font-size: 1rem;
   }
 
   a, a:visited, a:hover, a:active {

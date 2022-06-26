@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
 import { AppIcon, SettingsIcon, DeleteIcon, AddIcon } from './components/Icons';
 import type { NewWidget } from './components/WidgetContainer/types';
+import SelectNewWidget from './SelectNewWidget';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -96,13 +97,10 @@ interface NavBarProps {
 
 function NavBar({ addWidget }: NavBarProps) {
   const [idGoogleMenuOpen, setIsGoogleMenuOpen] = useState(false);
+  const [isShowSelectNewWidget, setIsSelectNewWidget] = useState(false);
 
   const toggleGoogleMenuOpen = () => {
     setIsGoogleMenuOpen((prev) => !prev);
-  };
-
-  const handleAddWidget = () => {
-    addWidget({ rows: 8, columns: 8, type: 'clock' });
   };
 
   return (
@@ -111,7 +109,11 @@ function NavBar({ addWidget }: NavBarProps) {
         <IconContainer>
           <SettingsIcon />
         </IconContainer>
-        <IconContainer onClick={handleAddWidget}>
+        <IconContainer
+          onClick={() => {
+            setIsSelectNewWidget(true);
+          }}
+        >
           <AddIcon />
         </IconContainer>
         <IconContainer>
@@ -129,6 +131,14 @@ function NavBar({ addWidget }: NavBarProps) {
           {idGoogleMenuOpen && <GoogleMenu />}
         </GoogleMenuWrapper>
       </RightPart>
+      {isShowSelectNewWidget && (
+        <SelectNewWidget
+          hideSelectNewWidget={() => {
+            setIsSelectNewWidget(false);
+          }}
+          addWidget={addWidget}
+        />
+      )}
     </Wrapper>
   );
 }

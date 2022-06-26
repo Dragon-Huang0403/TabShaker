@@ -1,13 +1,16 @@
 {
-  "short_name": "New Tab",
-  "name": "Customized New Tab",
-  "description": "A Customized New Tab, can select any widgets you like which are resizable and movable.",
+  "short_name": "TabShaker",
+  "name": "TabShaker",
+  "description": "A customized chrome new tab.",
   "author": "Dragon Huang",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "icons": {
-    "16": "favicon.ico"
+    "16": "logo16.png",
+    "32": "logo32.png",
+    "48": "logo48.png",
+    "128": "logo128.png"
   },
   "manifest_version": 3,
   "version": "0.0.1"
