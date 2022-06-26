@@ -5,20 +5,52 @@ import { snapToGrid } from '../utils/positionFn';
 type DraggerProps = {
   children: ReactElement;
   onDrag: (draggerData: DraggerData) => void;
+  onDragStart?: (e: MouseEvent) => void;
+  onDragEnd?: (e: MouseEvent) => void;
   gridUnit?: number;
+  disable?: boolean;
 };
 
-function Dragger({ children, onDrag, gridUnit }: DraggerProps) {
+function Dragger(props: DraggerProps) {
+  const {
+    children,
+    onDrag,
+    gridUnit,
+    disable,
+    onDragStart,
+    onDragEnd,
+    ...otherProps
+  } = props;
   const [isDragging, setIsDragging] = useState(false);
   const lastX = useRef(NaN);
   const lastY = useRef(NaN);
 
-  const handleOnDragStart = (e: React.MouseEvent) => {
+  const handleOnDragStart = (e: MouseEvent) => {
+    e.preventDefault();
+    if (disable) {
+      e.stopPropagation();
+      return;
+    }
     setIsDragging(true);
     lastX.current = e.clientX;
     lastY.current = e.clientY;
+    if (onDragStart) {
+      onDragStart(e);
+    }
+  };
+  const handleOnDragStop = (e: MouseEvent) => {
+    setIsDragging(false);
+    lastX.current = NaN;
+    lastY.current = NaN;
+    if (onDragEnd) {
+      onDragEnd(e);
+    }
   };
   const handleOnDrag = (e: MouseEvent) => {
+    if (disable) {
+      handleOnDragStop(e);
+      return;
+    }
     let deltaX = e.clientX - lastX.current;
     let deltaY = e.clientY - lastY.current;
     if (gridUnit) {
@@ -33,18 +65,12 @@ function Dragger({ children, onDrag, gridUnit }: DraggerProps) {
     onDrag(draggerData);
   };
 
-  const handleOnDragStop = () => {
-    setIsDragging(false);
-    lastX.current = NaN;
-    lastY.current = NaN;
-  };
-
   const onMouseDown = (e: React.MouseEvent) => {
-    handleOnDragStart(e);
+    handleOnDragStart(e.nativeEvent);
   };
 
-  const onMouseUp = () => {
-    handleOnDragStop();
+  const onMouseUp = (e: React.MouseEvent) => {
+    handleOnDragStop(e.nativeEvent);
   };
 
   useEffect(() => {
@@ -59,7 +85,11 @@ function Dragger({ children, onDrag, gridUnit }: DraggerProps) {
     };
   }, [isDragging]);
 
-  return React.cloneElement(children, { onMouseDown, onMouseUp });
+  return React.cloneElement(children, {
+    ...otherProps,
+    onMouseDown,
+    onMouseUp,
+  });
 }
 
 export default Dragger;

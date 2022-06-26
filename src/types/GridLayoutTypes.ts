@@ -16,3 +16,19 @@ export type DraggerData = {
   lastX: number;
   lastY: number;
 };
+export type ResizerData = {
+  deltaX: number;
+  deltaY: number;
+  x: number;
+  y: number;
+};
+
+export type ResizerDirections =
+  | 's'
+  | 'w'
+  | 'e'
+  | 'n'
+  | 'sw'
+  | 'nw'
+  | 'se'
+  | 'ne';

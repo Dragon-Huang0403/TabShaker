@@ -24,6 +24,7 @@ const defaultWidgets: WidgetType[] = [
 ];
 
 const TestWrapper = styled.div`
+  position: relative;
   background: grey;
 `;
 
