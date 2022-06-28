@@ -8,8 +8,7 @@ import globalTheme, { GlobalStyle } from './theme';
 import BackgroundImage from './BackgroundImage';
 // import { getAvailablePosition } from './utils/lib';
 import GridLayout from './GridLayout';
-import type { WidgetType } from './types/WidgetTypes';
-import type { GridItemPosition } from './types/GridLayoutTypes';
+import type { WidgetData } from './types/WidgetTypes';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -19,32 +18,29 @@ const Wrapper = styled.div`
   padding-bottom: 60px;
 `;
 
-const defaultWidgets: WidgetType[] = [
-  { position: { x: 10, y: 10, w: 200, h: 200 }, id: v4() },
+const defaultWidgets: WidgetData[] = [
+  {
+    id: v4(),
+  },
+  {
+    id: v4(),
+  },
 ];
 
 const TestWrapper = styled.div`
-  position: relative;
+  position: absolute;
   background: grey;
 `;
 
 function App() {
-  const [widgets, setWidgets] = useState<WidgetType[]>([]);
+  const [widgets, setWidgets] = useState<WidgetData[]>([]);
+
   useEffect(() => {
     if (widgets.length === 0) {
       setWidgets(defaultWidgets);
     }
   }, []);
 
-  const onPositionChange = (newPosition: GridItemPosition, id: string) => {
-    setWidgets((prevWidgets) =>
-      prevWidgets.map((prevWidget) =>
-        prevWidget.id === id
-          ? { ...prevWidget, position: newPosition }
-          : prevWidget,
-      ),
-    );
-  };
   return (
     <ThemeProvider theme={globalTheme}>
       <GlobalStyle />
@@ -52,9 +48,9 @@ function App() {
       <Wrapper>
         {/* <NavBar addWidget={addWidget} /> */}
         {/* <Widgets widgets={widgets} setWidgets={setWidgets} /> */}
-        <GridLayout layout={widgets} onPositionChange={onPositionChange}>
+        <GridLayout>
           {widgets.map((widget) => (
-            <TestWrapper key={widget.id}>123</TestWrapper>
+            <TestWrapper key={widget.id} />
           ))}
         </GridLayout>
       </Wrapper>

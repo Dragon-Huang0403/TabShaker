@@ -4,19 +4,19 @@ import { snapToGrid } from '../utils/positionFn';
 
 type DraggerProps = {
   children: ReactElement;
-  onDrag: (draggerData: DraggerData) => void;
-  onDragStart?: (e: MouseEvent) => void;
-  onDragEnd?: (e: MouseEvent) => void;
   gridUnit?: number;
   disable?: boolean;
+  onDrag: (e: MouseEvent, draggerData: DraggerData) => void;
+  onDragStart?: (e: React.MouseEvent) => void;
+  onDragEnd?: (e: MouseEvent) => void;
 };
 
 function Dragger(props: DraggerProps) {
   const {
     children,
-    onDrag,
     gridUnit,
     disable,
+    onDrag,
     onDragStart,
     onDragEnd,
     ...otherProps
@@ -24,11 +24,9 @@ function Dragger(props: DraggerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const lastX = useRef(NaN);
   const lastY = useRef(NaN);
-
-  const handleOnDragStart = (e: MouseEvent) => {
+  const handleOnDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     if (disable) {
-      e.stopPropagation();
       return;
     }
     setIsDragging(true);
@@ -47,10 +45,7 @@ function Dragger(props: DraggerProps) {
     }
   };
   const handleOnDrag = (e: MouseEvent) => {
-    if (disable) {
-      handleOnDragStop(e);
-      return;
-    }
+    if (!isDragging) return;
     let deltaX = e.clientX - lastX.current;
     let deltaY = e.clientY - lastY.current;
     if (gridUnit) {
@@ -62,11 +57,11 @@ function Dragger(props: DraggerProps) {
       lastX: lastX.current,
       lastY: lastY.current,
     };
-    onDrag(draggerData);
+    onDrag(e, draggerData);
   };
 
   const onMouseDown = (e: React.MouseEvent) => {
-    handleOnDragStart(e.nativeEvent);
+    handleOnDragStart(e);
   };
 
   const onMouseUp = (e: React.MouseEvent) => {
@@ -75,7 +70,6 @@ function Dragger(props: DraggerProps) {
 
   useEffect(() => {
     if (!isDragging) return undefined;
-
     document.addEventListener('mousemove', handleOnDrag);
     document.addEventListener('mouseup', handleOnDragStop);
 

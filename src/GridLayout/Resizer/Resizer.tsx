@@ -1,28 +1,23 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useRef } from 'react';
 import ResizerHandler from './ResizeHandler';
+import { runConstraint } from '../utils/positionFn';
 import type {
   DraggerData,
-  GridItemPosition,
+  Position,
   ResizerDirections,
+  Constraint,
 } from '../../types/GridLayoutTypes';
 
-const resizerDirections: ResizerDirections[] = [
-  's',
-  'w',
-  'e',
-  'n',
-  'sw',
-  'nw',
-  'se',
-  'ne',
-];
+const resizerDirections = ['s', 'w', 'e', 'n', 'sw', 'nw', 'se', 'ne'] as const;
 
 type ResizerProps = {
   children: ReactElement;
-  onResize: (newPosition: GridItemPosition) => void;
-  position: GridItemPosition;
-  onResizingStart: (e: MouseEvent) => void;
+  position: Position;
+  constraint: Constraint;
+  onResize: (newPosition: Position) => void;
+  onResizingStart: (e: React.MouseEvent) => void;
   onResizingEnd: (e: MouseEvent) => void;
+  gridUnit?: number;
 };
 
 function Resizer(props: ResizerProps) {
@@ -32,32 +27,47 @@ function Resizer(props: ResizerProps) {
     onResizingStart,
     onResizingEnd,
     position,
+    gridUnit,
+    constraint,
     ...otherProps
   } = props;
+  const lastPosition = useRef(position);
+
   const handleResize = (
     direction: ResizerDirections,
     draggerData: DraggerData,
   ) => {
-    let { x, y, w, h } = position;
+    let { top, left, width, height } = position;
     const axisV = direction[0];
     const axisH = direction[direction.length - 1];
     let { deltaX, deltaY } = draggerData;
     if (axisH === 'w') {
-      x += deltaX;
       deltaX = -deltaX;
     }
     if (axisV === 'n') {
-      y += deltaY;
       deltaY = -deltaY;
     }
     if (axisH === 'w' || axisH === 'e') {
-      w = position.w + deltaX;
+      width += deltaX;
     }
     if (axisV === 'n' || axisV === 's') {
-      h = position.h + deltaY;
+      height += deltaY;
     }
-    const newPosition = { x, y, w, h };
+
+    [width, height] = runConstraint(constraint, width, height);
+    if (axisH === 'w') {
+      left += position.width - width;
+    }
+    if (axisV === 'n') {
+      top += position.height - height;
+    }
+    const newPosition = { top, left, width, height };
+    lastPosition.current = newPosition;
     onResize(newPosition);
+  };
+  const handleOnResizeStart = (e: React.MouseEvent) => {
+    lastPosition.current = position;
+    onResizingStart(e);
   };
   return React.cloneElement(children, {
     ...otherProps,
@@ -67,11 +77,12 @@ function Resizer(props: ResizerProps) {
         <ResizerHandler
           direction={direction}
           key={direction}
-          onResize={(draggerData: DraggerData) => {
+          onResize={(e: MouseEvent, draggerData: DraggerData) => {
             handleResize(direction, draggerData);
           }}
-          onResizingStart={onResizingStart}
+          onResizingStart={handleOnResizeStart}
           onResizingEnd={onResizingEnd}
+          gridUnit={gridUnit}
         />
       )),
     ],

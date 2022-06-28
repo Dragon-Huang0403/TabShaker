@@ -1,5 +1,3 @@
-import { GridItemData } from './GridLayoutTypes';
-
-export type WidgetType = {
+export type WidgetData = {
   id: string;
-} & GridItemData;
+};

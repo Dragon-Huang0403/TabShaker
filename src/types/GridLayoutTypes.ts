@@ -1,13 +1,36 @@
-export type GridItemPosition = {
+export type LayoutItem = {
+  id?: string;
   x: number;
   y: number;
   w: number;
   h: number;
 };
 
-export type GridItemData = {
-  id: string;
-  position: GridItemPosition;
+export type Layout = LayoutItem[];
+
+export type Layouts = {
+  lg: Layout;
+};
+
+export type Position = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
+export type Limit = {
+  minW: number;
+  maxW: number;
+  minH: number;
+  maxH: number;
+};
+
+export type Constraint = {
+  minWidth: number;
+  maxWidth: number;
+  minHeight: number;
+  maxHeight: number;
 };
 
 export type DraggerData = {
@@ -16,6 +39,7 @@ export type DraggerData = {
   lastX: number;
   lastY: number;
 };
+
 export type ResizerData = {
   deltaX: number;
   deltaY: number;

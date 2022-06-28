@@ -71,9 +71,10 @@ const Wrapper = styled.div`
 
 type ResizeHandlerProp = {
   direction: ResizerDirections;
-  onResize: (draggerData: DraggerData) => void;
-  onResizingStart: (e: MouseEvent) => void;
+  onResize: (e: MouseEvent, draggerData: DraggerData) => void;
+  onResizingStart: (e: React.MouseEvent) => void;
   onResizingEnd: (e: MouseEvent) => void;
+  gridUnit: number | undefined;
 };
 
 function ResizeHandler({
@@ -81,6 +82,7 @@ function ResizeHandler({
   onResize,
   onResizingStart,
   onResizingEnd,
+  gridUnit,
 }: ResizeHandlerProp) {
   const style = { ...resizerStyles[direction] };
   return (
@@ -88,6 +90,7 @@ function ResizeHandler({
       onDrag={onResize}
       onDragStart={onResizingStart}
       onDragEnd={onResizingEnd}
+      gridUnit={gridUnit}
     >
       <Wrapper style={style} />
     </Dragger>
