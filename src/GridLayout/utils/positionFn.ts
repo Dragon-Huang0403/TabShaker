@@ -2,6 +2,7 @@ import { innerHeight, outerHeight, innerWidth, outerWidth } from './domFns';
 import { int } from './other';
 import type {
   Constraint,
+  Layout,
   // GridItemData,
   // Layout,
   LayoutItem,
@@ -80,47 +81,94 @@ export function getPosition(layout: LayoutItem, gridUnit: number[]): Position {
   return { left, top, width, height };
 }
 
-// export function moveItems(
-//   items: GridItemData[],
-//   id: string,
-//   newLayout: Layout,
-//   // cols: number,
-// ) {
-//   return newLayout;
-// }
+function calcTwoWidgetOverlapArea(item1: LayoutItem, item2: LayoutItem) {
+  const rec1 = [item1.x, item1.y, item1.x + item1.w, item1.y + item1.h];
+  const rec2 = [item2.x, item2.y, item2.x + item2.w, item2.y + item2.h];
+  const w = Math.max(
+    0,
+    Math.min(rec1[2], rec2[2]) - Math.max(rec1[0], rec2[0]),
+  );
+  const h = Math.max(
+    0,
+    Math.min(rec1[3], rec2[3]) - Math.max(rec1[1], rec2[1]),
+  );
 
-// function calcTwoWidgetOverlapArea(item1: GridItemData, item2: GridItemData) {
-//     const rec1 = [
-//       item1.x,
-//       widget1.columnStart,
-//       widget1.rowStart + widget1.rows,
-//       widget1.columnStart + widget1.columns,
-//     ];
-//     const rec2 = [
-//       widget2.rowStart,
-//       widget2.columnStart,
-//       widget2.rowStart + widget2.rows,
-//       widget2.columnStart + widget2.columns,
-//     ];
-//   const overLayRows = Math.max(
-//     0,
-//     Math.min(rec1[2], rec2[2]) - Math.max(rec1[0], rec2[0]),
-//   );
-//   const overLayColumns = Math.max(
-//     0,
-//     Math.min(rec1[3], rec2[3]) - Math.max(rec1[1], rec2[1]),
-//   );
+  if (w > 0 && h > 0) {
+    return { w, h };
+  }
+  return null;
+}
 
-//   if (overLayRows > 0 && overLayColumns > 0) {
-//     return { overLayRows, overLayColumns };
-//   }
-//   return null;
-// }
+function collides(item: LayoutItem, targetItem: LayoutItem) {
+  if (item.id === targetItem.id) return false;
+  return calcTwoWidgetOverlapArea(item, targetItem) !== null;
+}
 
-// function collides(item: GridItemData, targetItem: GridItemData){
-//   if (item.id === targetItem.id) return false
-//  }
+function getAllCollisions(layout: Layout, targetItem: LayoutItem) {
+  return layout.filter((item) => collides(item, targetItem));
+}
 
-// export function getAllCollisions(items: GridItemData[], targetItem: GridItemData) {
-//   return items.filter(item=> collides(item,targetItem))
-// }
+export function canElementMove(layout: Layout, targetItem: LayoutItem) {
+  return getAllCollisions(layout, targetItem).length === 0;
+}
+
+export function moveElement(
+  oldLayout: Layout,
+  targetItem: LayoutItem,
+  layout: Layout,
+  cols: number,
+) {
+  return layout.map((item) => {
+    if (item.id === targetItem.id) {
+      return targetItem;
+    }
+    const overLapArea = calcTwoWidgetOverlapArea(targetItem, item);
+    if (!overLapArea) {
+      const oldItem = oldLayout.find((l) => l.id === item.id)!;
+      const newItem = item;
+      if (oldItem.x !== newItem.x) {
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          if (newItem.x === oldItem.x) break;
+          let { x } = newItem;
+          x += oldItem.x > newItem.x ? 1 : -1;
+          if (x <= 0 || x + newItem.w >= cols) break;
+          if (!canElementMove(layout, { ...newItem, x })) break;
+          newItem.x = x;
+        }
+      }
+      if (oldItem.y !== newItem.y) {
+        // eslint-disable-neyt-line no-constant-condition
+        while (true) {
+          if (newItem.y === oldItem.y) break;
+          let { y } = newItem;
+          y += oldItem.y > newItem.y ? 1 : -1;
+          if (y <= 0) break;
+          if (!canElementMove(layout, { ...newItem, y })) break;
+          newItem.y = y;
+        }
+      }
+
+      return newItem;
+    }
+    const newItem = { ...item };
+    if (overLapArea.w > overLapArea.h) {
+      newItem.y =
+        item.y > targetItem.y
+          ? (newItem.y += overLapArea.h)
+          : (newItem.y -= overLapArea.h);
+      newItem.y = Math.max(0, newItem.y);
+    } else {
+      newItem.x =
+        item.x > targetItem.x
+          ? (newItem.x += overLapArea.w)
+          : (newItem.x -= overLapArea.w);
+      newItem.x = Math.max(0, newItem.x);
+      newItem.x = Math.min(newItem.x, cols - newItem.w);
+    }
+    if (canElementMove(layout, newItem)) {
+      return newItem;
+    }
+    return item;
+  });
+}

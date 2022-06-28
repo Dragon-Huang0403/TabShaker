@@ -10,6 +10,7 @@ import type {
   Limit,
 } from '../types/GridLayoutTypes';
 import { findLayoutItem } from './utils/other';
+import { canElementMove, moveElement } from './utils/positionFn';
 
 const Wrapper = styled.div`
   position: relative;
@@ -39,6 +40,7 @@ function GridLayout({ children }: GridLayoutProps) {
   const gridUnit = [gridLayoutWidth / cols, gridLayoutWidth / cols];
   const screenSize = 'lg';
   const currentLayout = layouts[screenSize];
+  const latestCurrentLayout = useRef(currentLayout);
   const updateLayout = (layout: Layout) => {
     const newLayouts = { ...layouts };
     newLayouts[screenSize] = layout;
@@ -60,14 +62,20 @@ function GridLayout({ children }: GridLayoutProps) {
     draggerData: DraggerData,
     layoutItem: LayoutItem,
   ) => {
-    // const newLayout = moveItems(currentLayout, id, layout);
-    // const onDragItem = findLayoutItem(currentLayout, id);
-    // const newLayoutItem = { ...currentLayout, layoutItem };
-    updateLayoutItem(layoutItem, id);
+    const newLayout = moveElement(
+      currentLayout,
+      { ...layoutItem, id },
+      latestCurrentLayout.current,
+      cols,
+    );
+    latestCurrentLayout.current = newLayout;
+    updateLayout(newLayout);
+  };
+  const onDragStart = () => {
+    latestCurrentLayout.current = currentLayout;
   };
   const onResize = (id: string, newLayoutItem: LayoutItem) => {
-    // const onDragItem = findLayoutItem(layouts, index);
-    // const newLayouts = { layouts, [screenSize]: newLayout };
+    if (!canElementMove(currentLayout, { ...newLayoutItem, id })) return;
     updateLayoutItem(newLayoutItem, id);
   };
   const renderGridItem = (child: ReactElement, index: number) => {
@@ -87,6 +95,7 @@ function GridLayout({ children }: GridLayoutProps) {
         gridUnit={gridUnit}
         onDrag={onDrag}
         onResize={onResize}
+        onDragStart={onDragStart}
       >
         {child}
       </GridItem>

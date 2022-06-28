@@ -27,12 +27,21 @@ type GridItemProp = {
     draggerData: DraggerData,
     newLayoutItem: LayoutItem,
   ) => void;
+  onDragStart: () => void;
   onResize: (id: string, newLayoutItem: LayoutItem) => void;
 };
 
 function GridItem(props: GridItemProp) {
-  const { children, layoutItem, limit, bound, gridUnit, onDrag, onResize } =
-    props;
+  const {
+    children,
+    layoutItem,
+    limit,
+    bound,
+    gridUnit,
+    onDrag,
+    onDragStart,
+    onResize,
+  } = props;
   const [isResizing, setIsResizing] = useState(false);
   const nodeRef = useRef<HTMLElement>(null);
   const id = children.key as string;
@@ -51,13 +60,10 @@ function GridItem(props: GridItemProp) {
       newLeft,
       newTop,
     );
-    const newPosition: Position = { ...position, left: newLeft, top: newTop };
+    const newPosition = { ...position, left: newLeft, top: newTop };
     const [newX, newY] = calcXY(newPosition, gridUnit);
     const newLayoutItem = { ...layoutItem, x: newX, y: newY };
     onDrag(id, e, draggerData, newLayoutItem);
-  };
-  const onDragStart = () => {
-    console.log('onDragStart');
   };
   const onDragEnd = () => {
     console.log('onDragEnd');
