@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
@@ -20,6 +20,21 @@ const Wrapper = styled.div`
 function App() {
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
   const [layouts, setLayouts] = useState<Layouts>(defaultLayout);
+  useEffect(() => {
+    const rawOldLayouts = window.localStorage.getItem('layouts');
+    if (rawOldLayouts) {
+      setLayouts(JSON.parse(rawOldLayouts));
+    }
+    const rawOldWidget = window.localStorage.getItem('widgets');
+    if (rawOldWidget) {
+      setWidgets(JSON.parse(rawOldWidget));
+    }
+  }, []);
+  useEffect(() => {
+    if (widgets.length === 0) return;
+    window.localStorage.setItem('widgets', JSON.stringify(widgets));
+    window.localStorage.setItem('layouts', JSON.stringify(layouts));
+  }, [widgets, layouts]);
 
   const addWidget = (newWidget: WidgetData) => {
     setWidgets([...widgets, newWidget]);
