@@ -7,7 +7,7 @@ import type {
   Layout,
   LayoutItem,
   Layouts,
-  Limit,
+  Position,
 } from '../types/GridLayoutTypes';
 import { findLayoutItem } from './utils/other';
 import {
@@ -23,7 +23,9 @@ const Wrapper = styled.div`
 `;
 
 const Placeholder = styled.div`
+  padding: 10px;
   background: #0007;
+  background-clip: content-box;
   width: 100%;
   height: 100%;
 `;
@@ -79,7 +81,6 @@ function GridLayout({
     latestCurrentLayout.current = newLayout;
     updateLayout(newLayout);
   };
-  const onDragStart = () => {};
   const onDragEnd = () => {
     if (placeholder) {
       updateLayoutItem(placeholder);
@@ -108,7 +109,6 @@ function GridLayout({
         gridUnit={gridUnit}
         onDrag={onDrag}
         onDragEnd={onDragEnd}
-        onDragStart={onDragStart}
         onResize={onResize}
       >
         {child}
@@ -128,10 +128,8 @@ function GridLayout({
         limit={limit}
         bound={gridRef.current!}
         gridUnit={gridUnit}
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
-        onDragStart={onDragStart}
         onResize={onResize}
+        onDrag={onDrag}
       >
         <Placeholder />
       </GridItem>
