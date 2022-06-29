@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import GridItem from './GridItem';
@@ -7,7 +6,6 @@ import type {
   Layout,
   LayoutItem,
   Layouts,
-  Position,
 } from '../types/GridLayoutTypes';
 import { findLayoutItem } from './utils/other';
 import {
@@ -16,6 +14,7 @@ import {
   getAvailableLayoutItem,
 } from './utils/positionFn';
 import { WidgetData } from '../types/WidgetTypes';
+import { getScreenInfo } from './config';
 
 const Wrapper = styled.div`
   position: relative;
@@ -24,7 +23,7 @@ const Wrapper = styled.div`
 
 const Placeholder = styled.div`
   padding: 10px;
-  background: #0007;
+  background: ${({ theme }) => theme.color.transparentBlack};
   background-clip: content-box;
   width: 100%;
   height: 100%;
@@ -45,9 +44,8 @@ function GridLayout({
 }: GridLayoutProps) {
   const [gridLayoutWidth, setGridLayoutWidget] = useState(1280);
   const gridRef = useRef<HTMLDivElement>(null);
-  const cols = 40;
+  const [screenSize, cols] = getScreenInfo(gridLayoutWidth);
   const gridUnit = [gridLayoutWidth / cols, gridLayoutWidth / cols];
-  const screenSize = 'lg';
   const currentLayout = layouts[screenSize];
   const latestCurrentLayout = useRef(currentLayout);
   const [placeholder, setPlaceHolder] = useState<LayoutItem | null>(null);

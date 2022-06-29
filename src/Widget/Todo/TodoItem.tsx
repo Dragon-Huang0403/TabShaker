@@ -13,7 +13,7 @@ const Wrapper = styled.li<{ checked: boolean }>`
   ${({ theme, checked }) =>
     checked &&
     css`
-      color: ${theme.lightGrey};
+      color: ${theme.color.lightGrey};
       text-decoration: line-through;
     `}
 `;
@@ -24,13 +24,13 @@ const IconWrapper = styled.div`
   margin: 0px 5px;
 
   & > svg {
-    fill: ${({ theme }) => theme.transparentWhite};
+    fill: ${({ theme }) => theme.color.transparentWhite};
     width: 20px;
     height: 20px;
   }
 
   &:hover > svg {
-    fill: ${({ theme }) => theme.white};
+    fill: ${({ theme }) => theme.color.white};
   }
 `;
 

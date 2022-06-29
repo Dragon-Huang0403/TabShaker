@@ -45,7 +45,7 @@ const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
 
 const IconsWrapper = styled.div`
   display: inline-block;
-  background: #0009;
+  background: ${({ theme }) => theme.color.transparentBlack};
   z-index: 1;
   margin-bottom: 20px;
   padding: 5px 15px;
@@ -57,11 +57,11 @@ const IconsWrapper = styled.div`
 const IconStyle = styled.div`
   &:hover {
     cursor: pointer;
-    background: #fff3;
+    background: ${({ theme }) => theme.color.transparentWhite};
     border-radius: 50%;
   }
   & svg {
-    fill: #3498db;
+    fill: ${({ theme }) => theme.color.lightBlue};
     width: 24px;
     height: 24px;
   }

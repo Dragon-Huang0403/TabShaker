@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
 import BackgroundImage from './BackgroundImage';
 import GridLayout from './GridLayout';
+import { defaultLayout } from './GridLayout/config';
 import Widget from './Widget';
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
@@ -15,12 +16,25 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding-bottom: 60px;
 `;
-const defaultLayouts: Layouts = {
-  lg: [],
-};
+
 function App() {
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
-  const [layouts, setLayouts] = useState(defaultLayouts);
+  const [layouts, setLayouts] = useState<Layouts>(defaultLayout);
+  useEffect(() => {
+    const rawOldLayouts = window.localStorage.getItem('layouts');
+    if (rawOldLayouts) {
+      setLayouts(JSON.parse(rawOldLayouts));
+    }
+    const rawOldWidget = window.localStorage.getItem('widgets');
+    if (rawOldWidget) {
+      setWidgets(JSON.parse(rawOldWidget));
+    }
+  }, []);
+  useEffect(() => {
+    if (widgets.length === 0) return;
+    window.localStorage.setItem('widgets', JSON.stringify(widgets));
+    window.localStorage.setItem('layouts', JSON.stringify(layouts));
+  }, [widgets, layouts]);
 
   const addWidget = (newWidget: WidgetData) => {
     setWidgets([...widgets, newWidget]);
@@ -29,6 +43,13 @@ function App() {
     setWidgets((prevWidgets) =>
       prevWidgets.filter((prevWidget) => prevWidget.id !== id),
     );
+    const newLayouts = { ...layouts };
+    Object.keys(newLayouts).forEach((screenSize) => {
+      newLayouts[screenSize] = newLayouts[screenSize]?.filter(
+        (layout) => layout.id !== id,
+      );
+    });
+    setLayouts(newLayouts);
   };
   const onWidgetChange = (updatedWidget: WidgetData) => {
     setWidgets((prevWidgets) =>

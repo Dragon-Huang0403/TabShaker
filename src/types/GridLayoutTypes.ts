@@ -12,7 +12,7 @@ export type LayoutItem = {
 export type Layout = LayoutItem[];
 
 export type Layouts = {
-  lg: Layout;
+  [key: string]: Layout;
 };
 
 export type Position = {

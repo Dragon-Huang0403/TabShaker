@@ -5,7 +5,7 @@ import googleIcons from './googleIconsData';
 
 const Wrapper = styled.div`
   display: inline-grid;
-  background: white;
+  background: ${({ theme }) => theme.color.white};
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 20px;

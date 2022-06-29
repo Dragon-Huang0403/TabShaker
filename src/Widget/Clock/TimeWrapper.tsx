@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   flex-grow: 1;
   height: 100%;
   font-weight: 800;
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.color.white};
 `;
 
 function TimeWrapper({ time }: { time: string }) {

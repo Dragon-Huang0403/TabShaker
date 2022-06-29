@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 10;
 `;
 
 const LeftPart = styled.div`
@@ -27,14 +28,14 @@ const LeftPart = styled.div`
   }
 
   &:hover {
-    background: #0009;
+    background: ${({ theme }) => theme.color.transparentBlack};
 
     & > div:not(:first-child) {
       opacity: 1;
     }
 
     & svg {
-      fill: #3498db;
+      fill: ${({ theme }) => theme.color.lightBlue};
     }
   }
 `;
@@ -62,12 +63,12 @@ const IconContainer = styled.div`
   & > svg {
     width: 24px;
     height: 24px;
-    fill: white;
+    fill: ${({ theme }) => theme.color.white};
   }
 
   :hover {
     cursor: pointer;
-    background: #fff3;
+    background: ${({ theme }) => theme.color.transparentWhite};
     border-radius: 50%;
   }
 `;
@@ -83,7 +84,7 @@ const Link = styled.a`
   margin-right: 20px;
   &,
   &:visited {
-    color: white;
+    color: ${({ theme }) => theme.color.white};
   }
   &:hover {
     font-weight: 500;
