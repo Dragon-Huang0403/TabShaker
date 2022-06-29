@@ -4,6 +4,7 @@ import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
 import BackgroundImage from './BackgroundImage';
 import GridLayout from './GridLayout';
+import { defaultLayout } from './GridLayout/config';
 import Widget from './Widget';
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
@@ -15,12 +16,10 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding-bottom: 60px;
 `;
-const defaultLayouts: Layouts = {
-  lg: [],
-};
+
 function App() {
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
-  const [layouts, setLayouts] = useState(defaultLayouts);
+  const [layouts, setLayouts] = useState<Layouts>(defaultLayout);
 
   const addWidget = (newWidget: WidgetData) => {
     setWidgets([...widgets, newWidget]);
@@ -29,6 +28,13 @@ function App() {
     setWidgets((prevWidgets) =>
       prevWidgets.filter((prevWidget) => prevWidget.id !== id),
     );
+    const newLayouts = { ...layouts };
+    Object.keys(newLayouts).forEach((screenSize) => {
+      newLayouts[screenSize] = newLayouts[screenSize]?.filter(
+        (layout) => layout.id !== id,
+      );
+    });
+    setLayouts(newLayouts);
   };
   const onWidgetChange = (updatedWidget: WidgetData) => {
     setWidgets((prevWidgets) =>
