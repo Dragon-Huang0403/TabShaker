@@ -10,10 +10,10 @@ const theme = {
     transparentWhite: 'rgba(255,255,255, 0.15)',
   },
   screens: {
-    sm: 500,
-    md: 800,
-    lg: 1200,
-    xl: 1440,
+    sm: { screenWidth: 500, cols: 20 },
+    md: { screenWidth: 800, cols: 25 },
+    lg: { screenWidth: 1200, cols: 30 },
+    xl: { screenWidth: 1440, cols: 40 },
   },
 };
 

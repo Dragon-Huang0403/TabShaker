@@ -14,7 +14,7 @@ import {
   getAvailableLayoutItem,
 } from './utils/positionFn';
 import { WidgetData } from '../types/WidgetTypes';
-import { colsConfig, getScreenSize } from './config';
+import { getScreenInfo } from './config';
 
 const Wrapper = styled.div`
   position: relative;
@@ -44,8 +44,7 @@ function GridLayout({
 }: GridLayoutProps) {
   const [gridLayoutWidth, setGridLayoutWidget] = useState(1280);
   const gridRef = useRef<HTMLDivElement>(null);
-  const screenSize = getScreenSize(gridLayoutWidth);
-  const cols = colsConfig[screenSize];
+  const [screenSize, cols] = getScreenInfo(gridLayoutWidth);
   const gridUnit = [gridLayoutWidth / cols, gridLayoutWidth / cols];
   const currentLayout = layouts[screenSize];
   const latestCurrentLayout = useRef(currentLayout);

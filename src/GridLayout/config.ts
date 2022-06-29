@@ -1,23 +1,23 @@
 import theme from '../theme';
 
-export const defaultLayout = {
-  sm: [],
-  md: [],
-  lg: [],
-  xl: [],
-};
+export const defaultLayout = Object.keys(theme.screens).reduce(
+  (accu, screen) => ({ ...accu, [screen]: [] }),
+  {},
+);
 
-export const colsConfig = {
-  sm: 20,
-  md: 25,
-  lg: 30,
-  xl: 40,
-};
+type ScreenSize = keyof typeof theme.screens;
 
-export function getScreenSize(screenWidth: number) {
+export function getScreenInfo(
+  currentScreenWidth: number,
+): [ScreenSize, number] {
   const { screens } = theme;
-  if (screenWidth >= screens.xl) return 'xl';
-  if (screenWidth >= screens.lg) return 'lg';
-  if (screenWidth >= screens.md) return 'md';
-  return 'sm';
+  let screenSize: ScreenSize = 'sm';
+  (Object.keys(screens) as ScreenSize[]).forEach((s) => {
+    const { screenWidth } = screens[s];
+    if (currentScreenWidth >= screenWidth) {
+      screenSize = s;
+    }
+  });
+  const { cols } = screens[screenSize];
+  return [screenSize, cols];
 }

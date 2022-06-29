@@ -131,7 +131,7 @@ export function moveElement(
           if (newItem.x === oldItem.x) break;
           let { x } = newItem;
           x += oldItem.x > newItem.x ? 1 : -1;
-          if (x <= 0 || x + newItem.w >= cols) break;
+          if (x < 0 || x + newItem.w >= cols) break;
           if (!canElementMove(layout, { ...newItem, x })) break;
           newItem.x = x;
         }
@@ -142,7 +142,7 @@ export function moveElement(
           if (newItem.y === oldItem.y) break;
           let { y } = newItem;
           y += oldItem.y > newItem.y ? 1 : -1;
-          if (y <= 0) break;
+          if (y < 0) break;
           if (!canElementMove(layout, { ...newItem, y })) break;
           newItem.y = y;
         }
@@ -176,11 +176,11 @@ export function getAvailableLayoutItem(
   layout: Layout,
   cols: number,
   newLayoutItem: NewLayoutItem | LayoutItem,
-  x = 1,
-  y = 1,
+  x = 0,
+  y = 0,
 ): LayoutItem {
-  const { w } = newLayoutItem;
-  const availableLayoutItem = { ...newLayoutItem, x, y };
+  const w = newLayoutItem.w > cols ? cols : newLayoutItem.w;
+  const availableLayoutItem = { ...newLayoutItem, x, y, w };
   if (!canElementMove(layout, availableLayoutItem)) {
     if (x + w >= cols) {
       return getAvailableLayoutItem(
