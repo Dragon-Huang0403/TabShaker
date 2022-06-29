@@ -10,19 +10,18 @@ import type {
   Limit,
 } from '../types/GridLayoutTypes';
 import { findLayoutItem } from './utils/other';
-import { canElementMove, moveElement } from './utils/positionFn';
+import {
+  canElementMove,
+  moveElement,
+  getAvailableLayoutItem,
+} from './utils/positionFn';
+import { WidgetData } from '../types/WidgetTypes';
 
 const Wrapper = styled.div`
   position: relative;
   flex-grow: 1;
 `;
 
-const defaultLayouts: Layouts = {
-  lg: [
-    { x: 0, y: 0, w: 10, h: 10 },
-    { x: 12, y: 2, w: 10, h: 10 },
-  ],
-};
 const defaultLimits: Limit[] = [
   { minW: 3, maxW: 12, minH: 3, maxH: 12 },
   { minW: 3, maxW: 12, minH: 3, maxH: 12 },
@@ -30,10 +29,17 @@ const defaultLimits: Limit[] = [
 
 type GridLayoutProps = {
   children: React.ReactNode;
+  widgets: WidgetData[];
+  layouts: Layouts;
+  setLayouts: React.Dispatch<Layouts>;
 };
 
-function GridLayout({ children }: GridLayoutProps) {
-  const [layouts, setLayouts] = useState(defaultLayouts);
+function GridLayout({
+  children,
+  widgets,
+  layouts,
+  setLayouts,
+}: GridLayoutProps) {
   const [gridLayoutWidth, setGridLayoutWidget] = useState(1280);
   const gridRef = useRef<HTMLDivElement>(null);
   const cols = 40;
@@ -47,24 +53,20 @@ function GridLayout({ children }: GridLayoutProps) {
     setLayouts(newLayouts);
   };
 
-  const updateLayoutItem = (layoutItem: LayoutItem, id: string | number) => {
-    let newLayout = layouts[screenSize];
-    if (typeof id === 'number') {
-      newLayout = newLayout.map((item, i) => (i === id ? layoutItem : item));
-    } else {
-      newLayout = newLayout.map((item) => (item.id === id ? layoutItem : item));
-    }
+  const updateLayoutItem = (layoutItem: LayoutItem) => {
+    const newLayout = layouts[screenSize].map((item) =>
+      item.id === layoutItem.id ? { ...layoutItem } : item,
+    );
     updateLayout(newLayout);
   };
   const onDrag = (
-    id: string,
     e: MouseEvent,
     draggerData: DraggerData,
     layoutItem: LayoutItem,
   ) => {
     const newLayout = moveElement(
       currentLayout,
-      { ...layoutItem, id },
+      layoutItem,
       latestCurrentLayout.current,
       cols,
     );
@@ -74,23 +76,24 @@ function GridLayout({ children }: GridLayoutProps) {
   const onDragStart = () => {
     latestCurrentLayout.current = currentLayout;
   };
-  const onResize = (id: string, newLayoutItem: LayoutItem) => {
-    if (!canElementMove(currentLayout, { ...newLayoutItem, id })) return;
-    updateLayoutItem(newLayoutItem, id);
+  const onResize = (layoutItem: LayoutItem) => {
+    if (!canElementMove(currentLayout, layoutItem)) return;
+    updateLayoutItem(layoutItem);
   };
-  const renderGridItem = (child: ReactElement, index: number) => {
+  const renderGridItem = (child: ReactElement) => {
     const id = child.key as string;
     if (!id) return null;
-    const layoutItem = findLayoutItem(currentLayout, index)!;
-    if (!layoutItem.id) {
-      updateLayoutItem({ ...layoutItem, id }, index);
-      return null;
-    }
+    const layoutItem = findLayoutItem(currentLayout, id)!;
+    if (!layoutItem) return null;
+    const targetWidget = widgets.find((widget) => widget.id === id);
+    if (!targetWidget) return null;
+    const { limit } = targetWidget;
 
     return (
       <GridItem
+        key={id}
         layoutItem={layoutItem}
-        limit={defaultLimits[index]}
+        limit={limit}
         bound={gridRef.current!}
         gridUnit={gridUnit}
         onDrag={onDrag}
@@ -101,6 +104,26 @@ function GridLayout({ children }: GridLayoutProps) {
       </GridItem>
     );
   };
+
+  useEffect(() => {
+    const newLayouts = { ...layouts };
+    newLayouts[screenSize] = [...newLayouts[screenSize]];
+    let shouldUpdate = false;
+    widgets.forEach((widget) => {
+      const { defaultLayout, id } = widget;
+      if (currentLayout.some((item) => item.id === id)) return;
+      shouldUpdate = true;
+      const availableLayoutItem = getAvailableLayoutItem(currentLayout, cols, {
+        ...defaultLayout,
+        id,
+      });
+      newLayouts[screenSize].push(availableLayoutItem);
+    });
+    if (shouldUpdate) {
+      setLayouts(newLayouts);
+    }
+  }, [widgets, currentLayout, screenSize]);
+
   useEffect(() => {
     const updateGridLayoutWidth = () => {
       if (!gridRef.current) return;
@@ -113,10 +136,14 @@ function GridLayout({ children }: GridLayoutProps) {
     };
   }, []);
 
+  useEffect(() => {
+    latestCurrentLayout.current = currentLayout;
+  }, [currentLayout]);
+
   return (
     <Wrapper ref={gridRef}>
-      {React.Children.map(children, (child, index) =>
-        renderGridItem(child as ReactElement, index),
+      {React.Children.map(children, (child) =>
+        renderGridItem(child as ReactElement),
       )}
     </Wrapper>
   );

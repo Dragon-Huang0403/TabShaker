@@ -1,10 +1,13 @@
-export type LayoutItem = {
-  id?: string;
-  x: number;
-  y: number;
+export type NewLayoutItem = {
+  id: string;
   w: number;
   h: number;
 };
+
+export type LayoutItem = {
+  x: number;
+  y: number;
+} & NewLayoutItem;
 
 export type Layout = LayoutItem[];
 

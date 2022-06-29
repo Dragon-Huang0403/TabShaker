@@ -35,9 +35,6 @@ export function getConstraint(limit: Limit, gridUnit: number[]) {
   return { minWidth, maxWidth, minHeight, maxHeight };
 }
 
-export function findLayoutItem(layout: Layout, id: string | number) {
-  if (typeof id === 'number') {
-    return layout.find((item, i) => i === id);
-  }
+export function findLayoutItem(layout: Layout, id: string) {
   return layout.find((item) => item.id === id);
 }

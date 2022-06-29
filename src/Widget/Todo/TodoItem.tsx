@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import styled, { css } from 'styled-components';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import type { TodoData } from './Todo';
-import { Close } from '../../Icons';
-import { useHover } from '../../../hooks';
+import { Close } from '../../components/Icons';
+import { useHover } from '../../hooks';
 
 const Wrapper = styled.li<{ checked: boolean }>`
   display: flex;

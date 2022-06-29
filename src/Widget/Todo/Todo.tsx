@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
-import IconDropDownMenu from '../../IconDropDownMenu';
-import { ExpandMore } from '../../Icons';
-import Card from '../../Card';
+import IconDropDownMenu from '../../components/IconDropDownMenu';
+import { ExpandMore } from '../../components/Icons';
+import Card from '../../components/Card';
 import TodoItem from './TodoItem';
 
 export interface TodoData {
@@ -60,13 +60,13 @@ const StyledUl = styled.ul`
 
 interface TodoProps {
   data: { todos: TodoData[] };
-  widgetOnChange: (onChangedData: { todos: TodoData[] }) => void;
+  onWidgetChange: (onChangedData: { todos: TodoData[] }) => void;
 }
 
-function Todo({ data, widgetOnChange }: TodoProps) {
+function Todo({ data, onWidgetChange }: TodoProps) {
   const { todos } = data;
   const setTodos = (newTodos: TodoData[]) => {
-    widgetOnChange({ todos: newTodos });
+    onWidgetChange({ todos: newTodos });
   };
   const [showMode, setShowMode] = useState<ShowMode>('Inbox');
   const [inputText, setInputText] = useState('');

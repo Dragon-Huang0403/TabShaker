@@ -1,4 +1,5 @@
 import React, { useRef, ReactElement, useState } from 'react';
+import styled from 'styled-components';
 import Resizer from './Resizer';
 import Dragger from './Dragger';
 import type {
@@ -15,6 +16,11 @@ import {
   calcGridItemLayout,
 } from './utils/other';
 
+const Wrapper = styled.div`
+  position: absolute;
+  user-select: none;
+`;
+
 type GridItemProp = {
   layoutItem: LayoutItem;
   limit: Limit;
@@ -22,13 +28,12 @@ type GridItemProp = {
   bound: HTMLDivElement;
   gridUnit: number[];
   onDrag: (
-    id: string,
     e: MouseEvent,
     draggerData: DraggerData,
-    newLayoutItem: LayoutItem,
+    updatedLayoutItem: LayoutItem,
   ) => void;
   onDragStart: () => void;
-  onResize: (id: string, newLayoutItem: LayoutItem) => void;
+  onResize: (updatedLayoutItem: LayoutItem) => void;
 };
 
 function GridItem(props: GridItemProp) {
@@ -43,7 +48,7 @@ function GridItem(props: GridItemProp) {
     onResize,
   } = props;
   const [isResizing, setIsResizing] = useState(false);
-  const nodeRef = useRef<HTMLElement>(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
   const id = children.key as string;
   const position = getPosition(layoutItem, gridUnit);
   const constraint = getConstraint(limit, gridUnit);
@@ -62,17 +67,13 @@ function GridItem(props: GridItemProp) {
     );
     const newPosition = { ...position, left: newLeft, top: newTop };
     const [newX, newY] = calcXY(newPosition, gridUnit);
-    const newLayoutItem = { ...layoutItem, x: newX, y: newY };
-    onDrag(id, e, draggerData, newLayoutItem);
+    const updatedLayoutItem = { ...layoutItem, x: newX, y: newY };
+    onDrag(e, draggerData, updatedLayoutItem);
   };
-  const onDragEnd = () => {
-    console.log('onDragEnd');
-  };
-  const handleResize = (newPosition: Position | null) => {
-    if (!newPosition) return;
-    console.log(layoutItem);
-    const newLayoutItem = calcGridItemLayout(newPosition, gridUnit);
-    onResize(id, newLayoutItem);
+  const onDragEnd = () => {};
+  const handleResize = (newPosition: Position) => {
+    const updatedLayoutItem = calcGridItemLayout(newPosition, gridUnit);
+    onResize({ ...updatedLayoutItem, id });
   };
   const onResizingStart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -95,13 +96,9 @@ function GridItem(props: GridItemProp) {
         onResizingStart={onResizingStart}
         onResizingEnd={onResizingEnd}
       >
-        {React.cloneElement(React.Children.only(children), {
-          ref: nodeRef,
-          style: {
-            ...children.props.style,
-            ...style,
-          },
-        })}
+        <Wrapper ref={nodeRef} style={style}>
+          {children}
+        </Wrapper>
       </Resizer>
     </Dragger>
   );

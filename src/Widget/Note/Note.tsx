@@ -1,20 +1,20 @@
 import React, { useRef } from 'react';
-import Card from '../../Card';
+import Card from '../../components/Card';
 import Title from './Title';
 import Content from './Content';
 
 interface NoteProps {
   data: { title: string; content: string };
-  widgetOnChange: (onChangedData: { title?: string; content?: string }) => void;
+  onWidgetChange: (onChangedData: { title?: string; content?: string }) => void;
 }
 
-function Note({ data, widgetOnChange }: NoteProps) {
+function Note({ data, onWidgetChange }: NoteProps) {
   const { title, content } = data;
   const setTitle = (newTitle: string) => {
-    widgetOnChange({ title: newTitle });
+    onWidgetChange({ title: newTitle });
   };
   const setContent = (newContent: string) => {
-    widgetOnChange({ content: newContent });
+    onWidgetChange({ content: newContent });
   };
 
   const contentRef = useRef<HTMLDivElement>(null);

@@ -3,8 +3,7 @@ import { int } from './other';
 import type {
   Constraint,
   Layout,
-  // GridItemData,
-  // Layout,
+  NewLayoutItem,
   LayoutItem,
   Position,
 } from '../../types/GridLayoutTypes';
@@ -138,7 +137,7 @@ export function moveElement(
         }
       }
       if (oldItem.y !== newItem.y) {
-        // eslint-disable-neyt-line no-constant-condition
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           if (newItem.y === oldItem.y) break;
           let { y } = newItem;
@@ -171,4 +170,28 @@ export function moveElement(
     }
     return item;
   });
+}
+
+export function getAvailableLayoutItem(
+  layout: Layout,
+  cols: number,
+  newLayoutItem: NewLayoutItem | LayoutItem,
+  x = 1,
+  y = 1,
+): LayoutItem {
+  const { w } = newLayoutItem;
+  const availableLayoutItem = { ...newLayoutItem, x, y };
+  if (!canElementMove(layout, availableLayoutItem)) {
+    if (x + w >= cols) {
+      return getAvailableLayoutItem(
+        layout,
+        cols,
+        availableLayoutItem,
+        1,
+        y + 1,
+      );
+    }
+    return getAvailableLayoutItem(layout, cols, availableLayoutItem, x + 1, y);
+  }
+  return availableLayoutItem;
 }

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
 import { AppIcon, SettingsIcon, DeleteIcon, AddIcon } from './components/Icons';
-import type { NewWidget } from './components/WidgetContainer/types';
 import SelectNewWidget from './SelectNewWidget';
+import type { WidgetData } from './types/WidgetTypes';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -92,7 +92,7 @@ const Link = styled.a`
 `;
 
 interface NavBarProps {
-  addWidget: (newWidget: NewWidget) => void;
+  addWidget: (newWidget: WidgetData) => void;
 }
 
 function NavBar({ addWidget }: NavBarProps) {
