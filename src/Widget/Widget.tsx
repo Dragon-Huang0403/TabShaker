@@ -8,6 +8,7 @@ import renderWidget from './renderWidget';
 
 const Wrapper = styled.div`
   position: absolute;
+  padding: 5px;
   width: 100%;
   height: 100%;
 `;

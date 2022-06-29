@@ -1,7 +1,7 @@
 export default {
   clock: {
     style: {
-      showSeconds: true,
+      showSeconds: false,
     },
     data: {},
     defaultLayout: { w: 10, h: 5 },
