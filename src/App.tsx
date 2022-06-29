@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { v4 } from 'uuid';
-import type { NewWidget, WidgetData } from './components/WidgetContainer/types';
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
-import Widgets from './Widgets';
 import BackgroundImage from './BackgroundImage';
-import { getAvailablePosition } from './utils/lib';
+import GridLayout from './GridLayout';
+import Widget from './Widget';
+import type { WidgetData } from './types/WidgetTypes';
+import type { Layouts } from './types/GridLayoutTypes';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -15,71 +15,46 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding-bottom: 60px;
 `;
-
-const defaultWidget: WidgetData[] = [
-  {
-    type: 'clock',
-    columns: 13,
-    rows: 6,
-    style: { showSeconds: true },
-    data: {},
-    rowStart: 2,
-    columnStart: 9,
-    id: '305d28ed-27d6-4941-b5ac-651c02e2eea8',
-  },
-  {
-    type: 'todo',
-    columns: 4,
-    rows: 4,
-    style: {},
-    data: { todos: [] },
-    rowStart: 11,
-    columnStart: 2,
-    id: '6df09026-9e2e-40b9-9561-9ab84a6245fe',
-  },
-  {
-    type: 'note',
-    columns: 4,
-    rows: 4,
-    style: {},
-    data: { title: '', content: '' },
-    rowStart: 11,
-    columnStart: 6,
-    id: '411ddfa0-0f22-456d-a019-18fe0f323851',
-  },
-];
-
+const defaultLayouts: Layouts = {
+  lg: [],
+};
 function App() {
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
-  const addWidget = (newWidget: NewWidget) => {
-    const newWidgetSize = getAvailablePosition(widgets, newWidget);
-    if (!newWidgetSize) {
-      // No space for new Widget
-      return;
-    }
-    setWidgets([...widgets, { ...newWidget, ...newWidgetSize, id: v4() }]);
-  };
-  useEffect(() => {
-    const rawData = window.localStorage.getItem('widgetData');
-    if (!rawData) {
-      setWidgets(defaultWidget);
-      return;
-    }
-    const oldWidget = JSON.parse(rawData);
-    setWidgets(oldWidget);
-  }, []);
+  const [layouts, setLayouts] = useState(defaultLayouts);
 
-  useEffect(() => {
-    if (widgets.length === 0) return;
-    window.localStorage.setItem('widgetData', JSON.stringify(widgets));
-  }, [widgets]);
+  const addWidget = (newWidget: WidgetData) => {
+    setWidgets([...widgets, newWidget]);
+  };
+  const deleteWidget = (id: string) => {
+    setWidgets((prevWidgets) =>
+      prevWidgets.filter((prevWidget) => prevWidget.id !== id),
+    );
+  };
+  const onWidgetChange = (updatedWidget: WidgetData) => {
+    setWidgets((prevWidgets) =>
+      prevWidgets.map((prevWidget) =>
+        prevWidget.id === updatedWidget.id ? updatedWidget : prevWidget,
+      ),
+    );
+  };
+
   return (
     <ThemeProvider theme={globalTheme}>
       <GlobalStyle />
       <BackgroundImage />
       <Wrapper>
         <NavBar addWidget={addWidget} />
-        <Widgets widgets={widgets} setWidgets={setWidgets} />
+        {/* <Widgets widgets={widgets} setWidgets={setWidgets} /> */}
+        <GridLayout widgets={widgets} layouts={layouts} setLayouts={setLayouts}>
+          {widgets.map((widget) => (
+            <Widget
+              key={widget.id}
+              widget={widget}
+              deleteWidget={() => deleteWidget(widget.id)}
+              onWidgetChange={onWidgetChange}
+            />
+          ))}
+        </GridLayout>
       </Wrapper>
     </ThemeProvider>
   );

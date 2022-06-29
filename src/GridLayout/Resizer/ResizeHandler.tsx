@@ -1,68 +1,62 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { Direction } from './types';
+import Dragger from '../Dragger';
+import type {
+  DraggerData,
+  ResizerDirections,
+} from '../../types/GridLayoutTypes';
 
-interface ResizerStyleProps {
-  width: string;
-  height: string;
-  cursor: string;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-}
-
-const resizerStyles: { [direction: string]: ResizerStyleProps } = {
-  top: {
+const resizerStyles = {
+  n: {
     height: '10px',
     width: '100%',
     top: '-5px',
     left: '0px',
     cursor: 'n-resize',
   },
-  bottom: {
+  s: {
     height: '10px',
     width: '100%',
     bottom: '-5px',
     left: '0px',
     cursor: 's-resize',
   },
-  left: {
+  w: {
     height: '100%',
     width: '10px',
     left: '-5px',
     top: '0px',
     cursor: 'e-resize',
   },
-  right: {
+  e: {
     height: '100%',
     width: '10px',
     right: '-5px',
     top: '0px',
     cursor: 'w-resize',
   },
-  topLeft: {
+  nw: {
     width: '20px',
     height: '20px',
     top: '-10px',
     left: '-10px',
     cursor: 'nw-resize',
   },
-  topRight: {
+  ne: {
     width: '20px',
     height: '20px',
     top: '-10px',
     right: '-10px',
     cursor: 'ne-resize',
   },
-  bottomLeft: {
+  sw: {
     width: '20px',
     height: '20px',
     bottom: '-10px',
     left: '-10px',
     cursor: 'sw-resize',
   },
-  bottomRight: {
+  se: {
     width: '20px',
     height: '20px',
     bottom: '-10px',
@@ -71,27 +65,36 @@ const resizerStyles: { [direction: string]: ResizerStyleProps } = {
   },
 } as const;
 
-const ResizerWrapper = styled.div`
+const Wrapper = styled.div`
   position: absolute;
-  user-select: none;
-  z-index: 100;
 `;
 
-interface ResizerProps {
-  direction: Direction;
-  onResizeStart: (
-    e: React.MouseEvent<HTMLDivElement>,
-    direction: Direction,
-  ) => void;
+type ResizeHandlerProp = {
+  direction: ResizerDirections;
+  onResize: (e: MouseEvent, draggerData: DraggerData) => void;
+  onResizingStart: (e: React.MouseEvent) => void;
+  onResizingEnd: (e: MouseEvent) => void;
+  gridUnit: number | undefined;
+};
+
+function ResizeHandler({
+  direction,
+  onResize,
+  onResizingStart,
+  onResizingEnd,
+  gridUnit,
+}: ResizeHandlerProp) {
+  const style = { ...resizerStyles[direction] };
+  return (
+    <Dragger
+      onDrag={onResize}
+      onDragStart={onResizingStart}
+      onDragEnd={onResizingEnd}
+      gridUnit={gridUnit}
+    >
+      <Wrapper style={style} />
+    </Dragger>
+  );
 }
 
-function Resizer(props: ResizerProps) {
-  const { direction, onResizeStart } = props;
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    onResizeStart(e, direction);
-  };
-  const style = resizerStyles[direction];
-  return <ResizerWrapper style={style} onMouseDown={onMouseDown} />;
-}
-
-export default Resizer;
+export default ResizeHandler;

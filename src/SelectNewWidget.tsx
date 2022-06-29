@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { v4 } from 'uuid';
 import Modal from './Modal';
-import { defaultConfig } from './components/Widget';
-import type { NewWidget, WidgetType } from './components/WidgetContainer/types';
+import { defaultConfig } from './Widget';
+import type { WidgetData, WidgetType } from './types/WidgetTypes';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -28,7 +29,7 @@ const WidgetOption = styled.div`
 
 interface SelectNewWidgetProps {
   hideSelectNewWidget: () => void;
-  addWidget: (newWidget: NewWidget) => void;
+  addWidget: (newWidget: WidgetData) => void;
 }
 
 function SelectNewWidget({
@@ -36,7 +37,7 @@ function SelectNewWidget({
   addWidget,
 }: SelectNewWidgetProps) {
   const handleAddWidget = (widgetType: WidgetType) => {
-    addWidget({ type: widgetType, ...defaultConfig[widgetType] });
+    addWidget({ type: widgetType, ...defaultConfig[widgetType], id: v4() });
   };
   return (
     <Modal>
