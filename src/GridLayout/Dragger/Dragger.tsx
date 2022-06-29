@@ -25,7 +25,6 @@ function Dragger(props: DraggerProps) {
   const lastX = useRef(NaN);
   const lastY = useRef(NaN);
   const handleOnDragStart = (e: React.MouseEvent) => {
-    e.preventDefault();
     if (disable) {
       return;
     }

@@ -18,7 +18,7 @@ import {
 
 const Wrapper = styled.div`
   position: absolute;
-  user-select: none;
+  // user-select: none;
 `;
 
 type GridItemProp = {

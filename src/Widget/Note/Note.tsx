@@ -11,10 +11,10 @@ interface NoteProps {
 function Note({ data, onWidgetChange }: NoteProps) {
   const { title, content } = data;
   const setTitle = (newTitle: string) => {
-    onWidgetChange({ title: newTitle });
+    onWidgetChange({ title: newTitle, content });
   };
   const setContent = (newContent: string) => {
-    onWidgetChange({ content: newContent });
+    onWidgetChange({ title, content: newContent });
   };
 
   const contentRef = useRef<HTMLDivElement>(null);
