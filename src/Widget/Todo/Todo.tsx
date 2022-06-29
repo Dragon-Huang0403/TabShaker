@@ -39,7 +39,7 @@ const Title = styled.div`
 const Input = styled.input`
   width: 100%;
   background: transparent;
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.color.white};
   border: none;
   outline: none;
   font-size: 1rem;

@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   left: 0px;
   width: 100vw;
   height: 100vh;
-  background: ${({ theme }) => theme.transparentBlack};
+  background: ${({ theme }) => theme.color.transparentBlack};
   color: white;
   z-index: 10;
   display: flex;
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const WidgetOption = styled.div`
-  background: ${({ theme }) => theme.lightGrey};
+  background: ${({ theme }) => theme.color.lightGrey};
   padding: 20px;
   font-size: 3rem;
   cursor: pointer;

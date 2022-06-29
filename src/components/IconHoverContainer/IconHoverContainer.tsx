@@ -8,18 +8,18 @@ const Wrapper = styled.div`
   border-radius: 50%;
 
   &:hover {
-    background: ${({ theme }) => theme.transparentWhite};
+    background: ${({ theme }) => theme.color.transparentWhite};
     cursor: pointer;
   }
 
   &:active {
-    background: rgba(255, 255, 255, 0.18);
+    background: ${({ theme }) => theme.color.transparentWhite};
   }
 
   & > svg {
     width: 24px;
     height: 24px;
-    fill: ${({ theme }) => theme.white};
+    fill: ${({ theme }) => theme.color.white};
   }
 `;
 

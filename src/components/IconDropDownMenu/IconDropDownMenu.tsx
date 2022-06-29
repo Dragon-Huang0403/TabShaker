@@ -13,8 +13,8 @@ const ItemsContainer = styled.ul<{ side: 'left' | 'right'; bulge: boolean }>`
   margin: 0;
   top: 110%;
   ${({ side }) => side}: 0;
-  background: ${({ theme }) => theme.grey};
-  color: ${({ theme }) => theme.white};
+  background: ${({ theme }) => theme.color.grey};
+  color: ${({ theme }) => theme.color.white};
   min-width: 100px;
   font-size: 0.75rem;
   ${({ bulge }) =>
@@ -25,7 +25,7 @@ const ItemsContainer = styled.ul<{ side: 'left' | 'right'; bulge: boolean }>`
         position: absolute;
         left: 10px;
         top: -6px;
-        border-bottom: 6px solid ${({ theme }) => theme.grey};
+        border-bottom: 6px solid ${({ theme }) => theme.color.grey};
         border-left: 6px solid transparent;
         border-right: 6px solid transparent;
       }
@@ -37,7 +37,7 @@ const ItemsContainer = styled.ul<{ side: 'left' | 'right'; bulge: boolean }>`
 
   & > li:hover {
     cursor: pointer;
-    background: ${({ theme }) => theme.transparentWhite};
+    background: ${({ theme }) => theme.color.transparentWhite};
   }
 `;
 

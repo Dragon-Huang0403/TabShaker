@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Input = styled.input`
   width: 100%;
   background: transparent;
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.color.white};
   border: none;
   outline: none;
   line-height: 1.5rem;

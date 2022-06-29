@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 
 const Placeholder = styled.div`
   padding: 10px;
-  background: #0007;
+  background: ${({ theme }) => theme.color.transparentBlack};
   background-clip: content-box;
   width: 100%;
   height: 100%;
