@@ -18,7 +18,7 @@ import {
 
 const Wrapper = styled.div`
   position: absolute;
-  // user-select: none;
+  user-select: none;
 `;
 
 type GridItemProp = {
@@ -32,7 +32,8 @@ type GridItemProp = {
     draggerData: DraggerData,
     updatedLayoutItem: LayoutItem,
   ) => void;
-  onDragStart: () => void;
+  onDragStart: (e: React.MouseEvent, id: string) => void;
+  onDragEnd: () => void;
   onResize: (updatedLayoutItem: LayoutItem) => void;
 };
 
@@ -45,6 +46,7 @@ function GridItem(props: GridItemProp) {
     gridUnit,
     onDrag,
     onDragStart,
+    onDragEnd,
     onResize,
   } = props;
   const [isResizing, setIsResizing] = useState(false);
@@ -70,7 +72,9 @@ function GridItem(props: GridItemProp) {
     const updatedLayoutItem = { ...layoutItem, x: newX, y: newY };
     onDrag(e, draggerData, updatedLayoutItem);
   };
-  const onDragEnd = () => {};
+  const handleOnDragStart = (e: React.MouseEvent) => {
+    onDragStart(e, id);
+  };
   const handleResize = (newPosition: Position) => {
     const updatedLayoutItem = calcGridItemLayout(newPosition, gridUnit);
     onResize({ ...updatedLayoutItem, id });
@@ -84,9 +88,9 @@ function GridItem(props: GridItemProp) {
   };
   return (
     <Dragger
-      onDrag={handleOnDrag}
       disable={isResizing}
-      onDragStart={onDragStart}
+      onDrag={handleOnDrag}
+      onDragStart={handleOnDragStart}
       onDragEnd={onDragEnd}
     >
       <Resizer

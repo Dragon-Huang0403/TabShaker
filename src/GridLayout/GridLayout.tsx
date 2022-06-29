@@ -22,10 +22,11 @@ const Wrapper = styled.div`
   flex-grow: 1;
 `;
 
-const defaultLimits: Limit[] = [
-  { minW: 3, maxW: 12, minH: 3, maxH: 12 },
-  { minW: 3, maxW: 12, minH: 3, maxH: 12 },
-];
+const Placeholder = styled.div`
+  background: #0007;
+  width: 100%;
+  height: 100%;
+`;
 
 type GridLayoutProps = {
   children: React.ReactNode;
@@ -47,6 +48,7 @@ function GridLayout({
   const screenSize = 'lg';
   const currentLayout = layouts[screenSize];
   const latestCurrentLayout = useRef(currentLayout);
+  const [placeholder, setPlaceHolder] = useState<LayoutItem | null>(null);
   const updateLayout = (layout: Layout) => {
     const newLayouts = { ...layouts };
     newLayouts[screenSize] = layout;
@@ -70,11 +72,19 @@ function GridLayout({
       latestCurrentLayout.current,
       cols,
     );
+    const newLayoutItem = findLayoutItem(newLayout, layoutItem.id);
+    if (newLayoutItem && canElementMove(newLayout, newLayoutItem)) {
+      setPlaceHolder(newLayoutItem);
+    }
     latestCurrentLayout.current = newLayout;
     updateLayout(newLayout);
   };
-  const onDragStart = () => {
-    latestCurrentLayout.current = currentLayout;
+  const onDragStart = () => {};
+  const onDragEnd = () => {
+    if (placeholder) {
+      updateLayoutItem(placeholder);
+    }
+    setPlaceHolder(null);
   };
   const onResize = (layoutItem: LayoutItem) => {
     if (!canElementMove(currentLayout, layoutItem)) return;
@@ -97,10 +107,33 @@ function GridLayout({
         bound={gridRef.current!}
         gridUnit={gridUnit}
         onDrag={onDrag}
-        onResize={onResize}
+        onDragEnd={onDragEnd}
         onDragStart={onDragStart}
+        onResize={onResize}
       >
         {child}
+      </GridItem>
+    );
+  };
+
+  const renderPlaceHolder = () => {
+    if (!placeholder) return null;
+    const { id } = placeholder;
+    const targetWidget = widgets.find((widget) => widget.id === id);
+    if (!targetWidget) return null;
+    const { limit } = targetWidget;
+    return (
+      <GridItem
+        layoutItem={placeholder}
+        limit={limit}
+        bound={gridRef.current!}
+        gridUnit={gridUnit}
+        onDrag={onDrag}
+        onDragEnd={onDragEnd}
+        onDragStart={onDragStart}
+        onResize={onResize}
+      >
+        <Placeholder />
       </GridItem>
     );
   };
@@ -142,6 +175,7 @@ function GridLayout({
 
   return (
     <Wrapper ref={gridRef}>
+      {renderPlaceHolder()}
       {React.Children.map(children, (child) =>
         renderGridItem(child as ReactElement),
       )}
