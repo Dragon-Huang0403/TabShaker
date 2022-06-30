@@ -9,6 +9,7 @@ import Pause from './Pause';
 import MoreDots from './MoreDots';
 import ExpandMore from './ExpandMore';
 import Close from './Close';
+import Speaker from './Speaker';
 
 export {
   AppIcon,
@@ -22,4 +23,5 @@ export {
   MoreDots,
   ExpandMore,
   Close,
+  Speaker,
 };
