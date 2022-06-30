@@ -21,4 +21,10 @@ export default {
     defaultLayout: { w: 10, h: 10 },
     limit: { minW: 3, maxW: 10, minH: 3, maxH: 10 },
   },
+  englishCard: {
+    style: {},
+    data: {},
+    defaultLayout: { w: 12, h: 7 },
+    limit: { minW: 11, maxW: 14, minH: 6, maxH: 9 },
+  },
 };

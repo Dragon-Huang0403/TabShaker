@@ -3,6 +3,7 @@ const theme = {
     black: '#202124',
     white: '#e8eaed',
     grey: '#333',
+    purple: '#e4c1f9',
     lightGrey: '#666',
     lightBlue: '#3498db',
     transparentBlack: '#0009',
@@ -11,9 +12,12 @@ const theme = {
   },
   screens: {
     sm: { screenWidth: 500, cols: 20 },
-    md: { screenWidth: 800, cols: 25 },
-    lg: { screenWidth: 1200, cols: 30 },
-    xl: { screenWidth: 1440, cols: 40 },
+    m: { screenWidth: 650, cols: 26 },
+    md: { screenWidth: 800, cols: 32 },
+    l: { screenWidth: 1000, cols: 40 },
+    lg: { screenWidth: 1200, cols: 48 },
+    xl: { screenWidth: 1500, cols: 60 },
+    xxl: { screenWidth: 1800, cols: 72 },
   },
 };
 

@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 function App() {
   const [widgets, setWidgets] = useState<WidgetData[]>([]);
   const [layouts, setLayouts] = useState<Layouts>(defaultLayout);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   useEffect(() => {
     const rawOldLayouts = window.localStorage.getItem('layouts');
     if (rawOldLayouts) {
@@ -29,9 +30,10 @@ function App() {
     if (rawOldWidget) {
       setWidgets(JSON.parse(rawOldWidget));
     }
+    setIsFirstRender(false);
   }, []);
   useEffect(() => {
-    if (widgets.length === 0) return;
+    if (isFirstRender) return;
     window.localStorage.setItem('widgets', JSON.stringify(widgets));
     window.localStorage.setItem('layouts', JSON.stringify(layouts));
   }, [widgets, layouts]);
