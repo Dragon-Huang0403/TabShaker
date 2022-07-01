@@ -24,12 +24,28 @@ function Widget({ widget, deleteWidget, onWidgetChange }: WidgetProps) {
   const handleOnWidgetChange = (data: any) => {
     onWidgetChange({ ...widget, data });
   };
-
+  const menu = widget.menu.map((item) => ({
+    text: item,
+    checked: widget.data.tag.includes(item),
+    onClick: () => {
+      const newWidget = { ...widget };
+      newWidget.data = { ...newWidget.data };
+      if (!newWidget.data.tag) return;
+      if (newWidget.data.tag.includes(item)) {
+        newWidget.data.tag = newWidget.data.tag.filter(
+          (tag: string) => tag !== item,
+        );
+      } else {
+        newWidget.data.tag = [...newWidget.data.tag, item];
+      }
+      onWidgetChange(newWidget);
+    },
+  }));
   return (
     <Wrapper ref={hoverRef}>
       {isHover && (
         <IconDropDownMenu
-          items={[{ text: 'Delete', onClick: deleteWidget }]}
+          items={[{ text: 'Delete', onClick: deleteWidget }, ...menu]}
           style={{ top: '12px', right: '12px', position: 'absolute' }}
         >
           <MoreDots />

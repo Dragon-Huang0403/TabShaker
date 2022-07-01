@@ -6,10 +6,10 @@ const Wrapper = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.color.transparentWhite};
-    cursor: pointer;
   }
 
   &:active {

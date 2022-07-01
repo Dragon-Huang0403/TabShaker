@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import IconHoverContainer from '../IconHoverContainer';
+import { Check } from '../Icons';
 
 const Wrapper = styled.div`
   z-index: 10;
@@ -30,25 +31,40 @@ const ItemsContainer = styled.ul<{ side: 'left' | 'right'; bulge: boolean }>`
         border-right: 6px solid transparent;
       }
     `}
+`;
 
-  & > li {
-    padding: 5px;
+const Item = styled.li`
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  &:hover {
+    background: ${({ theme }) => theme.color.transparentWhite};
   }
 
-  & > li:hover {
-    cursor: pointer;
-    background: ${({ theme }) => theme.color.transparentWhite};
+  & > svg {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 3px;
+    fill: ${({ theme }) => theme.color.white};
+  }
+
+  & > span {
+    flex-basis: 80%;
   }
 `;
 
-interface Item {
+interface ItemData {
   text: string;
   onClick: () => void;
+  checked?: boolean;
 }
 
 type IconDropDownMenuProps = {
   children: JSX.Element;
-  items: Item[];
+  items: ItemData[];
   style?: React.CSSProperties;
   side?: 'left' | 'right';
   bulge?: boolean;
@@ -68,7 +84,6 @@ function IconDropDownMenu({
   bulge,
 }: IconDropDownMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLUListElement>(null);
   useEffect(() => {
     if (!isMenuOpen) return undefined;
     const closeMenu = (e: MouseEvent) => {
@@ -81,6 +96,7 @@ function IconDropDownMenu({
       window.removeEventListener('click', closeMenu);
     };
   }, [isMenuOpen]);
+
   return (
     <Wrapper style={style}>
       <IconHoverContainer
@@ -95,16 +111,17 @@ function IconDropDownMenu({
         {children}
       </IconHoverContainer>
       {isMenuOpen && (
-        <ItemsContainer ref={menuRef} side={side} bulge={bulge}>
+        <ItemsContainer side={side} bulge={bulge}>
           {items.map((item, index) => (
-            <li
+            <Item
               // eslint-disable-next-line react/no-array-index-key
               key={index}
               onClick={item.onClick}
               role="presentation"
             >
-              {item.text}
-            </li>
+              {item.checked && <Check />}
+              <span>{item.text}</span>
+            </Item>
           ))}
         </ItemsContainer>
       )}

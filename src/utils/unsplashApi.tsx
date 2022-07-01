@@ -14,7 +14,7 @@ export default async function getRandomPhotos() {
     `${url}/photos/random?count=10&collections=1053828`,
     {
       headers: {
-        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ANOTHER_API_KEY}`,
+        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_API_KEY}`,
       },
     },
   );
