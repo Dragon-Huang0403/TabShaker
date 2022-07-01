@@ -10,6 +10,7 @@ import MoreDots from './MoreDots';
 import ExpandMore from './ExpandMore';
 import Close from './Close';
 import Speaker from './Speaker';
+import DoubleArrow from './DoubleArrow';
 
 export {
   AppIcon,
@@ -24,4 +25,5 @@ export {
   ExpandMore,
   Close,
   Speaker,
+  DoubleArrow,
 };

@@ -1,92 +1,93 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Speaker } from '../../components/Icons';
+import { getCard } from '../../utils/firebase';
+import { getAudioUrl } from '../../utils/lib';
+import type { EnglishWordData } from '../../types/WidgetTypes';
+import EnglishWord from './EnglishWord';
+import { DoubleArrow } from '../../components/Icons';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.color.black};
-  color: ${({ theme }) => theme.color.white};
-  border-radius: 10px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  font-size: 0.8rem;
+  position: relative;
 `;
-const Word = styled.div`
-  display: inline-block;
-  margin-right: 10px;
-  margin-top: 0px;
-  color: ${({ theme }) => theme.color.purple};
-  font-size: 1.5rem;
-`;
-const Pronunciation = styled.div`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  gap: 5px;
 
-  & > svg {
-    width: 20px;
-    height: 20px;
-    fill: ${({ theme }) => theme.color.lightWhite};
-    cursor: pointer;
-    border-radius: 50%;
-  }
-  & > svg:hover {
-    fill: ${({ theme }) => theme.color.white};
+const IconWrapper = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  padding: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &:hover {
     background: ${({ theme }) => theme.color.transparentWhite};
   }
-`;
-const Definition = styled.div`
-  flex-grow: 1;
-  margin-top: auto;
-  color: ${({ theme }) => theme.color.white};
-`;
-const Example = styled.div`
-  padding-top: 5px;
-  margin-top: auto;
-`;
-
-function getAudioUrl(word: string) {
-  const str = word.toLocaleLowerCase();
-  let url = `https://www.oxfordlearnersdictionaries.com/media/english/us_pron/${str.charAt(
-    0,
-  )}/${str.slice(0, 3)}/`;
-  if (str.length >= 5) {
-    url += `${str.slice(0, 5)}/${str}__us_1.mp3`;
-    return url;
+  &:hover > svg {
+    fill: ${({ theme }) => theme.color.lightWhite};
   }
-  url += `${str.padEnd(5, '_')}/${str}__us_1.mp3`;
-  return url;
-}
+
+  & > svg {
+    width: 24px;
+    height: 24px;
+    fill: ${({ theme }) => theme.color.transparentWhite};
+  }
+`;
 
 function EnglishCard() {
-  const playAudio = () => {
-    const audio = new Audio(getAudioUrl('tonight'));
+  const [words, setWords] = useState<EnglishWordData[]>([]);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const playAudio = async (word: string) => {
+    const audio = new Audio(getAudioUrl(word));
     audio.play();
   };
-
+  useEffect(() => {
+    const oldWords = window.localStorage.getItem('engWords');
+    if (oldWords) {
+      setWords(JSON.parse(oldWords));
+      return;
+    }
+    getCard(10, ['oxford_20000']).then((data) => {
+      setWords(data as EnglishWordData[]);
+      window.localStorage.setItem('engWords', JSON.stringify(data));
+    });
+  }, []);
+  const nextWordIndex =
+    currentWordIndex + 1 >= words.length ? 0 : currentWordIndex + 1;
+  const lastWordIndex =
+    currentWordIndex - 1 < 0 ? words.length - 1 : currentWordIndex - 1;
   return (
     <Wrapper>
-      <div>
-        <Word>Tonight</Word>
-        <span>adverb</span>
-      </div>
-      <Pronunciation>
-        <span>/əˈbæn.dən/</span>
-        <Speaker onClick={playAudio} />
-      </Pronunciation>
-      <Definition>
-        (during) the night of the present day
-        <br />
-        （在）今晚；（在）今夜
-      </Definition>
-      <Example>
-        Tonight will be my first chance to meet her <br />
-        今晚將是我與她見面的第一次機會。
-      </Example>
+      {words.map((word, index) => {
+        let cardStyle = '';
+        if (index === currentWordIndex) {
+          cardStyle = 'current';
+        }
+        if (index === nextWordIndex) {
+          cardStyle = 'next';
+        }
+        if (index === lastWordIndex) {
+          cardStyle = 'last';
+        }
+        return (
+          <EnglishWord
+            key={word.id}
+            word={word}
+            playAudio={playAudio}
+            cardStyle={cardStyle}
+          />
+        );
+      })}
+      <IconWrapper
+        onClick={() => {
+          setCurrentWordIndex(nextWordIndex);
+        }}
+      >
+        <DoubleArrow />
+      </IconWrapper>
     </Wrapper>
   );
 }
