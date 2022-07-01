@@ -11,6 +11,7 @@ import ExpandMore from './ExpandMore';
 import Close from './Close';
 import Speaker from './Speaker';
 import DoubleArrow from './DoubleArrow';
+import Check from './Check';
 
 export {
   AppIcon,
@@ -26,4 +27,5 @@ export {
   Close,
   Speaker,
   DoubleArrow,
+  Check,
 };

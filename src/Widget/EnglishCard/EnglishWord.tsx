@@ -13,8 +13,8 @@ const Wrapper = styled.div<{ cardStyle: string }>`
   background: ${({ theme }) => theme.color.black};
   color: ${({ theme }) => theme.color.lavenderBlue};
   border-radius: 10px;
-  padding: 15px 20px 0px;
-  display: flex;
+  padding: 15px 20px 5px;
+  display: none;
   flex-direction: column;
   overflow: auto;
   font-size: 1rem;
@@ -25,26 +25,23 @@ const Wrapper = styled.div<{ cardStyle: string }>`
   ${({ cardStyle }) => {
     if (cardStyle === 'next') {
       return css`
+        display: flex;
         z-index: 2;
         transform: translateY(-15px) rotate(4deg) translateX(15px) scale(1);
-        transition: transform 0.6s cubic-bezier(0.8, 0.2, 0.1, 0.8) 0.1s,
-          background 0.4s linear;
       `;
     }
     if (cardStyle === 'last') {
       return css`
+        display: flex;
         z-index: 1;
         transform: translateY(-30px) rotate(8deg) translateX(30px) scale(0.95);
-        transition: transform 0.6s cubic-bezier(0.8, 0.2, 0.1, 0.8) 0.1s,
-          background 0.4s linear;
       `;
     }
     if (cardStyle === 'current') {
       return css`
+        display: flex;
         z-index: 3;
         transform: rotate(-1deg) translateX(0%) scale(1);
-        transition: transform 0.6s cubic-bezier(0.8, 0.2, 0.1, 0.8) 0.1s,
-          background 0.4s linear;
       `;
     }
     return css``;

@@ -7,6 +7,7 @@ export type WidgetData = {
   data: any;
   defaultLayout: { w: number; h: number };
   limit: { minW: number; maxW: number; minH: number; maxH: number };
+  menu: string[];
 };
 
 export type EnglishWordData = {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl } from '../../utils/lib';
+import { getAudioUrl, convertEnglishWordTag } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
 import { DoubleArrow } from '../../components/Icons';
@@ -16,7 +16,7 @@ const IconWrapper = styled.div`
   position: absolute;
   bottom: 10px;
   right: 10px;
-  z-index: 10;
+  z-index: 5;
   padding: 2px;
   width: 28px;
   height: 28px;
@@ -37,28 +37,45 @@ const IconWrapper = styled.div`
   }
 `;
 
-function EnglishCard() {
+interface EnglishCardProps {
+  data: {
+    tag: string[];
+  };
+}
+
+function EnglishCard({ data }: EnglishCardProps) {
   const [words, setWords] = useState<EnglishWordData[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const tag = convertEnglishWordTag(data.tag);
+
   const playAudio = async (word: string) => {
     const audio = new Audio(getAudioUrl(word));
     audio.play();
   };
+
   useEffect(() => {
     const oldWords = window.localStorage.getItem('engWords');
     if (oldWords) {
-      setWords(JSON.parse(oldWords));
-      return;
+      const wordsUpdatedAt = localStorage.getItem('wordsUpdatedAt');
+      const currentTime = new Date().getTime();
+      if (!wordsUpdatedAt || currentTime - Number(wordsUpdatedAt) <= 86400000) {
+        setWords(JSON.parse(oldWords));
+        return;
+      }
     }
-    getCard(10, ['oxford_20000']).then((data) => {
-      setWords(data as EnglishWordData[]);
-      window.localStorage.setItem('engWords', JSON.stringify(data));
+    getCard(10, tag).then((res) => {
+      setWords(res as EnglishWordData[]);
+      window.localStorage.setItem('engWords', JSON.stringify(res));
+      const currentTime = new Date().getTime();
+      window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
     });
   }, []);
+
   const nextWordIndex =
     currentWordIndex + 1 >= words.length ? 0 : currentWordIndex + 1;
   const lastWordIndex =
     currentWordIndex - 1 < 0 ? words.length - 1 : currentWordIndex - 1;
+
   return (
     <Wrapper>
       {words.map((word, index) => {

@@ -7,6 +7,8 @@ import {
   collection,
   getDocs,
   limit,
+  Query,
+  DocumentData,
 } from 'firebase/firestore';
 import { v4 } from 'uuid';
 
@@ -26,12 +28,21 @@ const db = getFirestore(app);
 const dictionaryTableName = 'dictionary';
 
 export async function getCard(quantity: number, tag: string[]) {
-  const q = query(
-    collection(db, dictionaryTableName),
-    limit(quantity),
-    where('id', '>=', v4()),
-    where('tags', 'array-contains-any', tag),
-  );
+  let q: Query<DocumentData>;
+  if (tag.length > 0) {
+    q = query(
+      collection(db, dictionaryTableName),
+      limit(quantity),
+      where('id', '>=', v4()),
+      where('tags', 'array-contains-any', tag),
+    );
+  } else {
+    q = query(
+      collection(db, dictionaryTableName),
+      limit(quantity),
+      where('id', '>=', v4()),
+    );
+  }
   const querySnapshot = await getDocs(q);
   const data = querySnapshot.docs.map((doc) => doc.data());
   return data;

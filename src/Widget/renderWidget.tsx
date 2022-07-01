@@ -18,7 +18,7 @@ export default function renderWidget(
     case 'todo':
       return <Todo data={data} onWidgetChange={onWidgetChange} />;
     case 'englishCard':
-      return <EnglishCard />;
+      return <EnglishCard data={data} />;
     default:
       return null;
   }
