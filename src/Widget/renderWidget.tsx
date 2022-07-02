@@ -21,8 +21,30 @@ export default function renderWidget(
     case 'englishCard':
       return <EnglishCard data={data} />;
     case 'news':
-      return <News />;
+      return <News data={data} />;
     default:
       return null;
   }
+}
+
+export function handleWidgetTagUpdate(
+  newTag: string,
+  widget: WidgetData,
+): WidgetData {
+  const { type } = widget;
+  const newWidget = { ...widget };
+  newWidget.data = { ...newWidget.data };
+  if (type === 'englishCard') {
+    if (newWidget.data.tag.includes(newTag)) {
+      newWidget.data.tag = newWidget.data.tag.filter(
+        (tag: string) => tag !== newTag,
+      );
+    } else {
+      newWidget.data.tag = [...newWidget.data.tag, newTag];
+    }
+  }
+  if (type === 'news') {
+    newWidget.data.tag = newTag;
+  }
+  return newWidget;
 }

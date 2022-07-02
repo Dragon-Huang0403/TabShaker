@@ -14,24 +14,29 @@ const Wrapper = styled.div`
   border-radius: 10px;
 `;
 
-function News() {
+interface NewsProps {
+  data: { tag: string };
+}
+
+function News({ data }: NewsProps) {
   const [newsData, setNewsData] = useState<NewsData[]>([]);
+  const { tag } = data;
   useEffect(() => {
     if (newsData.length > 0) return;
     const getNews = async () => {
-      const data = await fetchNews();
-      if (data.status === 'ok') {
-        const articles = data.articles as NewsData[];
+      const res = await fetchNews(tag);
+      if (res.status === 'ok') {
+        const articles = res.articles as NewsData[];
         setNewsData(articles);
       }
     };
     getNews();
-  }, []);
+  }, [tag]);
   return (
     <Wrapper>
-      {newsData.map((data, index) => (
+      {newsData.map((news, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <NewsItem data={data} key={index} />
+        <NewsItem data={news} key={index} />
       ))}
     </Wrapper>
   );

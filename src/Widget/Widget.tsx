@@ -4,7 +4,7 @@ import type { WidgetData } from '../types/WidgetTypes';
 import { useHover } from '../hooks';
 import IconDropDownMenu from '../components/IconDropDownMenu';
 import { MoreDots } from '../components/Icons';
-import renderWidget from './renderWidget';
+import renderWidget, { handleWidgetTagUpdate } from './renderWidget';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -28,16 +28,7 @@ function Widget({ widget, deleteWidget, onWidgetChange }: WidgetProps) {
     text: item,
     checked: widget.data.tag.includes(item),
     onClick: () => {
-      const newWidget = { ...widget };
-      newWidget.data = { ...newWidget.data };
-      if (!newWidget.data.tag) return;
-      if (newWidget.data.tag.includes(item)) {
-        newWidget.data.tag = newWidget.data.tag.filter(
-          (tag: string) => tag !== item,
-        );
-      } else {
-        newWidget.data.tag = [...newWidget.data.tag, item];
-      }
+      const newWidget = handleWidgetTagUpdate(item, widget);
       onWidgetChange(newWidget);
     },
   }));
