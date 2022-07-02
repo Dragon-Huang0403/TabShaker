@@ -1,4 +1,7 @@
-export type WidgetType = 'note' | 'todo' | 'clock' | 'englishCard';
+// eslint-disable-next-line import/no-cycle
+import { defaultConfig } from '../Widget';
+
+export type WidgetType = keyof typeof defaultConfig;
 
 export type WidgetData = {
   id: string;
@@ -20,4 +23,15 @@ export type EnglishWordData = {
   example: string;
   example_chinese: string;
   tags: string[];
+};
+
+export type NewsData = {
+  author: string;
+  content: string;
+  description: string;
+  publishedAt: string;
+  source: { name: string };
+  title: string;
+  url: string;
+  urlToImage: string;
 };

@@ -4,6 +4,7 @@ import Clock from './Clock';
 import Note from './Note';
 import Todo from './Todo';
 import EnglishCard from './EnglishCard';
+import News from './News';
 
 export default function renderWidget(
   widget: WidgetData,
@@ -19,6 +20,8 @@ export default function renderWidget(
       return <Todo data={data} onWidgetChange={onWidgetChange} />;
     case 'englishCard':
       return <EnglishCard data={data} />;
+    case 'news':
+      return <News />;
     default:
       return null;
   }
