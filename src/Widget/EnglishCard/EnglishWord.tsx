@@ -123,8 +123,8 @@ function EnglishWord({ word, playAudio, cardStyle }: WordProps) {
           </a>
         </Word>
         <div>{word.type}</div>
-        {word.tags.map(() => (
-          <Tag>Basic</Tag>
+        {word.tags.map((tag) => (
+          <Tag>{tag}</Tag>
         ))}
       </Header>
       <Pronunciation>

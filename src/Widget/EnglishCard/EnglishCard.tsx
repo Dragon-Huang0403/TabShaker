@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl, convertEnglishWordTag } from '../../utils/lib';
+import { getAudioUrl } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
 import { DoubleArrow, Refresh } from '../../components/Icons';
@@ -51,7 +51,7 @@ interface EnglishCardProps {
 function EnglishCard({ data }: EnglishCardProps) {
   const [words, setWords] = useState<EnglishWordData[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const tag = convertEnglishWordTag(data.tag);
+  const { tag } = data;
 
   const playAudio = async (word: string) => {
     const audio = new Audio(getAudioUrl(word));
