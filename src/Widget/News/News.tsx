@@ -22,12 +22,31 @@ function News({ data }: NewsProps) {
   const [newsData, setNewsData] = useState<NewsData[]>([]);
   const { tag } = data;
   useEffect(() => {
-    if (newsData.length > 0) return;
+    const rawNewsLastUpdateInfo = window.localStorage.getItem('newsUpdateInfo');
+    const rawNewsLastUpdateData = window.localStorage.getItem('newsData');
+    if (rawNewsLastUpdateInfo && rawNewsLastUpdateData) {
+      const newsLastUpdateInfo = JSON.parse(rawNewsLastUpdateInfo);
+      const lastUpdatedTime = new Date(newsLastUpdateInfo.time);
+      const currentTime = new Date();
+      const oldTag = newsLastUpdateInfo.tag;
+      if (
+        oldTag === tag &&
+        currentTime.getHours() === lastUpdatedTime.getHours()
+      ) {
+        if (newsData.length > 0) return;
+        const oldNewsData = JSON.parse(rawNewsLastUpdateData);
+        setNewsData(oldNewsData);
+        return;
+      }
+    }
     const getNews = async () => {
       const res = await fetchNews(tag);
       if (res.status === 'ok') {
         const articles = res.articles as NewsData[];
         setNewsData(articles);
+        const newsUpdateInfo = { tag, time: new Date() };
+        localStorage.setItem('newsUpdateInfo', JSON.stringify(newsUpdateInfo));
+        localStorage.setItem('newsData', JSON.stringify(articles));
       }
     };
     getNews();
