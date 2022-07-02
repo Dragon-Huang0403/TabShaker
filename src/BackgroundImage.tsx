@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import unsplashApi from './utils/unsplashApi';
+import unsplashApi, { UnsplashResponseData } from './utils/unsplashApi';
 import { ArrowBack, ArrowForward, PlayArrow, Pause } from './components/Icons';
 import useInterval from './hooks/useSetInterval';
 
@@ -15,8 +15,8 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-end;
   justify-content: center;
+  align-items: flex-end;
 `;
 
 const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
@@ -29,6 +29,12 @@ const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
   visibility: visible;
   background-size: cover;
   background-position: 50% 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0px 20px 20px;
+  color: ${({ theme }) => theme.color.white};
+  font-size: 0.75rem;
   opacity: 0.8;
   ${({ url }) =>
     url &&
@@ -41,6 +47,14 @@ const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
       visibility: hidden;
       opacity: 0;
     `}
+`;
+
+const Links = styled.div`
+  display: flex;
+  gap: 5px;
+  & > a:hover {
+    text-decoration: underline;
+  }
 `;
 
 const IconsWrapper = styled.div`
@@ -67,13 +81,8 @@ const IconStyle = styled.div`
   }
 `;
 
-interface Photo {
-  id: string;
-  imageUrl: string;
-}
-
 function BackgroundImage() {
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photos, setPhotos] = useState<UnsplashResponseData[]>([]);
   const [isPlay, setIsPlay] = useState(false);
   const [currentPhoto, setCurrentPhoto] = useState(0);
   const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
@@ -118,11 +127,29 @@ function BackgroundImage() {
     <Wrapper>
       {photos.map((photo, index) => (
         <BackgroundImg
-          key={index}
-          url={photo?.imageUrl || ''}
+          key={photo.id}
+          url={`${photo.urls.raw}&q=85&w=1920`}
           isCurrentPhoto={index === currentPhoto}
-        />
+        >
+          <Links>
+            <a
+              href={`${photo.links.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
+            >
+              Photo
+            </a>
+            <a
+              href={`${photo.user.links.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
+            >
+              {photo.user.name}
+            </a>
+            <a href="https://unsplash.com/?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit">
+              Unsplash
+            </a>
+          </Links>
+          <div>{photo.location.title}</div>
+        </BackgroundImg>
       ))}
+
       <IconsWrapper>
         <IconStyle
           onClick={() => {
