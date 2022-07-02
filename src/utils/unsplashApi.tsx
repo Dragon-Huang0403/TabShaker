@@ -1,13 +1,25 @@
 const url = 'https://api.unsplash.com';
 
-interface UnsplashResponseData {
+export type UnsplashResponseData = {
   id: string;
   urls: {
     raw: string;
     full: string;
     regular: string;
   };
-}
+  links: {
+    html: string;
+  };
+  user: {
+    name: string;
+    links: {
+      html: string;
+    };
+  };
+  location: {
+    title: string;
+  };
+};
 
 export default async function getRandomPhotos() {
   const response = await fetch(
@@ -19,9 +31,5 @@ export default async function getRandomPhotos() {
     },
   );
   const data: UnsplashResponseData[] = await response.json();
-  const photos = data.map((item: UnsplashResponseData) => ({
-    id: item.id,
-    imageUrl: `${item.urls.raw}&q=85&w=1920`,
-  }));
-  return photos;
+  return data;
 }
