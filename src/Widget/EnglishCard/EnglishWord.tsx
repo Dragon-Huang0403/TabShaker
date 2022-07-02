@@ -48,6 +48,12 @@ const Wrapper = styled.div<{ cardStyle: string }>`
   }}}
     
 `;
+
+const Header = styled.div`
+  display: flex;
+  overflow-x: hidden;
+  align-items: flex-end;
+`;
 const Word = styled.div`
   display: inline-block;
   margin-right: 10px;
@@ -58,6 +64,16 @@ const Word = styled.div`
   & > a:hover {
     text-decoration: underline;
   }
+`;
+
+const Tag = styled.div`
+  font-size: 0.75rem;
+  display: inline-block;
+  margin-left: 10px;
+  background: ${({ theme }) => theme.color.grey};
+  color: ${({ theme }) => theme.color.white};
+  padding: 3px 10px;
+  border-radius: 10px;
 `;
 const Pronunciation = styled.div`
   display: flex;
@@ -98,7 +114,7 @@ function EnglishWord({ word, playAudio, cardStyle }: WordProps) {
   };
   return (
     <Wrapper cardStyle={cardStyle}>
-      <div>
+      <Header>
         <Word>
           <a
             href={`https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B0%A1%E9%AB%94/${word.word}`}
@@ -106,8 +122,11 @@ function EnglishWord({ word, playAudio, cardStyle }: WordProps) {
             {word.word}
           </a>
         </Word>
-        <span>{word.type}</span>
-      </div>
+        <div>{word.type}</div>
+        {word.tags.map((tag) => (
+          <Tag>{tag}</Tag>
+        ))}
+      </Header>
       <Pronunciation>
         <span>{word.ipa}</span>
         <Speaker onClick={() => playAudio(word.word)} />

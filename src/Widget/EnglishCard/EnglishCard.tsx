@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl, convertEnglishWordTag } from '../../utils/lib';
+import { getAudioUrl } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
-import { DoubleArrow } from '../../components/Icons';
+import { DoubleArrow, Refresh } from '../../components/Icons';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -12,11 +12,16 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const IconWrapper = styled.div`
+const IconsContainer = styled.div`
   position: absolute;
   bottom: 10px;
   right: 10px;
   z-index: 5;
+  display: flex;
+  gap: 5px;
+`;
+
+const IconWrapper = styled.div`
   padding: 2px;
   width: 28px;
   height: 28px;
@@ -46,11 +51,20 @@ interface EnglishCardProps {
 function EnglishCard({ data }: EnglishCardProps) {
   const [words, setWords] = useState<EnglishWordData[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const tag = convertEnglishWordTag(data.tag);
+  const { tag } = data;
 
   const playAudio = async (word: string) => {
     const audio = new Audio(getAudioUrl(word));
     audio.play();
+  };
+
+  const updateWords = () => {
+    getCard(10, tag).then((res) => {
+      setWords(res as EnglishWordData[]);
+      window.localStorage.setItem('engWords', JSON.stringify(res));
+      const currentTime = new Date().getTime();
+      window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
+    });
   };
 
   useEffect(() => {
@@ -63,12 +77,7 @@ function EnglishCard({ data }: EnglishCardProps) {
         return;
       }
     }
-    getCard(10, tag).then((res) => {
-      setWords(res as EnglishWordData[]);
-      window.localStorage.setItem('engWords', JSON.stringify(res));
-      const currentTime = new Date().getTime();
-      window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
-    });
+    updateWords();
   }, []);
 
   const nextWordIndex =
@@ -98,13 +107,18 @@ function EnglishCard({ data }: EnglishCardProps) {
           />
         );
       })}
-      <IconWrapper
-        onClick={() => {
-          setCurrentWordIndex(nextWordIndex);
-        }}
-      >
-        <DoubleArrow />
-      </IconWrapper>
+      <IconsContainer>
+        <IconWrapper onClick={updateWords}>
+          <Refresh />
+        </IconWrapper>
+        <IconWrapper
+          onClick={() => {
+            setCurrentWordIndex(nextWordIndex);
+          }}
+        >
+          <DoubleArrow />
+        </IconWrapper>
+      </IconsContainer>
     </Wrapper>
   );
 }
