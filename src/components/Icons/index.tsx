@@ -12,6 +12,7 @@ import Close from './Close';
 import Speaker from './Speaker';
 import DoubleArrow from './DoubleArrow';
 import Check from './Check';
+import Refresh from './Refresh';
 
 export {
   AppIcon,
@@ -28,4 +29,5 @@ export {
   Speaker,
   DoubleArrow,
   Check,
+  Refresh,
 };
