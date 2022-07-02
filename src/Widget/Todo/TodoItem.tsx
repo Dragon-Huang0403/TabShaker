@@ -10,6 +10,7 @@ const Wrapper = styled.li<{ checked: boolean }>`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 3px;
+  cursor: auto;
   ${({ theme, checked }) =>
     checked &&
     css`
@@ -22,6 +23,7 @@ const IconWrapper = styled.div`
   width: 20px;
   height: 20px;
   margin: 0px 5px;
+  cursor: pointer;
 
   & > svg {
     fill: ${({ theme }) => theme.color.transparentWhite};

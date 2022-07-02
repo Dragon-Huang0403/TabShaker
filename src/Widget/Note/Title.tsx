@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const Input = styled.input`
@@ -21,10 +21,19 @@ interface TitleProps {
 }
 
 function Title({ title, setTitle, onEnter }: TitleProps) {
+  const [isComposition, setIsComposition] = useState(false);
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.code !== 'Enter') return;
+    if (e.code !== 'Enter' || isComposition) return;
     e.preventDefault();
     onEnter();
+  };
+  const handleComposition = (e: React.CompositionEvent) => {
+    const { type } = e;
+    if (type === 'compositionstart') {
+      setIsComposition(true);
+      return;
+    }
+    setIsComposition(false);
   };
   return (
     <Input
@@ -34,6 +43,8 @@ function Title({ title, setTitle, onEnter }: TitleProps) {
       onChange={(e) => {
         setTitle(e.target.value);
       }}
+      onCompositionStart={handleComposition}
+      onCompositionEnd={handleComposition}
     />
   );
 }
