@@ -123,8 +123,9 @@ function EnglishWord({ word, playAudio, cardStyle }: WordProps) {
           </a>
         </Word>
         <div>{word.type}</div>
-        {word.tags.map((tag) => (
-          <Tag>{tag}</Tag>
+        {word.tags.map((tag, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <Tag key={index}>{tag}</Tag>
         ))}
       </Header>
       <Pronunciation>

@@ -31,4 +31,13 @@ export default {
     limit: { minW: 11, maxW: 14, minH: 6, maxH: 9 },
     menu: ['Basic', 'Medium', 'Hard', 'Challenging'],
   },
+  news: {
+    style: {},
+    data: {
+      tag: ['United States'],
+    },
+    defaultLayout: { w: 12, h: 7 },
+    limit: { minW: 11, maxW: 14, minH: 6, maxH: 20 },
+    menu: ['Taiwan', 'United States'],
+  },
 };
