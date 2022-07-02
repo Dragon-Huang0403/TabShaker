@@ -47,6 +47,8 @@ function Dragger(props: DraggerProps) {
     if (!isDragging) return;
     let deltaX = e.clientX - lastX.current;
     let deltaY = e.clientY - lastY.current;
+    e.preventDefault();
+    e.stopPropagation();
     if (gridUnit) {
       [deltaX, deltaY] = snapToGrid(gridUnit, deltaX, deltaY);
     }

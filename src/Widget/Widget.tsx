@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   padding: 5px;
   width: 100%;
   height: 100%;
+  cursor: move;
 `;
 interface WidgetProps {
   widget: WidgetData;
