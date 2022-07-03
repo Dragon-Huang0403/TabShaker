@@ -12,6 +12,7 @@ import {
   canElementMove,
   moveElement,
   getAvailableLayoutItem,
+  getOtherScreenSizeLayoutItem,
 } from './utils/positionFn';
 import { WidgetData } from '../types/WidgetTypes';
 import { getScreenInfo } from './config';
@@ -139,19 +140,28 @@ function GridLayout({
     newLayouts[screenSize] = [...newLayouts[screenSize]];
     let shouldUpdate = false;
     widgets.forEach((widget) => {
-      const { defaultLayout, id } = widget;
-      if (currentLayout.some((item) => item.id === id)) return;
+      const { id } = widget;
+      if (newLayouts[screenSize].some((item) => item.id === id)) return;
       shouldUpdate = true;
-      const availableLayoutItem = getAvailableLayoutItem(currentLayout, cols, {
-        ...defaultLayout,
-        id,
-      });
+      const defaultLayout = getOtherScreenSizeLayoutItem(id, newLayouts) || {
+        ...widget.defaultLayout,
+        x: 0,
+        y: 0,
+      };
+      const availableLayoutItem = getAvailableLayoutItem(
+        newLayouts[screenSize],
+        cols,
+        {
+          ...defaultLayout,
+          id,
+        },
+      );
       newLayouts[screenSize].push(availableLayoutItem);
     });
     if (shouldUpdate) {
       setLayouts(newLayouts);
     }
-  }, [widgets, currentLayout, screenSize]);
+  }, [widgets, layouts, screenSize]);
 
   useEffect(() => {
     const updateGridLayoutWidth = () => {

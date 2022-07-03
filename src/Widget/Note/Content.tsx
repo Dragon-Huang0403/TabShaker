@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   line-height: 1.5rem;
   font-size: 1.25rem;
   overflow-y: auto;
+  cursor: auto;
 
   & > div {
     height: 100%;

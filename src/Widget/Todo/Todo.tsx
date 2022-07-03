@@ -70,6 +70,7 @@ function Todo({ data, onWidgetChange }: TodoProps) {
   };
   const [showMode, setShowMode] = useState<ShowMode>('Inbox');
   const [inputText, setInputText] = useState('');
+  const [isComposition, setIsComposition] = useState(false);
 
   const onTodoModify = (e: ContentEditableEvent, targetId: string) => {
     setTodos(
@@ -93,12 +94,12 @@ function Todo({ data, onWidgetChange }: TodoProps) {
 
   const onInputSubmit = (e: React.KeyboardEvent) => {
     if (e.code !== 'Enter') return;
-    if (inputText) {
+    if (inputText && !isComposition) {
       addTodo();
+      e.preventDefault();
+      e.stopPropagation();
       if (showMode === 'Completed') setShowMode('Inbox');
     }
-    e.preventDefault();
-    e.stopPropagation();
   };
 
   const toggleChecked = (id: string) => {
@@ -121,6 +122,15 @@ function Todo({ data, onWidgetChange }: TodoProps) {
       return todos.filter((todo) => !todo.checked);
     }
     return todos;
+  };
+
+  const handleComposition = (e: React.CompositionEvent) => {
+    const { type } = e;
+    if (type === 'compositionstart') {
+      setIsComposition(true);
+      return;
+    }
+    setIsComposition(false);
   };
 
   const menuItems = [
@@ -173,6 +183,8 @@ function Todo({ data, onWidgetChange }: TodoProps) {
           onChange={onInputChange}
           onKeyDown={onInputSubmit}
           placeholder="New Todo"
+          onCompositionStart={handleComposition}
+          onCompositionEnd={handleComposition}
         />
       </Wrapper>
     </Card>

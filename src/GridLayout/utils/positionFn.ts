@@ -3,10 +3,11 @@ import { int } from './other';
 import type {
   Constraint,
   Layout,
-  NewLayoutItem,
   LayoutItem,
   Position,
+  Layouts,
 } from '../../types/GridLayoutTypes';
+import type { ScreenSize } from '../config';
 
 export function getBoundPosition(
   node: HTMLElement,
@@ -175,23 +176,34 @@ export function moveElement(
 export function getAvailableLayoutItem(
   layout: Layout,
   cols: number,
-  newLayoutItem: NewLayoutItem | LayoutItem,
-  x = 0,
-  y = 0,
+  newLayoutItem: LayoutItem,
 ): LayoutItem {
-  const w = newLayoutItem.w > cols ? cols : newLayoutItem.w;
-  const availableLayoutItem = { ...newLayoutItem, x, y, w };
+  let { w, x, y } = newLayoutItem;
+  w = Math.min(cols, w);
+  if (x + w >= cols) {
+    x = 0;
+    y += 1;
+  }
+  const availableLayoutItem = { ...newLayoutItem, w, x, y };
   if (!canElementMove(layout, availableLayoutItem)) {
-    if (x + w >= cols) {
-      return getAvailableLayoutItem(
-        layout,
-        cols,
-        availableLayoutItem,
-        1,
-        y + 1,
-      );
-    }
-    return getAvailableLayoutItem(layout, cols, availableLayoutItem, x + 1, y);
+    return getAvailableLayoutItem(layout, cols, {
+      ...availableLayoutItem,
+      x: x + 1,
+    });
   }
   return availableLayoutItem;
+}
+
+export function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
+  let layoutItem: LayoutItem | null = null;
+
+  (Object.keys(layouts) as ScreenSize[]).forEach((screenSize) =>
+    layouts[screenSize].forEach((item) => {
+      if (item.id === id) {
+        layoutItem = item;
+      }
+    }),
+  );
+
+  return layoutItem;
 }
