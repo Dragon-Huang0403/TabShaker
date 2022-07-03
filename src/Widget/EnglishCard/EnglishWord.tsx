@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Speaker } from '../../components/Icons';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import Content from './Content';
 
-const Wrapper = styled.div<{ currentWord: boolean }>`
-  position: absolute;
-  top: 0px;
-  left: 0px;
+const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   background: ${({ theme }) => theme.color.black};
@@ -20,12 +17,6 @@ const Wrapper = styled.div<{ currentWord: boolean }>`
   font-size: 1rem;
   z-index: -1;
   transform-origin: 0 0;
-
-  ${({ currentWord }) =>
-    currentWord &&
-    css`
-      z-index: 1;
-    `}
 `;
 
 const Header = styled.div`
@@ -82,12 +73,11 @@ const ContentWrapper = styled.div`
 
 interface WordProps {
   word: EnglishWordData;
-  currentWord: boolean;
   tags: string[];
   playAudio: (word: string) => void;
 }
 
-function EnglishWord({ word, playAudio, currentWord, tags }: WordProps) {
+function EnglishWord({ word, playAudio, tags }: WordProps) {
   const [isShowExample, setIsShowExample] = useState(false);
   const toggleIsShowExample = () => {
     setIsShowExample((prev) => !prev);
@@ -98,7 +88,7 @@ function EnglishWord({ word, playAudio, currentWord, tags }: WordProps) {
       ? word.tags
       : word.tags.filter((tag) => tags.includes(tag));
   return (
-    <Wrapper currentWord={currentWord}>
+    <Wrapper>
       <Header>
         <Word>
           <a
