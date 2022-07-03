@@ -140,18 +140,22 @@ function GridLayout({
     let shouldUpdate = false;
     widgets.forEach((widget) => {
       const { defaultLayout, id } = widget;
-      if (currentLayout.some((item) => item.id === id)) return;
+      if (newLayouts[screenSize].some((item) => item.id === id)) return;
       shouldUpdate = true;
-      const availableLayoutItem = getAvailableLayoutItem(currentLayout, cols, {
-        ...defaultLayout,
-        id,
-      });
+      const availableLayoutItem = getAvailableLayoutItem(
+        newLayouts[screenSize],
+        cols,
+        {
+          ...defaultLayout,
+          id,
+        },
+      );
       newLayouts[screenSize].push(availableLayoutItem);
     });
     if (shouldUpdate) {
       setLayouts(newLayouts);
     }
-  }, [widgets, currentLayout, screenSize]);
+  }, [widgets, layouts, screenSize]);
 
   useEffect(() => {
     const updateGridLayoutWidth = () => {
