@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl } from '../../utils/lib';
+import { getAudioUrl, getRandomInt } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
 import { DoubleArrow, Refresh } from '../../components/Icons';
@@ -88,14 +88,15 @@ function EnglishCard({ data }: EnglishCardProps) {
       window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
     });
   };
-
   useEffect(() => {
-    const oldWords = window.localStorage.getItem('engWords');
-    if (oldWords) {
+    const rawOldWords = window.localStorage.getItem('engWords');
+    if (rawOldWords) {
       const wordsUpdatedAt = localStorage.getItem('wordsUpdatedAt');
       const currentTime = new Date().getTime();
       if (!wordsUpdatedAt || currentTime - Number(wordsUpdatedAt) <= 86400000) {
-        setWords(JSON.parse(oldWords));
+        const oldWords = JSON.parse(rawOldWords);
+        setWords(oldWords);
+        setCurrentWordIndex(getRandomInt(oldWords.length));
         return;
       }
     }

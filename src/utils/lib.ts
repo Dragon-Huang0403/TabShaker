@@ -11,3 +11,7 @@ export function getAudioUrl(word: string) {
   url += `${str.padEnd(5, '_')}/${str}__us_1.mp3`;
   return url;
 }
+
+export function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
