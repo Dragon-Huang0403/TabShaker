@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState, useRef } from 'react';
+import styled, { css } from 'styled-components';
 import { getCard } from '../../utils/firebase';
 import { getAudioUrl } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
 import { DoubleArrow, Refresh } from '../../components/Icons';
+import { useHover } from '../../hooks';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -12,13 +13,33 @@ const Wrapper = styled.div`
   position: relative;
 `;
 
-const IconsContainer = styled.div`
+const IconsContainer = styled.div<{ isIConHover: boolean }>`
   position: absolute;
   bottom: 10px;
   right: 10px;
   z-index: 5;
   display: flex;
   gap: 5px;
+
+  & div:not(:last-child) {
+    visibility: hidden;
+  }
+
+  & svg {
+    fill: ${({ theme }) => theme.color.transparentWhite};
+  }
+
+  ${({ isIConHover }) =>
+    isIConHover &&
+    css`
+      & div:not(:last-child) {
+        visibility: visible;
+      }
+
+      & svg {
+        fill: ${({ theme }) => theme.color.lightWhite};
+      }
+    `}
 `;
 
 const IconWrapper = styled.div`
@@ -32,13 +53,12 @@ const IconWrapper = styled.div`
     background: ${({ theme }) => theme.color.transparentWhite};
   }
   &:hover > svg {
-    fill: ${({ theme }) => theme.color.lightWhite};
+    fill: ${({ theme }) => theme.color.white};
   }
 
   & > svg {
     width: 24px;
     height: 24px;
-    fill: ${({ theme }) => theme.color.transparentWhite};
   }
 `;
 
@@ -50,6 +70,8 @@ interface EnglishCardProps {
 
 function EnglishCard({ data }: EnglishCardProps) {
   const [words, setWords] = useState<EnglishWordData[]>([]);
+  const hoverRef = useRef<HTMLDivElement>(null);
+  const isIConHover = useHover(hoverRef);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const { tag } = data;
 
@@ -87,27 +109,23 @@ function EnglishCard({ data }: EnglishCardProps) {
 
   return (
     <Wrapper>
-      {words.map((word, index) => {
-        let cardStyle = '';
-        if (index === currentWordIndex) {
-          cardStyle = 'current';
-        }
-        if (index === nextWordIndex) {
-          cardStyle = 'next';
-        }
-        if (index === lastWordIndex) {
-          cardStyle = 'last';
-        }
-        return (
-          <EnglishWord
-            key={word.id}
-            word={word}
-            playAudio={playAudio}
-            cardStyle={cardStyle}
-          />
-        );
-      })}
-      <IconsContainer>
+      {words.map((word, index) => (
+        <EnglishWord
+          key={word.id}
+          word={word}
+          playAudio={playAudio}
+          currentWord={currentWordIndex === index}
+          tags={tag}
+        />
+      ))}
+      <IconsContainer ref={hoverRef} isIConHover={isIConHover}>
+        <IconWrapper
+          onClick={() => {
+            setCurrentWordIndex(lastWordIndex);
+          }}
+        >
+          <DoubleArrow direction="left" />
+        </IconWrapper>
         <IconWrapper onClick={updateWords}>
           <Refresh />
         </IconWrapper>
@@ -116,7 +134,7 @@ function EnglishCard({ data }: EnglishCardProps) {
             setCurrentWordIndex(nextWordIndex);
           }}
         >
-          <DoubleArrow />
+          <DoubleArrow direction="right" />
         </IconWrapper>
       </IconsContainer>
     </Wrapper>

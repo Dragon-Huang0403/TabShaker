@@ -10,7 +10,6 @@ const Input = styled.input`
   line-height: 1.5rem;
   font-size: 1.25rem;
   font-weight: 600;
-  letter-spacing: 2px;
   padding: 8px 12px 4px;
 `;
 

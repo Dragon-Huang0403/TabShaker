@@ -4,7 +4,7 @@ import { Speaker } from '../../components/Icons';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import Content from './Content';
 
-const Wrapper = styled.div<{ cardStyle: string }>`
+const Wrapper = styled.div<{ currentWord: boolean }>`
   position: absolute;
   top: 0px;
   left: 0px;
@@ -14,39 +14,18 @@ const Wrapper = styled.div<{ cardStyle: string }>`
   color: ${({ theme }) => theme.color.lavenderBlue};
   border-radius: 10px;
   padding: 15px 20px 5px;
-  display: none;
+  display: flex;
   flex-direction: column;
   overflow: auto;
   font-size: 1rem;
   z-index: -1;
   transform-origin: 0 0;
-  box-shadow: 0 0 3px ${({ theme }) => theme.color.transparentWhite};
-  
-  ${({ cardStyle }) => {
-    if (cardStyle === 'next') {
-      return css`
-        display: flex;
-        z-index: 2;
-        transform: translateY(-15px) rotate(4deg) translateX(15px) scale(1);
-      `;
-    }
-    if (cardStyle === 'last') {
-      return css`
-        display: flex;
-        z-index: 1;
-        transform: translateY(-30px) rotate(8deg) translateX(30px) scale(0.95);
-      `;
-    }
-    if (cardStyle === 'current') {
-      return css`
-        display: flex;
-        z-index: 3;
-        transform: rotate(-1deg) translateX(0%) scale(1);
-      `;
-    }
-    return css``;
-  }}}
-    
+
+  ${({ currentWord }) =>
+    currentWord &&
+    css`
+      z-index: 1;
+    `}
 `;
 
 const Header = styled.div`
@@ -103,17 +82,23 @@ const ContentWrapper = styled.div`
 
 interface WordProps {
   word: EnglishWordData;
-  cardStyle: string;
+  currentWord: boolean;
+  tags: string[];
   playAudio: (word: string) => void;
 }
 
-function EnglishWord({ word, playAudio, cardStyle }: WordProps) {
+function EnglishWord({ word, playAudio, currentWord, tags }: WordProps) {
   const [isShowExample, setIsShowExample] = useState(false);
   const toggleIsShowExample = () => {
     setIsShowExample((prev) => !prev);
   };
+
+  const showTags =
+    tags.length === 0
+      ? word.tags
+      : word.tags.filter((tag) => tags.includes(tag));
   return (
-    <Wrapper cardStyle={cardStyle}>
+    <Wrapper currentWord={currentWord}>
       <Header>
         <Word>
           <a
@@ -123,33 +108,35 @@ function EnglishWord({ word, playAudio, cardStyle }: WordProps) {
           </a>
         </Word>
         <div>{word.type}</div>
-        {word.tags.map((tag, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Tag key={index}>{tag}</Tag>
-        ))}
+        {showTags.map(
+          (tag, index) =>
+            index <= 1 && (
+              // eslint-disable-next-line react/no-array-index-key
+              <Tag key={index}>{tag}</Tag>
+            ),
+        )}
       </Header>
       <Pronunciation>
         <span>{word.ipa}</span>
         <Speaker onClick={() => playAudio(word.word)} />
       </Pronunciation>
-      {cardStyle === 'current' && (
-        <ContentWrapper>
-          <Content
-            title="Definition :"
-            english={word.definition}
-            chinese={word.chinese}
-            position={isShowExample ? -100 : 0}
-            onClick={toggleIsShowExample}
-          />
-          <Content
-            title="Example :"
-            english={word.example}
-            chinese={word.example_chinese}
-            position={isShowExample ? 0 : 100}
-            onClick={toggleIsShowExample}
-          />
-        </ContentWrapper>
-      )}
+
+      <ContentWrapper>
+        <Content
+          title="Definition :"
+          english={word.definition}
+          chinese={word.chinese}
+          position={isShowExample ? -100 : 0}
+          onClick={toggleIsShowExample}
+        />
+        <Content
+          title="Example :"
+          english={word.example}
+          chinese={word.example_chinese}
+          position={isShowExample ? 0 : 100}
+          onClick={toggleIsShowExample}
+        />
+      </ContentWrapper>
     </Wrapper>
   );
 }
