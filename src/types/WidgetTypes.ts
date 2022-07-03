@@ -3,14 +3,28 @@ import { defaultConfig } from '../Widget';
 
 export type WidgetType = keyof typeof defaultConfig;
 
+export type RenderWidgetData = {
+  type: string;
+  data: TodoData | NoteData | EnglishWordData | NewsData | any;
+  style: any;
+};
+
 export type WidgetData = {
   id: string;
-  type: WidgetType;
-  style: any;
-  data: any;
   defaultLayout: { w: number; h: number };
   limit: { minW: number; maxW: number; minH: number; maxH: number };
   menu: string[];
+} & RenderWidgetData;
+
+export type TodoData = {
+  id: string;
+  text: string;
+  completed: boolean;
+};
+
+export type NoteData = {
+  title: string;
+  content: string;
 };
 
 export type EnglishWordData = {

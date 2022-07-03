@@ -7,6 +7,7 @@ import { DoubleArrow } from './components/Icons';
 import Modal from './Modal';
 import { defaultConfig } from './Widget';
 import { SwiperButtonNext, SwiperButtonPrev } from './Swiper';
+import WidgetSlide from './WidgetSlide';
 import type { WidgetData, WidgetType } from './types/WidgetTypes';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -22,16 +23,10 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 5vw;
   user-select: none;
+  padding: 0 5vw;
 `;
 
-const WidgetOption = styled.div`
-  background: ${({ theme }) => theme.color.lightGrey};
-  padding: 20px;
-  font-size: 3rem;
-  cursor: pointer;
-`;
 const IconWrapper = styled.div<{ direction: 'left' | 'right' }>`
   position: absolute;
   display: flex;
@@ -39,7 +34,7 @@ const IconWrapper = styled.div<{ direction: 'left' | 'right' }>`
   height: 100%;
   top: 0px;
   z-index: 10;
-  ${({ direction }) => direction}: -1vw;
+  ${({ direction }) => direction}: 0;
   & button {
     padding: 0;
     width: 60px;
@@ -98,15 +93,14 @@ function SelectNewWidget({
               <DoubleArrow direction="left" />
             </SwiperButtonPrev>
           </IconWrapper>
-          {Object.keys(defaultConfig).map((widgetType) => (
+          {(Object.keys(defaultConfig) as WidgetType[]).map((widgetType) => (
             <SwiperSlide key={widgetType}>
-              <WidgetOption
-                onClick={() => {
+              <WidgetSlide
+                widgetType={widgetType}
+                addWidget={() => {
                   handleAddWidget(widgetType as WidgetType);
                 }}
-              >
-                {widgetType}
-              </WidgetOption>
+              />
             </SwiperSlide>
           ))}
           <IconWrapper direction="right">
