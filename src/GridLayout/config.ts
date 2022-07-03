@@ -1,11 +1,11 @@
 import theme from '../theme';
+import { Layouts } from '../types/GridLayoutTypes';
 
-export const defaultLayout = Object.keys(theme.screens).reduce(
-  (accu, screen) => ({ ...accu, [screen]: [] }),
-  {},
-);
+export type ScreenSize = keyof typeof theme.screens;
 
-type ScreenSize = keyof typeof theme.screens;
+export const defaultLayout = (
+  Object.keys(theme.screens) as ScreenSize[]
+).reduce((accu, screen) => ({ ...accu, [screen]: [] }), {}) as Layouts;
 
 export function getScreenInfo(
   currentScreenWidth: number,

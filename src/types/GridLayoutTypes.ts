@@ -1,18 +1,17 @@
-export type NewLayoutItem = {
+import type { ScreenSize } from '../GridLayout/config';
+
+export type LayoutItem = {
   id: string;
   w: number;
   h: number;
-};
-
-export type LayoutItem = {
   x: number;
   y: number;
-} & NewLayoutItem;
+};
 
 export type Layout = LayoutItem[];
 
 export type Layouts = {
-  [key: string]: Layout;
+  [key in ScreenSize]: Layout;
 };
 
 export type Position = {

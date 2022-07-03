@@ -4,7 +4,7 @@ import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
 import BackgroundImage from './BackgroundImage';
 import GridLayout from './GridLayout';
-import { defaultLayout } from './GridLayout/config';
+import { defaultLayout, ScreenSize } from './GridLayout/config';
 import Widget from './Widget';
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
@@ -46,7 +46,7 @@ function App() {
       prevWidgets.filter((prevWidget) => prevWidget.id !== id),
     );
     const newLayouts = { ...layouts };
-    Object.keys(newLayouts).forEach((screenSize) => {
+    (Object.keys(newLayouts) as ScreenSize[]).forEach((screenSize) => {
       newLayouts[screenSize] = newLayouts[screenSize]?.filter(
         (layout) => layout.id !== id,
       );

@@ -12,6 +12,7 @@ import {
   canElementMove,
   moveElement,
   getAvailableLayoutItem,
+  getOtherScreenSizeLayoutItem,
 } from './utils/positionFn';
 import { WidgetData } from '../types/WidgetTypes';
 import { getScreenInfo } from './config';
@@ -139,9 +140,14 @@ function GridLayout({
     newLayouts[screenSize] = [...newLayouts[screenSize]];
     let shouldUpdate = false;
     widgets.forEach((widget) => {
-      const { defaultLayout, id } = widget;
+      const { id } = widget;
       if (newLayouts[screenSize].some((item) => item.id === id)) return;
       shouldUpdate = true;
+      const defaultLayout = getOtherScreenSizeLayoutItem(id, newLayouts) || {
+        ...widget.defaultLayout,
+        x: 0,
+        y: 0,
+      };
       const availableLayoutItem = getAvailableLayoutItem(
         newLayouts[screenSize],
         cols,
