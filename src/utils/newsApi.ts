@@ -1,16 +1,8 @@
-const API_KEY = process.env.REACT_APP_NEWS_API_KEY;
-const headlinesUrl = 'https://newsapi.org/v2/top-headlines?';
-
-function convertCountry(countryName: string) {
-  if (countryName === 'Taiwan') return 'tw';
-  return 'us';
-}
+const url = 'https://tapshaker-server.herokuapp.com/news?';
 
 export default async function fetchNews(countryName: string) {
-  const country = convertCountry(countryName);
-  const endPoint = `${headlinesUrl}country=${country}&apiKey=${API_KEY}`;
-  const reqUrl = new Request(endPoint);
-  const res = await fetch(reqUrl);
+  const endPoint = `${url}country=${countryName}`;
+  const res = await fetch(endPoint);
   const data = await res.json();
   return data;
 }
