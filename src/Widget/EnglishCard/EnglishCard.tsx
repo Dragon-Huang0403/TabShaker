@@ -1,9 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import ReactLoading from 'react-loading';
+import 'swiper/css';
+import 'swiper/css/effect-creative';
+import { EffectCreative } from 'swiper';
 import styled, { css } from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl, getRandomInt } from '../../utils/lib';
+import { getAudioUrl } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
+import { SwiperButtonNext, SwiperButtonPrev } from '../../Swiper';
 import { DoubleArrow, Refresh } from '../../components/Icons';
 import { useHover } from '../../hooks';
 
@@ -11,6 +17,11 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+
+  & > .swiper {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const IconsContainer = styled.div<{ isIConHover: boolean }>`
@@ -49,14 +60,23 @@ const IconWrapper = styled.div`
   border-radius: 50%;
   cursor: pointer;
 
+  & > button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
   &:hover {
     background: ${({ theme }) => theme.color.transparentWhite};
   }
-  &:hover > svg {
+  &:hover svg {
     fill: ${({ theme }) => theme.color.white};
   }
 
-  & > svg {
+  & svg {
     width: 24px;
     height: 24px;
   }
@@ -68,19 +88,37 @@ interface EnglishCardProps {
   };
 }
 
+const LoadingWrapper = styled.div<{ isLoading: boolean }>`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  border-radius: 10px;
+  top: 0;
+  z-index: -100;
+  ${({ isLoading }) =>
+    isLoading &&
+    css`
+      background: ${({ theme }) => theme.color.black};
+      z-index: 10;
+    `}
+`;
+
 function EnglishCard({ data }: EnglishCardProps) {
   const [words, setWords] = useState<EnglishWordData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const hoverRef = useRef<HTMLDivElement>(null);
   const isIConHover = useHover(hoverRef);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const { tag } = data;
 
   const playAudio = async (word: string) => {
     const audio = new Audio(getAudioUrl(word));
     audio.play();
   };
-
   const updateWords = () => {
+    setIsLoading(true);
     getCard(10, tag).then((res) => {
       setWords(res as EnglishWordData[]);
       window.localStorage.setItem('engWords', JSON.stringify(res));
@@ -96,48 +134,59 @@ function EnglishCard({ data }: EnglishCardProps) {
       if (!wordsUpdatedAt || currentTime - Number(wordsUpdatedAt) <= 86400000) {
         const oldWords = JSON.parse(rawOldWords);
         setWords(oldWords);
-        setCurrentWordIndex(getRandomInt(oldWords.length));
         return;
       }
     }
     updateWords();
   }, []);
-
-  const nextWordIndex =
-    currentWordIndex + 1 >= words.length ? 0 : currentWordIndex + 1;
-  const lastWordIndex =
-    currentWordIndex - 1 < 0 ? words.length - 1 : currentWordIndex - 1;
-
+  useEffect(() => {
+    if (isLoading === false) return undefined;
+    const id = setInterval(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearInterval(id);
+  }, [isLoading]);
   return (
     <Wrapper>
-      {words.map((word, index) => (
-        <EnglishWord
-          key={word.id}
-          word={word}
-          playAudio={playAudio}
-          currentWord={currentWordIndex === index}
-          tags={tag}
-        />
-      ))}
-      <IconsContainer ref={hoverRef} isIConHover={isIConHover}>
-        <IconWrapper
-          onClick={() => {
-            setCurrentWordIndex(lastWordIndex);
-          }}
-        >
-          <DoubleArrow direction="left" />
-        </IconWrapper>
-        <IconWrapper onClick={updateWords}>
-          <Refresh />
-        </IconWrapper>
-        <IconWrapper
-          onClick={() => {
-            setCurrentWordIndex(nextWordIndex);
-          }}
-        >
-          <DoubleArrow direction="right" />
-        </IconWrapper>
-      </IconsContainer>
+      <Swiper
+        grabCursor
+        effect="creative"
+        creativeEffect={{
+          prev: {
+            shadow: true,
+            translate: [0, 0, -400],
+          },
+          next: {
+            translate: ['100%', 0, 0],
+          },
+        }}
+        loop
+        modules={[EffectCreative]}
+      >
+        {words.map((word) => (
+          <SwiperSlide key={word.id}>
+            <EnglishWord word={word} playAudio={playAudio} tags={tag} />
+          </SwiperSlide>
+        ))}
+        <IconsContainer ref={hoverRef} isIConHover={isIConHover}>
+          <IconWrapper>
+            <SwiperButtonPrev>
+              <DoubleArrow direction="left" />
+            </SwiperButtonPrev>
+          </IconWrapper>
+          <IconWrapper onClick={updateWords}>
+            <Refresh />
+          </IconWrapper>
+          <IconWrapper>
+            <SwiperButtonNext>
+              <DoubleArrow direction="right" />
+            </SwiperButtonNext>
+          </IconWrapper>
+        </IconsContainer>
+      </Swiper>
+      <LoadingWrapper isLoading={isLoading}>
+        <ReactLoading type="spin" />
+      </LoadingWrapper>
     </Wrapper>
   );
 }

@@ -41,3 +41,47 @@ export default {
     menu: ['Taiwan', 'United States'],
   },
 };
+
+export const widgetDemo = {
+  clock: {
+    type: 'clock',
+    text: 'Clock',
+    style: {
+      showSeconds: false,
+    },
+    data: {},
+  },
+  note: {
+    type: 'note',
+    text: 'Note',
+    style: {},
+    data: {
+      title: '',
+      content: '',
+    },
+  },
+  todo: {
+    type: 'todo',
+    text: 'Todo List',
+    style: {},
+    data: {
+      todos: [
+        { text: 'Please Select me', id: '1', completed: true },
+        { text: 'Please Select me', id: '2', completed: true },
+        { text: 'Please Select me', id: '3', completed: true },
+      ],
+    },
+  },
+  englishCard: {
+    type: 'englishCard',
+    style: {},
+    data: { tag: ['Basic'] },
+  },
+  news: {
+    type: 'news',
+    style: {},
+    data: {
+      tag: ['United States'],
+    },
+  },
+} as const;

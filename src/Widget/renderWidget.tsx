@@ -1,5 +1,5 @@
 import React from 'react';
-import type { WidgetData } from '../types/WidgetTypes';
+import type { RenderWidgetData, WidgetData } from '../types/WidgetTypes';
 import Clock from './Clock';
 import Note from './Note';
 import Todo from './Todo';
@@ -7,8 +7,8 @@ import EnglishCard from './EnglishCard';
 import News from './News';
 
 export default function renderWidget(
-  widget: WidgetData,
-  onWidgetChange: (data: any) => void,
+  widget: RenderWidgetData,
+  onWidgetChange: (data: any) => void = () => {},
 ) {
   const { type, data, style } = widget;
   switch (type) {
