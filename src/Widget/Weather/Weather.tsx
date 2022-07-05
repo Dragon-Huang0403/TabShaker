@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import getCityData from './openStreetMapApi';
@@ -11,12 +11,13 @@ import {
 } from './utils';
 import getWeatherDataByChineseCityName from './weatherApi';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ justifyContent?: string }>`
   background: ${({ theme }) => theme.color.black};
   color: ${({ theme }) => theme.color.purple};
   width: 100%;
   height: 100%;
   display: flex;
+  justify-content: ${({ justifyContent }) => justifyContent};
 `;
 
 const LoadingWrapper = styled.div`
@@ -27,42 +28,54 @@ const LoadingWrapper = styled.div`
   align-items: center;
 `;
 
-const CurrentWeather = styled.div`
+const CurrentWeather = styled.div<{ paddingTop: number }>`
+  flex-shrink: 1;
+  flex-basis: 140px;
   height: 100%;
-  width: 140px;
   display: flex;
   flex-direction: column;
-  padding-top: 10px;
+  justify-content: center;
+  padding-top: ${({ paddingTop }) => paddingTop}px;
   text-align: center;
+  position: relative;
 `;
 
 const CurrentTemperature = styled.div`
   margin-top: auto;
   font-size: 2.5rem;
 `;
-const ApparentTemperature = styled.div`
+
+const CurrentTemperatureFloat = styled.div`
+  width: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+  position: absolute;
+  font-size: 1.75rem;
+  top: 0px;
+  right: 0px;
+`;
+
+const ApparentTemperature = styled.div<{ marginTop: string }>`
   color: ${({ theme }) => theme.color.lavenderBlue};
   padding: 5px 5px 30px 10px;
   text-align: center;
   font-size: 1rem;
+  margin-top: ${({ marginTop }) => marginTop};
 `;
 
-const RightPartWrapper = styled.div`
-  flex-grow: 1;
-  padding: 20px 20px 0 0;
+const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
+  flex-basis: 200px;
+  flex-shrink: 10;
+  padding: ${({ paddingTop }) => paddingTop}px 20px 0 0;
   text-align: end;
   display: flex;
   flex-direction: column;
-`;
-
-const LocationWrapper = styled.div`
-  font-size: 1.125rem;
+  font-size: ${({ fontSize }) => fontSize}rem;
 `;
 
 const WeatherDescription = styled.div`
   margin-top: 5px;
   font-weight: 600;
-  font-size: 1.25rem;
 `;
 
 const WeatherForecastWrapper = styled.div`
@@ -73,7 +86,7 @@ const WeatherForecastWrapper = styled.div`
   padding-bottom: 20px;
 
   & > div {
-    width: 100px;
+    width: 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -106,6 +119,9 @@ function Weather() {
   const [location, setLocation] = useState<Location | null>(null);
   const [cityData, setCityData] = useState<CityData | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [renderWidthMode, setRenderWidthMode] = useState(0);
+  const [renderHeightMode, setRenderHeightMode] = useState(0);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((pos) => {
@@ -142,6 +158,42 @@ function Weather() {
     updateWeatherData();
   }, [cityData]);
 
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    const gridItem = wrapperRef.current.parentNode as HTMLElement;
+    const width = gridItem.clientWidth;
+    const height = gridItem.clientHeight;
+    const updateRenderWidthMode = () => {
+      if (width <= 250) {
+        setRenderWidthMode(2);
+        return;
+      }
+      if (width <= 300) {
+        setRenderWidthMode(1);
+        return;
+      }
+      setRenderWidthMode(0);
+    };
+    const updateRenderHeightMode = () => {
+      if (height <= 150) {
+        setRenderHeightMode(3);
+        return;
+      }
+      if (height <= 175) {
+        setRenderHeightMode(2);
+        return;
+      }
+      if (height <= 200) {
+        setRenderHeightMode(1);
+        return;
+      }
+      setRenderHeightMode(0);
+    };
+
+    updateRenderWidthMode();
+    updateRenderHeightMode();
+  });
+  // console.log({ width, height });
   if (!location || !cityData || weatherData.length === 0) {
     return (
       <Wrapper>
@@ -151,35 +203,61 @@ function Weather() {
       </Wrapper>
     );
   }
-
   return (
-    <Wrapper>
-      <CurrentWeather>
+    <Wrapper
+      ref={wrapperRef}
+      justifyContent={renderWidthMode === 2 ? 'center' : 'space-between'}
+    >
+      <CurrentWeather paddingTop={renderHeightMode === 1 ? 20 : 10}>
         <img src={getWeatherIcon(weatherData[0].weatherType.value)} alt="" />
-        <CurrentTemperature>{weatherData[0].temperature}°</CurrentTemperature>
-        <ApparentTemperature>
-          Feel like {weatherData[0].apparentTemperature}°
-        </ApparentTemperature>
+        {renderHeightMode === 0 ? (
+          <CurrentTemperature>{weatherData[0].temperature}°</CurrentTemperature>
+        ) : (
+          <CurrentTemperatureFloat>
+            {weatherData[0].temperature}°
+          </CurrentTemperatureFloat>
+        )}
+        {renderHeightMode === 3 ? null : (
+          <ApparentTemperature
+            marginTop={renderHeightMode === 1 ? 'auto' : '0'}
+          >
+            Feel like {weatherData[0].apparentTemperature}°
+          </ApparentTemperature>
+        )}
       </CurrentWeather>
-      <RightPartWrapper>
-        <LocationWrapper>{cityData.english.suburb}</LocationWrapper>
-        <WeatherDescription>
-          {getWeatherDesc(weatherData[0].weatherType.value)}
-        </WeatherDescription>
-        <WeatherForecastWrapper>
-          {weatherData.slice(1).map((dayWeather, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <div key={index}>
-              <span>{dayWeather.temperature}°</span>
+      {renderWidthMode === 2 ? null : (
+        <RightPartWrapper
+          fontSize={renderWidthMode === 1 ? 0.75 : 1}
+          paddingTop={renderHeightMode >= 2 ? 10 : 20}
+        >
+          {renderHeightMode >= 2 ? null : <div>{cityData.english.suburb}</div>}
+          {renderHeightMode === 3 ? null : (
+            <WeatherDescription>
+              {getWeatherDesc(weatherData[0].weatherType.value)}
+            </WeatherDescription>
+          )}
+          <WeatherForecastWrapper>
+            <div>
+              <span>{weatherData?.[1].temperature}°</span>
               <img
-                src={getWeatherIcon(dayWeather.weatherType.value)}
+                src={getWeatherIcon(weatherData?.[1].weatherType.value)}
                 alt="weather"
               />
-              <span>{getDayString(dayWeather.startTime)}</span>
+              <span>{getDayString(weatherData?.[1].startTime)}</span>
             </div>
-          ))}
-        </WeatherForecastWrapper>
-      </RightPartWrapper>
+            {renderWidthMode === 1 ? null : (
+              <div>
+                <span>{weatherData?.[1].temperature}°</span>
+                <img
+                  src={getWeatherIcon(weatherData?.[1].weatherType.value)}
+                  alt="weather"
+                />
+                <span>{getDayString(weatherData?.[1].startTime)}</span>
+              </div>
+            )}
+          </WeatherForecastWrapper>
+        </RightPartWrapper>
+      )}
     </Wrapper>
   );
 }
