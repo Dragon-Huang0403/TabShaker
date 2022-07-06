@@ -88,7 +88,7 @@ interface EnglishCardProps {
   };
 }
 
-const LoadingWrapper = styled.div<{ isLoading: boolean }>`
+const LoadingWrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -97,13 +97,8 @@ const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   position: absolute;
   border-radius: 10px;
   top: 0;
-  z-index: -100;
-  ${({ isLoading }) =>
-    isLoading &&
-    css`
-      background: ${({ theme }) => theme.color.black};
-      z-index: 10;
-    `}
+  z-index: 10;
+  background: ${({ theme }) => theme.color.black};
 `;
 
 function EnglishCard({ data }: EnglishCardProps) {
@@ -184,9 +179,11 @@ function EnglishCard({ data }: EnglishCardProps) {
           </IconWrapper>
         </IconsContainer>
       </Swiper>
-      <LoadingWrapper isLoading={isLoading}>
-        <ReactLoading type="spin" />
-      </LoadingWrapper>
+      {isLoading && (
+        <LoadingWrapper>
+          <ReactLoading type="spin" />
+        </LoadingWrapper>
+      )}
     </Wrapper>
   );
 }

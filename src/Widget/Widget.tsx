@@ -35,14 +35,17 @@ function Widget({ widget, deleteWidget, onWidgetChange }: WidgetProps) {
   }));
   return (
     <Wrapper ref={hoverRef}>
-      {isHover && (
-        <IconDropDownMenu
-          items={[{ text: 'Delete', onClick: deleteWidget }, ...menu]}
-          style={{ top: '12px', right: '12px', position: 'absolute' }}
-        >
-          <MoreDots />
-        </IconDropDownMenu>
-      )}
+      <IconDropDownMenu
+        items={[{ text: 'Delete', onClick: deleteWidget }, ...menu]}
+        style={{
+          top: '12px',
+          right: '12px',
+          position: 'absolute',
+          visibility: isHover ? 'visible' : 'hidden',
+        }}
+      >
+        <MoreDots />
+      </IconDropDownMenu>
       {renderWidget(widget, handleOnWidgetChange)}
     </Wrapper>
   );

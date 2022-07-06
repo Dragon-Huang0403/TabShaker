@@ -5,6 +5,7 @@ import Note from './Note';
 import Todo from './Todo';
 import EnglishCard from './EnglishCard';
 import News from './News';
+import Weather from './Weather';
 
 export default function renderWidget(
   widget: RenderWidgetData,
@@ -22,6 +23,8 @@ export default function renderWidget(
       return <EnglishCard data={data} />;
     case 'news':
       return <News data={data} />;
+    case 'weather':
+      return <Weather />;
     default:
       return null;
   }

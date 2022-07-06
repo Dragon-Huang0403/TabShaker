@@ -4,7 +4,16 @@ module.exports = {
     'scope-enum': [
       2,
       'always',
-      ['GridLayout', 'NavBar', 'Note', 'Todo', 'Clock', 'EngCard', 'News'],
+      [
+        'GridLayout',
+        'NavBar',
+        'Note',
+        'Todo',
+        'Clock',
+        'EngCard',
+        'News',
+        'Weather',
+      ],
     ],
   },
 };
