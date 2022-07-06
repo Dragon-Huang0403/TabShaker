@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@fullcalendar/daygrid": "^5.11.0",
+    "@fullcalendar/list": "^5.11.0",
     "@fullcalendar/react": "^5.11.1",
     "@react-oauth/google": "^0.2.6",
     "@testing-library/jest-dom": "^5.16.4",

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list';
 import {
   getCalendarList,
   getCalendarEvents,
@@ -14,7 +15,26 @@ const Wrapper = styled.div`
   background: ${({ theme }) => theme.color.black};
   width: 100%;
   height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
   color: ${({ theme }) => theme.color.white};
+`;
+
+const CalendarWrapper = styled.div`
+  width: 100%;
+  flex-grow: 1;
+  font-size: 0.75rem;
+
+  & .fc .fc-cell-shaded,
+  & .fc .fc-day-disabled {
+    background: ${({ theme }) => theme.color.grey};
+  }
+
+  & .fc .fc-list-event:hover td {
+    background: ${({ theme }) => theme.color.lavenderBlue};
+    color: ${({ theme }) => theme.color.black};
+  }
 `;
 
 function Calendar() {
@@ -79,13 +99,17 @@ function Calendar() {
           updateEventsFromGoogleCalendar
         </button>
       </div>
-      <FullCalendar
-        eventMaxStack={3}
-        dayMaxEventRows={3}
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        events={events}
-      />
+      <CalendarWrapper>
+        <FullCalendar
+          eventMaxStack={3}
+          dayMaxEventRows={2}
+          plugins={[dayGridPlugin, listPlugin]}
+          initialView="listWeek"
+          events={events}
+          height="100%"
+          themeSystem="bootstrap5"
+        />
+      </CalendarWrapper>
     </Wrapper>
   );
 }
