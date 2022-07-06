@@ -5,6 +5,8 @@ import {
   googleLogout,
   TokenResponse,
 } from '@react-oauth/google';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
 import getCalendarList from './googleApi';
 
 const Wrapper = styled.div`
@@ -48,6 +50,7 @@ function Calendar() {
       <button onClick={googleLogout} type="button">
         Logout
       </button>
+      <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" />
     </Wrapper>
   );
 }
