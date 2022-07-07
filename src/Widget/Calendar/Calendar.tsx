@@ -14,21 +14,19 @@ import {
   getNewAccessToken,
 } from '../../utils/backendApis';
 import type { EventForFullCalendar } from './type';
+import googleSignInBtn from './googleIcon/googleSignInBtn.png';
+import googleSignInBtnHover from './googleIcon/googleSignInBtnHover.png';
+import googleSignInBtnPress from './googleIcon/googleSignInBtnPress.png';
 
 const Wrapper = styled.div`
+  position: relative;
   background: ${({ theme }) => theme.color.black};
   width: 100%;
   height: 100%;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
+  padding: 15px;
   color: ${({ theme }) => theme.color.white};
-`;
-
-const CalendarWrapper = styled.div`
-  width: 100%;
-  flex-grow: 1;
-  font-size: 0.75rem;
+  font-size: 1rem;
+  border-radius: 10px;
 
   & .fc .fc-cell-shaded,
   & .fc .fc-day-disabled {
@@ -38,6 +36,37 @@ const CalendarWrapper = styled.div`
   & .fc .fc-list-event:hover td {
     background: ${({ theme }) => theme.color.lavenderBlue};
     color: ${({ theme }) => theme.color.black};
+  }
+
+  & .fc-header-toolbar.fc-toolbar.fc-toolbar-ltr {
+    padding-right: 20px;
+  }
+`;
+
+const LoginWrapper = styled.div`
+  z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LoginButton = styled.div`
+  display: inline-block;
+  width: 191px;
+  height: 46px;
+  background-size: cover;
+  background-position: center;
+  background-image: url(${googleSignInBtn});
+  cursor: pointer;
+
+  &:hover {
+    background-image: url(${googleSignInBtnHover});
+  }
+  &:active {
+    background-image: url(${googleSignInBtnPress});
   }
 `;
 
@@ -75,13 +104,23 @@ function Calendar() {
     storeTokensInLocalStorage(tokens);
   };
 
-  const login = useGoogleLogin({
+  const googleLogin = useGoogleLogin({
     onSuccess: handleLoginSuccess,
-    onError: console.log,
+    onError: console.error,
     flow: 'auth-code',
     ux_mode: 'popup',
     scope: 'https://www.googleapis.com/auth/calendar.readonly',
   });
+
+  const handleLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      googleLogin();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (!tokenShouldUpdated && accessToken) {
@@ -113,10 +152,7 @@ function Calendar() {
     const refreshToken = window.localStorage.getItem('googleRefreshToken');
     if (refreshToken) {
       updateAccessToken(refreshToken);
-      return;
     }
-
-    login();
   }, [tokenShouldUpdated]);
 
   useEffect(() => {
@@ -160,17 +196,20 @@ function Calendar() {
 
   return (
     <Wrapper>
-      <CalendarWrapper>
-        <FullCalendar
-          eventMaxStack={3}
-          dayMaxEventRows={2}
-          plugins={[dayGridPlugin, listPlugin]}
-          initialView="listWeek"
-          events={events}
-          height="100%"
-          themeSystem="bootstrap5"
-        />
-      </CalendarWrapper>
+      {!accessToken && (
+        <LoginWrapper>
+          <LoginButton onClick={handleLogin} />
+        </LoginWrapper>
+      )}
+      <FullCalendar
+        eventMaxStack={3}
+        dayMaxEventRows={2}
+        plugins={[dayGridPlugin, listPlugin]}
+        initialView="dayGridMonth"
+        headerToolbar={{ left: 'title', center: '', right: 'prev,next' }}
+        events={events}
+        height="100%"
+      />
     </Wrapper>
   );
 }
