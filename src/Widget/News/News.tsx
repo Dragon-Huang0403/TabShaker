@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import fetchNews from '../../utils/newsApi';
+import { fetchNews } from '../../utils/backendApis';
 import NewsItem from './NewsItem';
 import type { NewsData } from '../../types/WidgetTypes';
 

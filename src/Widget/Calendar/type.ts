@@ -3,6 +3,7 @@ export type GoogleCalendarListsResponse = {
   etag: string;
   nextSyncToken: string;
   items: CalendarFromGoogle[];
+  error?: { errors: string[]; message: string };
 };
 
 export type CalendarFromGoogle = {

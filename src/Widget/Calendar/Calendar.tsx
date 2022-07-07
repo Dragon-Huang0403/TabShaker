@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
+import { useGoogleLogin, CodeResponse } from '@react-oauth/google';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
@@ -9,6 +9,10 @@ import {
   getCalendarEvents,
   handleEventsFromGoogleCalendar,
 } from './googleApi';
+import {
+  getRefreshTokenAndAccessToken,
+  getNewAccessToken,
+} from '../../utils/backendApis';
 import type { EventForFullCalendar } from './type';
 
 const Wrapper = styled.div`
@@ -37,68 +41,125 @@ const CalendarWrapper = styled.div`
   }
 `;
 
+type GoogleTokens = {
+  access_token: string;
+  expiry_date: number;
+  refresh_token?: string;
+  scope: string;
+  id_token: string;
+};
+
 function Calendar() {
   const [accessToken, setAccessToken] = useState('');
+  const [tokenShouldUpdated, setTokenShouldUpdated] = useState(false);
   const [events, setEvents] = useState<EventForFullCalendar[]>([]);
 
-  const handleSuccess = (tokenResponse: TokenResponse) => {
-    const token = tokenResponse.access_token;
-    window.localStorage.setItem('googleAccessToken', token);
-    setAccessToken(token);
+  const storeTokensInLocalStorage = (tokens: GoogleTokens) => {
+    const newAccessToken = tokens.access_token as string;
+    const expiryDate = tokens.expiry_date as number;
+
+    window.localStorage.setItem('googleAccessToken', newAccessToken);
+    window.localStorage.setItem(
+      'googleAccessTokenExpiryDate',
+      String(expiryDate),
+    );
+    const refreshToken = tokens.refresh_token as string;
+    if (refreshToken) {
+      window.localStorage.setItem('googleRefreshToken', refreshToken);
+    }
+    setTokenShouldUpdated(true);
+  };
+
+  const handleLoginSuccess = async (codeResponse: CodeResponse) => {
+    const tokens = await getRefreshTokenAndAccessToken(codeResponse);
+    storeTokensInLocalStorage(tokens);
   };
 
   const login = useGoogleLogin({
-    onSuccess: handleSuccess,
+    onSuccess: handleLoginSuccess,
     onError: console.log,
-    scope: 'https://www.googleapis.com/auth/calendar',
+    flow: 'auth-code',
+    ux_mode: 'popup',
+    scope: 'https://www.googleapis.com/auth/calendar.readonly',
   });
 
-  const updateEventsFromGoogleCalendar = async () => {
-    const calendarList = await getCalendarList(accessToken);
-    const handleCalendarListData = async (
-      id: string,
-      backgroundColor: string,
-      pageToken?: string,
-    ) => {
-      const eventsFromGoogle = await getCalendarEvents(
-        accessToken,
-        id,
-        pageToken,
-      );
-      if (eventsFromGoogle.error) return;
-      const handledEvents = handleEventsFromGoogleCalendar(
-        eventsFromGoogle.items,
-        backgroundColor,
-      );
-      setEvents((prevEvent) => [...prevEvent, ...handledEvents]);
+  useEffect(() => {
+    if (!tokenShouldUpdated && accessToken) {
+      return;
+    }
+    setTokenShouldUpdated(false);
 
-      const { nextPageToken } = eventsFromGoogle;
-      if (nextPageToken) {
-        handleCalendarListData(id, backgroundColor, nextPageToken);
+    const oldAccessToken = window.localStorage.getItem('googleAccessToken');
+    const oldAccessTokenExpiryDate = new Date(
+      Number(window.localStorage.getItem('googleAccessTokenExpiryDate')),
+    );
+
+    const now = new Date();
+    if (oldAccessToken && oldAccessTokenExpiryDate > now) {
+      setAccessToken(oldAccessToken);
+      return;
+    }
+
+    const updateAccessToken = async (refreshToken: string) => {
+      const tokens = await getNewAccessToken(refreshToken);
+      if (tokens.error) {
+        console.error(tokens.error);
+        window.localStorage.removeItem('googleRefreshToken');
+        return;
       }
+      storeTokensInLocalStorage(tokens);
     };
-    calendarList.items.forEach(async (item) => {
-      handleCalendarListData(item.id, item.backgroundColor);
-    });
-  };
+
+    const refreshToken = window.localStorage.getItem('googleRefreshToken');
+    if (refreshToken) {
+      updateAccessToken(refreshToken);
+      return;
+    }
+
+    login();
+  }, [tokenShouldUpdated]);
 
   useEffect(() => {
-    const oldToken = window.localStorage.getItem('googleAccessToken');
-    if (oldToken) {
-      setAccessToken(oldToken);
-    }
-  }, []);
+    if (!accessToken) return;
+    const updateEventsFromGoogleCalendar = async () => {
+      const calendarList = await getCalendarList(accessToken);
+      if (calendarList.error) {
+        setTokenShouldUpdated(true);
+        window.localStorage.removeItem('googleAccessToken');
+        console.error(calendarList.error.message);
+        return;
+      }
+      const handleCalendarListData = async (
+        id: string,
+        backgroundColor: string,
+        pageToken?: string,
+      ) => {
+        const eventsFromGoogle = await getCalendarEvents(
+          accessToken,
+          id,
+          pageToken,
+        );
+        if (eventsFromGoogle.error) return;
+        const handledEvents = handleEventsFromGoogleCalendar(
+          eventsFromGoogle.items,
+          backgroundColor,
+        );
+        setEvents((prevEvent) => [...prevEvent, ...handledEvents]);
+
+        const { nextPageToken } = eventsFromGoogle;
+        if (nextPageToken) {
+          handleCalendarListData(id, backgroundColor, nextPageToken);
+        }
+      };
+      calendarList.items.forEach(async (item) => {
+        handleCalendarListData(item.id, item.backgroundColor);
+      });
+    };
+    updateEventsFromGoogleCalendar();
+  }, [accessToken]);
 
   return (
     <Wrapper>
-      <div>
-        <button onClick={() => login()} type="button">
-          Login
-        </button>
-        <button onClick={updateEventsFromGoogleCalendar} type="button">
-          updateEventsFromGoogleCalendar
-        </button>
-      </div>
       <CalendarWrapper>
         <FullCalendar
           eventMaxStack={3}
