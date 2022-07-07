@@ -6,6 +6,7 @@ import Todo from './Todo';
 import EnglishCard from './EnglishCard';
 import News from './News';
 import Weather from './Weather';
+import Calendar from './Calendar';
 
 export default function renderWidget(
   widget: RenderWidgetData,
@@ -25,6 +26,8 @@ export default function renderWidget(
       return <News data={data} />;
     case 'weather':
       return <Weather />;
+    case 'calendar':
+      return <Calendar />;
     default:
       return null;
   }

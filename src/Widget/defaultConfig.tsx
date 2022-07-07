@@ -47,6 +47,13 @@ export default {
     limit: { minW: 5, maxW: 13, minH: 4, maxH: 8 },
     menu: [],
   },
+  calendar: {
+    style: {},
+    data: {},
+    defaultLayout: { w: 20, h: 20 },
+    limit: { minW: 11, maxW: 20, minH: 10, maxH: 20 },
+    menu: [],
+  },
 };
 
 export const widgetDemo = {
@@ -93,6 +100,11 @@ export const widgetDemo = {
   },
   weather: {
     type: 'weather',
+    style: {},
+    data: {},
+  },
+  calendar: {
+    type: 'calendar',
     style: {},
     data: {},
   },

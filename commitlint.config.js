@@ -13,6 +13,7 @@ module.exports = {
         'EngCard',
         'News',
         'Weather',
+        'Calendar',
       ],
     ],
   },

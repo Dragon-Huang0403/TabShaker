@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
 import BackgroundImage from './BackgroundImage';
@@ -63,22 +64,30 @@ function App() {
 
   return (
     <ThemeProvider theme={globalTheme}>
-      <GlobalStyle />
-      <BackgroundImage />
-      <Wrapper>
-        <NavBar addWidget={addWidget} />
-        {/* <Widgets widgets={widgets} setWidgets={setWidgets} /> */}
-        <GridLayout widgets={widgets} layouts={layouts} setLayouts={setLayouts}>
-          {widgets.map((widget) => (
-            <Widget
-              key={widget.id}
-              widget={widget}
-              deleteWidget={() => deleteWidget(widget.id)}
-              onWidgetChange={onWidgetChange}
-            />
-          ))}
-        </GridLayout>
-      </Wrapper>
+      <GoogleOAuthProvider
+        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
+      >
+        <GlobalStyle />
+        <BackgroundImage />
+        <Wrapper>
+          <NavBar addWidget={addWidget} />
+          {/* <Widgets widgets={widgets} setWidgets={setWidgets} /> */}
+          <GridLayout
+            widgets={widgets}
+            layouts={layouts}
+            setLayouts={setLayouts}
+          >
+            {widgets.map((widget) => (
+              <Widget
+                key={widget.id}
+                widget={widget}
+                deleteWidget={() => deleteWidget(widget.id)}
+                onWidgetChange={onWidgetChange}
+              />
+            ))}
+          </GridLayout>
+        </Wrapper>
+      </GoogleOAuthProvider>
     </ThemeProvider>
   );
 }
