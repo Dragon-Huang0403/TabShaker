@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useGoogleLogin, CodeResponse } from '@react-oauth/google';
 import FullCalendar from '@fullcalendar/react';
@@ -29,7 +29,8 @@ const Wrapper = styled.div`
   border-radius: 10px;
 
   & .fc .fc-cell-shaded,
-  & .fc .fc-day-disabled {
+  & .fc .fc-day-disabled,
+  & .fc-theme-standard .fc-popover {
     background: ${({ theme }) => theme.color.grey};
   }
 
@@ -39,7 +40,20 @@ const Wrapper = styled.div`
   }
 
   & .fc-header-toolbar.fc-toolbar.fc-toolbar-ltr {
-    padding-right: 20px;
+    padding-right: 30px;
+  }
+
+  & .fc-daygrid-dot-event:hover,
+  .fc-daygrid-dot-event.fc-event-mirror {
+    background: ${({ theme }) => theme.color.transparentWhite};
+  }
+
+  & .fc .fc-list-event-time {
+    min-width: 100px;
+    white-space: pre-wrap;
+  }
+  & .fc .fc-toolbar-title {
+    font-size: 1.5rem;
   }
 `;
 
@@ -61,7 +75,6 @@ const LoginButton = styled.div`
   background-position: center;
   background-image: url(${googleSignInBtn});
   cursor: pointer;
-
   &:hover {
     background-image: url(${googleSignInBtnHover});
   }
@@ -82,6 +95,9 @@ function Calendar() {
   const [accessToken, setAccessToken] = useState('');
   const [tokenShouldUpdated, setTokenShouldUpdated] = useState(false);
   const [events, setEvents] = useState<EventForFullCalendar[]>([]);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const calendarRef = useRef<FullCalendar>(null);
+  const isModeUpdating = useRef(false);
 
   const storeTokensInLocalStorage = (tokens: GoogleTokens) => {
     const newAccessToken = tokens.access_token as string;
@@ -156,7 +172,7 @@ function Calendar() {
   }, [tokenShouldUpdated]);
 
   useEffect(() => {
-    if (!accessToken) return;
+    if (!accessToken || events.length > 0) return;
     const updateEventsFromGoogleCalendar = async () => {
       const calendarList = await getCalendarList(accessToken);
       if (calendarList.error) {
@@ -194,18 +210,52 @@ function Calendar() {
     updateEventsFromGoogleCalendar();
   }, [accessToken]);
 
+  useEffect(() => {
+    const wrapper = wrapperRef.current!;
+    let width = wrapper.clientWidth;
+    if (events.length === 0) return;
+    if (!calendarRef.current) return;
+    if (isModeUpdating.current) return;
+    const currentView = calendarRef.current!.getApi().view;
+
+    const updateCalendarView = (
+      viewMode: 'listWeek' | 'dayGridMonth',
+      delay = 200,
+    ) => {
+      isModeUpdating.current = true;
+      setTimeout(() => {
+        if (wrapper.clientWidth !== width) {
+          width = wrapper.clientWidth;
+          updateCalendarView(viewMode, delay);
+          return;
+        }
+        calendarRef.current!.getApi().changeView(viewMode);
+        isModeUpdating.current = false;
+      }, delay);
+    };
+
+    if (width <= 450) {
+      if (currentView.type !== 'listWeek') {
+        updateCalendarView('listWeek');
+      }
+    } else if (currentView.type !== 'dayGridMonth') {
+      updateCalendarView('dayGridMonth', 500);
+    }
+  });
+
   return (
-    <Wrapper>
+    <Wrapper ref={wrapperRef}>
       {!accessToken && (
         <LoginWrapper>
           <LoginButton onClick={handleLogin} />
         </LoginWrapper>
       )}
       <FullCalendar
+        ref={calendarRef}
         eventMaxStack={3}
         dayMaxEventRows={2}
         plugins={[dayGridPlugin, listPlugin]}
-        initialView="dayGridMonth"
+        initialView="listWeek"
         headerToolbar={{ left: 'title', center: '', right: 'prev,next' }}
         events={events}
         height="100%"

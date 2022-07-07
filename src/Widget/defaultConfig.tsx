@@ -51,7 +51,7 @@ export default {
     style: {},
     data: {},
     defaultLayout: { w: 20, h: 20 },
-    limit: { minW: 10, maxW: 20, minH: 10, maxH: 20 },
+    limit: { minW: 11, maxW: 20, minH: 10, maxH: 20 },
     menu: [],
   },
 };
