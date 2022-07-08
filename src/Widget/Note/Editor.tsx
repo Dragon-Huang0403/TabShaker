@@ -1,61 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import './editor.css';
 
+import { ListItemNode, ListNode } from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { TRANSFORMERS } from '@lexical/markdown';
+
 import RestoreContentPlugin from './RestoreContentPlugin';
-
-const EditorContainer = styled.div`
-  position: relative;
-  flex-grow: 1;
-  height: 200px;
-  overflow-y: auto;
-  color: white;
-
-  & > div:first-child {
-    height: 100%;
-    tab-size: 1;
-    outline: 0;
-    padding: 0px 10px 15px;
-  }
-  & > div:first-child:active {
-    cursor: auto;
-  }
-
-  & p {
-    margin: 0px;
-  }
-`;
-
-const PlaceHolder = styled.div`
-  color: ${({ theme }) => theme.color.lightGrey};
-  overflow: hidden;
-  position: absolute;
-  top: 0px;
-  left: 10px;
-  user-select: none;
-  pointer-events: none;
-`;
-
-const editorTheme = {
-  ltr: 'ltr',
-  rtl: 'rtl',
-  placeholder: 'editor-placeholder',
-  paragraph: 'editor-paragraph',
-};
-
-// function MyCustomAutoFocusPlugin() {
-//   const [editor] = useLexicalComposerContext();
-
-//   useEffect(() => {
-//     // Focus the editor when the effect fires!
-//     editor.focus();
-//   }, [editor]);
-
-//   return null;
-// }
+import editorTheme from './editorTheme';
+import EditorWrapper, { PlaceHolder } from './EditorWrapper';
 
 function onError(error: any) {
   console.error(error);
@@ -65,26 +22,28 @@ const initialConfig = {
   namespace: 'MyEditor',
   theme: editorTheme,
   onError,
+  nodes: [ListItemNode, ListNode],
 };
 
 interface EditorProps {
   onChange: (content: string) => void;
   content: string;
+  editorRef: React.RefObject<HTMLDivElement>;
 }
 
-function Editor({ onChange, content }: EditorProps) {
+function Editor({ onChange, content, editorRef }: EditorProps) {
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <EditorContainer>
-        <PlainTextPlugin
+      <EditorWrapper ref={editorRef}>
+        <RichTextPlugin
           contentEditable={<ContentEditable />}
           placeholder={<PlaceHolder>Enter some text...</PlaceHolder>}
         />
-
         <HistoryPlugin />
+        <ListPlugin />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <RestoreContentPlugin onChange={onChange} content={content} />
-        {/* <MyCustomAutoFocusPlugin /> */}
-      </EditorContainer>
+      </EditorWrapper>
     </LexicalComposer>
   );
 }

@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import Title from './Title';
-// import Content from './Content';
 import Editor from './Editor';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.color.black};
+  padding-bottom: 10px;
   border-radius: 10px;
   width: 100%;
   height: 100%;
@@ -27,26 +27,21 @@ function Note({ data, onWidgetChange }: NoteProps) {
     onWidgetChange({ title, content: newContent });
   };
 
-  // const setContent = (newContent: string) => {
-  //   onWidgetChange({ title, content: newContent });
-  // };
-
-  const contentRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
   const onEnterInTitle = () => {
-    if (!contentRef.current) return;
-    contentRef.current.focus();
+    const contentEditor = editorRef.current?.childNodes?.[0] as HTMLElement;
+    if (contentEditor) {
+      contentEditor.focus();
+    }
   };
   return (
     <Wrapper>
       <Title title={title} setTitle={setTitle} onEnter={onEnterInTitle} />
-
-      <Editor onChange={onEditorChange} content={content} />
-
-      {/* <Content
+      <Editor
+        onChange={onEditorChange}
         content={content}
-        setContent={setContent}
-        contentRef={contentRef}
-      /> */}
+        editorRef={editorRef}
+      />
     </Wrapper>
   );
 }
