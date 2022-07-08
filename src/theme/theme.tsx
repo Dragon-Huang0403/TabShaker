@@ -7,7 +7,7 @@ const theme = {
     purple: '#e4c1f9',
     lightPurple: '#f7edfd',
     lavenderBlue: '#b7bff5',
-    lightGrey: '#666',
+    lightGrey: '#8e8e8e',
     lightBlue: '#3498db',
     transparentBlack: '#0009',
     littleTransparentBlack: 'rgba(15, 15, 15, 0.925)',
