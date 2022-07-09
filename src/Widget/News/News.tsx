@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ReactLoading from 'react-loading';
 import { fetchNews } from '../../utils/backendApis';
 import NewsItem from './NewsItem';
 import type { NewsData } from '../../types/WidgetTypes';
@@ -28,6 +29,10 @@ const NewsContainer = styled.div`
   overflow-y: auto;
 `;
 
+const LoadingWrapper = styled.div`
+  flex-grow: 1;
+  margin: auto;
+`;
 interface NewsProps {
   data: { tag: string };
 }
@@ -68,6 +73,11 @@ function News({ data }: NewsProps) {
   return (
     <Wrapper>
       <Title>Top Headlines</Title>
+      {newsData.length === 0 && (
+        <LoadingWrapper>
+          <ReactLoading type="spin" />
+        </LoadingWrapper>
+      )}
       <NewsContainer>
         {newsData.map((news, index) => (
           // eslint-disable-next-line react/no-array-index-key
