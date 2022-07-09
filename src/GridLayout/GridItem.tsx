@@ -24,6 +24,11 @@ const Wrapper = styled.div<{ isMoving: boolean }>`
     css`
       opacity: 0.8;
     `}
+  cursor: inherit;
+
+  &:active {
+    cursor: move;
+  }
 `;
 
 const defaultProps = {

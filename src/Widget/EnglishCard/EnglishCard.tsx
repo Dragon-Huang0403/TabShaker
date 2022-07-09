@@ -2,8 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import ReactLoading from 'react-loading';
 import 'swiper/css';
-import 'swiper/css/effect-creative';
-import { EffectCreative } from 'swiper';
 import styled, { css } from 'styled-components';
 import { getCard } from '../../utils/firebase';
 import { getAudioUrl } from '../../utils/lib';
@@ -143,21 +141,7 @@ function EnglishCard({ data }: EnglishCardProps) {
   }, [isLoading]);
   return (
     <Wrapper>
-      <Swiper
-        grabCursor
-        effect="creative"
-        creativeEffect={{
-          prev: {
-            shadow: true,
-            translate: [0, 0, -400],
-          },
-          next: {
-            translate: ['100%', 0, 0],
-          },
-        }}
-        loop
-        modules={[EffectCreative]}
-      >
+      <Swiper simulateTouch={false} loop>
         {words.map((word) => (
           <SwiperSlide key={word.id}>
             <EnglishWord word={word} playAudio={playAudio} tags={tag} />
