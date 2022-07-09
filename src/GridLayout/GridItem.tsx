@@ -20,10 +20,14 @@ const Wrapper = styled.div<{ isMoving: boolean }>`
   position: absolute;
   user-select: none;
   ${({ isMoving }) =>
-    isMoving &&
-    css`
-      opacity: 0.8;
-    `}
+    isMoving
+      ? css`
+          opacity: 0.8;
+        `
+      : css`
+          transition: transform 0.22s;
+        `}
+
   cursor: inherit;
 
   &:active {
