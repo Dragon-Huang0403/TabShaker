@@ -154,13 +154,13 @@ export function moveElement(
     const newItem = { ...item };
     if (overLapArea.w > overLapArea.h) {
       newItem.y =
-        item.y > targetItem.y
+        item.y >= targetItem.y
           ? (newItem.y += overLapArea.h)
           : (newItem.y -= overLapArea.h);
       newItem.y = Math.max(0, newItem.y);
     } else {
       newItem.x =
-        item.x > targetItem.x
+        item.x >= targetItem.x
           ? (newItem.x += overLapArea.w)
           : (newItem.x -= overLapArea.w);
       newItem.x = Math.max(0, newItem.x);

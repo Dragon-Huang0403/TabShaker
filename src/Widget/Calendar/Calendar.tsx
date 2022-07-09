@@ -58,7 +58,6 @@ const Wrapper = styled.div`
 `;
 
 const LoginWrapper = styled.div`
-  z-index: 1;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -69,6 +68,7 @@ const LoginWrapper = styled.div`
 `;
 
 const LoginButton = styled.div`
+  z-index: 100;
   display: inline-block;
   width: 191px;
   height: 46px;

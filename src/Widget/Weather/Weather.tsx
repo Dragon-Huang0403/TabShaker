@@ -12,6 +12,7 @@ import {
 import getWeatherDataByChineseCityName from './weatherApi';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
+  border-radius: 15px;
   background: ${({ theme }) => theme.color.black};
   color: ${({ theme }) => theme.color.purple};
   width: 100%;

@@ -10,7 +10,7 @@ export default {
   },
   todo: {
     style: {},
-    data: { todos: [], title: 'Inbox' },
+    data: { todos: [], title: 'AppWorks' },
     defaultLayout: { w: 10, h: 10 },
     limit: { minW: 3, maxW: 10, minH: 3, maxH: 10 },
     menu: [],
@@ -27,7 +27,7 @@ export default {
     data: {
       tag: [],
     },
-    defaultLayout: { w: 12, h: 7 },
+    defaultLayout: { w: 13, h: 9 },
     limit: { minW: 11, maxW: 14, minH: 6, maxH: 9 },
     menu: ['Basic', 'Medium', 'Hard', 'Challenging'],
   },
@@ -36,21 +36,21 @@ export default {
     data: {
       tag: ['United States'],
     },
-    defaultLayout: { w: 12, h: 7 },
-    limit: { minW: 11, maxW: 14, minH: 6, maxH: 20 },
+    defaultLayout: { w: 13, h: 12 },
+    limit: { minW: 11, maxW: 16, minH: 8, maxH: 20 },
     menu: ['Taiwan', 'United States'],
   },
   weather: {
     style: {},
     data: {},
-    defaultLayout: { w: 12, h: 7 },
+    defaultLayout: { w: 13, h: 8 },
     limit: { minW: 5, maxW: 13, minH: 4, maxH: 8 },
     menu: [],
   },
   calendar: {
     style: {},
     data: {},
-    defaultLayout: { w: 20, h: 20 },
+    defaultLayout: { w: 14, h: 12 },
     limit: { minW: 11, maxW: 20, minH: 10, maxH: 20 },
     menu: [],
   },
@@ -77,14 +77,14 @@ export const widgetDemo = {
   todo: {
     type: 'todo',
     text: 'Todo List',
-    title: 'Inbox',
     style: {},
     data: {
       todos: [
-        { text: 'Please Select me', id: '1', completed: true },
-        { text: 'Please Select me', id: '2', completed: true },
-        { text: 'Please Select me', id: '3', completed: true },
+        { text: 'Please Select Me', id: '1', completed: true },
+        { text: 'Please Select Me', id: '2', completed: true },
+        { text: 'Please Select Me', id: '3', completed: true },
       ],
+      title: 'AppWorks',
     },
   },
   englishCard: {
