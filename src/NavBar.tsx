@@ -60,6 +60,11 @@ const IconContainer = styled.div`
   padding: 3px;
   height: 30px;
   width: 30px;
+
+  &:first-child {
+    background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
+  }
+
   & > svg {
     width: 24px;
     height: 24px;
@@ -68,7 +73,7 @@ const IconContainer = styled.div`
 
   :hover {
     cursor: pointer;
-    background: ${({ theme }) => theme.color.transparentBlack};
+    background: ${({ theme }) => theme.color.transparentWhite};
     border-radius: 50%;
   }
 `;

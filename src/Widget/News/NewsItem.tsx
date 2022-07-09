@@ -6,6 +6,9 @@ const Wrapper = styled.div`
   display: flex;
   padding: 5px 5px 5px 10px;
   gap: 10px;
+  height: 100px;
+  overflow-y: hidden;
+  margin-bottom: 10px;
 `;
 
 const Photo = styled.div``;
@@ -15,6 +18,8 @@ const Img = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 8px;
+  object-fit: cover;
+  object-position: center;
 `;
 const Title = styled.div`
   & > a:hover {

@@ -9,9 +9,23 @@ const Wrapper = styled.div`
   height: 100%;
   background: ${({ theme }) => theme.color.black};
   color: ${({ theme }) => theme.color.white};
-  overflow-y: auto;
-  padding: 5px 0px;
+  padding: 10px 5px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Title = styled.div`
+  padding-left: 10px;
+  padding-bottom: 5px;
+  font-size: 1.25rem;
+  border-bottom: 3px solid ${({ theme }) => theme.color.white};
+  margin-bottom: 10px;
+`;
+
+const NewsContainer = styled.div`
+  flex-grow: 1;
+  overflow-y: auto;
 `;
 
 interface NewsProps {
@@ -53,10 +67,13 @@ function News({ data }: NewsProps) {
   }, [tag]);
   return (
     <Wrapper>
-      {newsData.map((news, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <NewsItem data={news} key={index} />
-      ))}
+      <Title>Top Headlines</Title>
+      <NewsContainer>
+        {newsData.map((news, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <NewsItem data={news} key={index} />
+        ))}
+      </NewsContainer>
     </Wrapper>
   );
 }
