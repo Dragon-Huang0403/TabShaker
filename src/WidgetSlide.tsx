@@ -16,8 +16,15 @@ interface WidgetSlideProps {
 }
 
 function WidgetSlide({ widgetType, addWidget }: WidgetSlideProps) {
+  const onClickCapture = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addWidget();
+  };
   const widget = widgetDemo[widgetType];
-  return <Wrapper onClick={addWidget}>{renderWidget(widget)}</Wrapper>;
+  return (
+    <Wrapper onClickCapture={onClickCapture}>{renderWidget(widget)}</Wrapper>
+  );
 }
 
 export default WidgetSlide;

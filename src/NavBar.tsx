@@ -68,7 +68,7 @@ const IconContainer = styled.div`
 
   :hover {
     cursor: pointer;
-    background: ${({ theme }) => theme.color.transparentWhite};
+    background: ${({ theme }) => theme.color.transparentBlack};
     border-radius: 50%;
   }
 `;
@@ -77,11 +77,16 @@ const AppIconContainer = styled(IconContainer)`
   height: 36px;
   width: 36px;
   padding: 6px;
+  background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
+  &:hover {
+    background: ${({ theme }) => theme.color.transparentBlack};
+  }
 `;
 
 const Link = styled.a`
   user-select: none;
   margin-right: 20px;
+  text-shadow: 0.1em 0.1em 0.2em black;
 
   &,
   &:visited {
