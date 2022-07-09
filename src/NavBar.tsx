@@ -23,18 +23,18 @@ const LeftPart = styled.div`
   transition: all 0.5s;
   z-index: 1;
 
-  & > div:not(:first-child) {
+  div:not(:first-child) {
     opacity: 0;
   }
 
   &:hover {
     background: ${({ theme }) => theme.color.transparentBlack};
 
-    & > div:not(:first-child) {
+    div:not(:first-child) {
       opacity: 1;
     }
 
-    & svg {
+    svg {
       fill: ${({ theme }) => theme.color.lightBlue};
     }
   }
@@ -82,6 +82,7 @@ const AppIconContainer = styled(IconContainer)`
 const Link = styled.a`
   user-select: none;
   margin-right: 20px;
+
   &,
   &:visited {
     color: ${({ theme }) => theme.color.white};

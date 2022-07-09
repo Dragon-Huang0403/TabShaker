@@ -23,7 +23,7 @@ export type UnsplashResponseData = {
 
 export default async function getRandomPhotos() {
   const response = await fetch(
-    `${url}/photos/random?count=10&collections=1053828`,
+    `${url}/photos/random?count=10&collections=2183172`,
     {
       headers: {
         Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_API_KEY}`,
