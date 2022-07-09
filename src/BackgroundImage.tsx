@@ -35,7 +35,7 @@ const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
   padding: 0px 20px 20px;
   color: ${({ theme }) => theme.color.white};
   font-size: 0.75rem;
-  // opacity: 0.8;
+  user-select: none;
   ${({ url }) =>
     url &&
     css`

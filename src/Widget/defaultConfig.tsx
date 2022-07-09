@@ -88,11 +88,13 @@ export const widgetDemo = {
   },
   englishCard: {
     type: 'englishCard',
+    text: 'English Card',
     style: {},
     data: { tag: ['Basic'] },
   },
   news: {
     type: 'news',
+    text: 'News',
     style: {},
     data: {
       tag: ['United States'],
@@ -100,11 +102,13 @@ export const widgetDemo = {
   },
   weather: {
     type: 'weather',
+    text: 'Weather',
     style: {},
     data: {},
   },
   calendar: {
     type: 'calendar',
+    text: 'Calendar',
     style: {},
     data: {},
   },

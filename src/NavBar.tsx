@@ -7,8 +7,8 @@ import type { WidgetData } from './types/WidgetTypes';
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 64px;
-  padding: 8px;
+  height: 56px;
+  padding: 8px 8px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -80,6 +80,7 @@ const AppIconContainer = styled(IconContainer)`
   background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
   &:hover {
     background: ${({ theme }) => theme.color.transparentBlack};
+    box-shadow: 0px 0px 10px -3px ${({ theme }) => theme.color.lightWhite};
   }
 `;
 

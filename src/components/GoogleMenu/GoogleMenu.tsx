@@ -36,7 +36,7 @@ function GoogleMenu() {
   return (
     <Wrapper>
       {googleIcons.map((icon) => (
-        <StyledLink href={icon.url}>
+        <StyledLink key={icon.text} href={icon.url}>
           <Icon
             style={{
               backgroundPosition: icon.backgroundPosition,
