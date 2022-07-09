@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { ContentEditableEvent } from 'react-contenteditable';
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
 import IconDropDownMenu from '../../components/IconDropDownMenu';
 import { ExpandMore } from '../../components/Icons';
@@ -14,7 +14,9 @@ export interface TodoData {
   time: Date;
 }
 
-type ShowMode = 'Inbox' | 'Active' | 'Completed';
+const mode = ['All', 'Active', 'Completed'] as const;
+
+type ShowMode = typeof mode[number];
 
 const Wrapper = styled.div`
   width: 100%;
@@ -33,7 +35,11 @@ const Header = styled.div`
 `;
 
 const Title = styled.div`
-  margin-right: 5px;
+  font-size: 1.2rem;
+
+  & > div {
+    padding: 2px 6px;
+  }
 `;
 
 const Input = styled.input`
@@ -59,18 +65,23 @@ const StyledUl = styled.ul`
 `;
 
 interface TodoProps {
-  data: { todos: TodoData[] };
-  onWidgetChange: (onChangedData: { todos: TodoData[] }) => void;
+  data: { todos: TodoData[]; title: string };
+  onWidgetChange: (onChangedData: { todos: TodoData[]; title: string }) => void;
 }
 
 function Todo({ data, onWidgetChange }: TodoProps) {
-  const { todos } = data;
+  const { todos, title } = data;
   const setTodos = (newTodos: TodoData[]) => {
-    onWidgetChange({ todos: newTodos });
+    onWidgetChange({ todos: newTodos, title });
   };
-  const [showMode, setShowMode] = useState<ShowMode>('Inbox');
+  const [showMode, setShowMode] = useState<ShowMode>('All');
   const [inputText, setInputText] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isComposition, setIsComposition] = useState(false);
+
+  const onTitleChange = (e: ContentEditableEvent) => {
+    onWidgetChange({ todos, title: e.target.value });
+  };
 
   const onTodoModify = (e: ContentEditableEvent, targetId: string) => {
     setTodos(
@@ -98,7 +109,7 @@ function Todo({ data, onWidgetChange }: TodoProps) {
       addTodo();
       e.preventDefault();
       e.stopPropagation();
-      if (showMode === 'Completed') setShowMode('Inbox');
+      if (showMode === 'Completed') setShowMode('All');
     }
   };
 
@@ -133,26 +144,13 @@ function Todo({ data, onWidgetChange }: TodoProps) {
     setIsComposition(false);
   };
 
-  const menuItems = [
-    {
-      text: 'Inbox',
-      onClick: () => {
-        setShowMode('Inbox');
-      },
+  const menuItems = mode.map((item) => ({
+    text: item,
+    onClick: () => {
+      setShowMode(item);
     },
-    {
-      text: 'Active',
-      onClick: () => {
-        setShowMode('Active');
-      },
-    },
-    {
-      text: 'Completed',
-      onClick: () => {
-        setShowMode('Completed');
-      },
-    },
-  ];
+    checked: showMode === item,
+  }));
 
   const showedTodos = getTodosByShowMode();
 
@@ -160,7 +158,18 @@ function Todo({ data, onWidgetChange }: TodoProps) {
     <Card>
       <Wrapper>
         <Header>
-          <Title>{showMode}</Title>
+          <Title>
+            <ContentEditable
+              html={title}
+              onChange={onTitleChange}
+              onKeyDown={(e) => {
+                if (e.code === 'Enter') {
+                  e.preventDefault();
+                  inputRef.current?.focus();
+                }
+              }}
+            />
+          </Title>
           <IconDropDownMenu items={menuItems} side="left" bulge>
             <ExpandMore />
           </IconDropDownMenu>
@@ -179,6 +188,7 @@ function Todo({ data, onWidgetChange }: TodoProps) {
           </StyledUl>
         </TodosContainer>
         <Input
+          ref={inputRef}
           value={inputText}
           onChange={onInputChange}
           onKeyDown={onInputSubmit}

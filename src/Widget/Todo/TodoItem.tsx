@@ -22,7 +22,7 @@ const Wrapper = styled.li<{ checked: boolean }>`
 const IconWrapper = styled.div`
   width: 20px;
   height: 20px;
-  margin: 0px 5px;
+  margin: 0px 10px;
   cursor: pointer;
 
   & > svg {

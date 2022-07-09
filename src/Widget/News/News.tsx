@@ -39,6 +39,8 @@ interface NewsProps {
 
 function News({ data }: NewsProps) {
   const [newsData, setNewsData] = useState<NewsData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const { tag } = data;
   useEffect(() => {
     const rawNewsLastUpdateInfo = window.localStorage.getItem('newsUpdateInfo');
@@ -55,14 +57,17 @@ function News({ data }: NewsProps) {
         if (newsData.length > 0) return;
         const oldNewsData = JSON.parse(rawNewsLastUpdateData);
         setNewsData(oldNewsData);
+        setIsLoading(false);
         return;
       }
     }
     const getNews = async () => {
+      setIsLoading(true);
       const res = await fetchNews(tag);
       if (res.status === 'ok') {
         const articles = res.articles as NewsData[];
         setNewsData(articles);
+        setIsLoading(false);
         const newsUpdateInfo = { tag, time: new Date() };
         localStorage.setItem('newsUpdateInfo', JSON.stringify(newsUpdateInfo));
         localStorage.setItem('newsData', JSON.stringify(articles));
@@ -73,7 +78,7 @@ function News({ data }: NewsProps) {
   return (
     <Wrapper>
       <Title>Top Headlines</Title>
-      {newsData.length === 0 && (
+      {(newsData.length === 0 || isLoading) && (
         <LoadingWrapper>
           <ReactLoading type="spin" />
         </LoadingWrapper>

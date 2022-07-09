@@ -10,7 +10,7 @@ export default {
   },
   todo: {
     style: {},
-    data: { todos: [] },
+    data: { todos: [], title: 'Inbox' },
     defaultLayout: { w: 10, h: 10 },
     limit: { minW: 3, maxW: 10, minH: 3, maxH: 10 },
     menu: [],
@@ -77,6 +77,7 @@ export const widgetDemo = {
   todo: {
     type: 'todo',
     text: 'Todo List',
+    title: 'Inbox',
     style: {},
     data: {
       todos: [
