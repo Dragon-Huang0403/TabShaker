@@ -18,6 +18,8 @@ import googleSignInBtn from './googleIcon/googleSignInBtn.png';
 import googleSignInBtnHover from './googleIcon/googleSignInBtnHover.png';
 import googleSignInBtnPress from './googleIcon/googleSignInBtnPress.png';
 
+declare const chrome: any;
+
 const Wrapper = styled.div`
   position: relative;
   background: ${({ theme }) => theme.color.black};
@@ -144,6 +146,14 @@ function Calendar() {
       return;
     }
     setTokenShouldUpdated(false);
+
+    if (chrome) {
+      chrome?.identity?.getAuthToken({ interactive: true }, (token: string) => {
+        window.localStorage.setItem('googleAccessToken', token);
+        setAccessToken(token);
+      });
+      return;
+    }
 
     const oldAccessToken = window.localStorage.getItem('googleAccessToken');
     const oldAccessTokenExpiryDate = new Date(
