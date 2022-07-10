@@ -147,8 +147,8 @@ function Calendar() {
     }
     setTokenShouldUpdated(false);
 
-    if (chrome) {
-      chrome?.identity?.getAuthToken({ interactive: true }, (token: string) => {
+    if (chrome?.identity?.getAuthToken) {
+      chrome.identity.getAuthToken({ interactive: true }, (token: string) => {
         window.localStorage.setItem('googleAccessToken', token);
         setAccessToken(token);
       });
