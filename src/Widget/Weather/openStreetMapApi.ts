@@ -20,10 +20,11 @@ export default async function getCityData(location: Location) {
     getCityDataInChinese(location),
     getCityDataInEnglish(location),
   ]);
+  console.log({ cityDataInChinese, cityDatInEnglish });
   return {
-    chinese: { state: cityDataInChinese.address.state },
+    chinese: { city: cityDataInChinese.address.city },
     english: {
-      state: cityDatInEnglish.address.state,
+      city: cityDatInEnglish.address.city,
       suburb: cityDatInEnglish.address.suburb,
     },
   };

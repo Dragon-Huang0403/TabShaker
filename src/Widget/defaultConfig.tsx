@@ -5,7 +5,7 @@ export default {
     },
     data: {},
     defaultLayout: { w: 20, h: 10 },
-    limit: { minW: 2, maxW: 20, minH: 1, maxH: 10 },
+    limit: { minW: 2, maxW: 40, minH: 1, maxH: 20 },
     menu: [],
   },
   todo: {

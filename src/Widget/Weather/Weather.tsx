@@ -100,8 +100,8 @@ const WeatherForecastWrapper = styled.div`
 
 type Location = { lat: number; lon: number };
 type CityData = {
-  chinese: { state: string };
-  english: { state: string; suburb: string };
+  chinese: { city: string };
+  english: { city: string; suburb: string };
 };
 
 export type WeatherData = {
@@ -144,9 +144,8 @@ function Weather() {
   useEffect(() => {
     if (!cityData) return;
     const updateWeatherData = async () => {
-      const weatherRawData = await getWeatherDataByChineseCityName(
-        cityData.chinese.state,
-      );
+      const cityName = cityData.chinese.city || '臺北市';
+      const weatherRawData = await getWeatherDataByChineseCityName(cityName);
       if (weatherRawData.success === 'true') {
         const weatherDataByElementType = handleWeatherDataByElementType(
           weatherRawData?.records?.locations?.[0]?.location?.[0]
@@ -231,7 +230,7 @@ function Weather() {
           fontSize={renderWidthMode === 1 ? 0.75 : 1}
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
-          {renderHeightMode >= 2 ? null : <div>{cityData.english.suburb}</div>}
+          {renderHeightMode >= 2 ? null : <div>{cityData.english.city}</div>}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
               {getWeatherDesc(weatherData[0].weatherType.value)}
