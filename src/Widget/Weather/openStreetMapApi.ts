@@ -8,24 +8,28 @@ async function getCityDataInChinese(location: Location) {
   const data = await res.json();
   return data;
 }
-async function getCityDataInEnglish(location: Location) {
+export async function getCityDataInEnglish(location: Location) {
   const url = `${baseUrl}&lat=${location.lat}&lon=${location.lon}&zoom=18&addressdetails=1`;
   const res = await fetch(url);
   const data = await res.json();
   return data;
 }
 
+type CityDataFromOpenStreet = {
+  road: string;
+  neighbourhood: string;
+  suburb: string;
+  village: string;
+  city: string;
+  'ISO3166-2-lvl6': string;
+  state: string;
+  postcode: string;
+  country: string;
+  country_code: string;
+};
+
 export default async function getCityData(location: Location) {
-  const [cityDataInChinese, cityDatInEnglish] = await Promise.all([
-    getCityDataInChinese(location),
-    getCityDataInEnglish(location),
-  ]);
-  console.log({ cityDataInChinese, cityDatInEnglish });
-  return {
-    chinese: { city: cityDataInChinese.address.city },
-    english: {
-      city: cityDatInEnglish.address.city,
-      suburb: cityDatInEnglish.address.suburb,
-    },
-  };
+  const cityDataInChinese = await getCityDataInChinese(location);
+
+  return cityDataInChinese.address as CityDataFromOpenStreet;
 }

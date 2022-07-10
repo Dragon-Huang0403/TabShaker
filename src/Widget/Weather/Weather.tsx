@@ -9,7 +9,7 @@ import {
   getWeatherDesc,
   getDayString,
 } from './utils';
-import getWeatherDataByChineseCityName from './weatherApi';
+import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
   border-radius: 15px;
@@ -100,8 +100,8 @@ const WeatherForecastWrapper = styled.div`
 
 type Location = { lat: number; lon: number };
 type CityData = {
-  chinese: { city: string };
-  english: { city: string; suburb: string };
+  chinese: string;
+  english: string;
 };
 
 export type WeatherData = {
@@ -136,7 +136,21 @@ function Weather() {
     if (!location) return;
     const updateCityData = async () => {
       const newCityData = await getCityData(location);
-      setCityData(newCityData);
+      const stateFindCity = taiwanCityList.find(
+        (taiwanCity) => taiwanCity.chinese === newCityData.state,
+      );
+      if (stateFindCity) {
+        setCityData(stateFindCity);
+        return;
+      }
+      const cityFindCity = taiwanCityList.find(
+        (taiwanCity) => taiwanCity.chinese === newCityData.city,
+      );
+      if (cityFindCity) {
+        setCityData(cityFindCity);
+        return;
+      }
+      setCityData(taiwanCityList[0]);
     };
     updateCityData();
   }, [location?.lat, location?.lon]);
@@ -144,7 +158,7 @@ function Weather() {
   useEffect(() => {
     if (!cityData) return;
     const updateWeatherData = async () => {
-      const cityName = cityData.chinese.city || '臺北市';
+      const cityName = cityData.chinese || '臺北市';
       const weatherRawData = await getWeatherDataByChineseCityName(cityName);
       if (weatherRawData.success === 'true') {
         const weatherDataByElementType = handleWeatherDataByElementType(
@@ -230,7 +244,7 @@ function Weather() {
           fontSize={renderWidthMode === 1 ? 0.75 : 1}
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
-          {renderHeightMode >= 2 ? null : <div>{cityData.english.city}</div>}
+          {renderHeightMode >= 2 ? null : <div>{cityData.english}</div>}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
               {getWeatherDesc(weatherData[0].weatherType.value)}
