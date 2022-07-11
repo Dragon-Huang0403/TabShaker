@@ -4,7 +4,7 @@ import { defaultConfig } from '../Widget';
 export type WidgetType = keyof typeof defaultConfig;
 
 export type RenderWidgetData = {
-  type: string;
+  type: WidgetType;
   data: TodoData | NoteData | EnglishWordData | NewsData | any;
   style: any;
 };

@@ -6,21 +6,21 @@ export default {
     data: {},
     defaultLayout: { w: 20, h: 10 },
     limit: { minW: 2, maxW: 40, minH: 1, maxH: 20 },
-    menu: [],
+    menu: [] as string[],
   },
   todo: {
     style: {},
     data: { todos: [], title: 'AppWorks' },
     defaultLayout: { w: 10, h: 10 },
-    limit: { minW: 3, maxW: 10, minH: 3, maxH: 10 },
-    menu: [],
+    limit: { minW: 3, maxW: 15, minH: 3, maxH: 15 },
+    menu: [] as string[],
   },
   note: {
     style: {},
     data: { title: '', content: '' },
     defaultLayout: { w: 10, h: 10 },
-    limit: { minW: 3, maxW: 10, minH: 3, maxH: 10 },
-    menu: [],
+    limit: { minW: 3, maxW: 15, minH: 3, maxH: 15 },
+    menu: [] as string[],
   },
   englishCard: {
     style: {},
@@ -29,7 +29,7 @@ export default {
     },
     defaultLayout: { w: 13, h: 9 },
     limit: { minW: 11, maxW: 14, minH: 6, maxH: 9 },
-    menu: ['Basic', 'Medium', 'Hard', 'Challenging'],
+    menu: ['Basic', 'Medium', 'Hard', 'Challenging'] as string[],
   },
   news: {
     style: {},
@@ -38,23 +38,23 @@ export default {
     },
     defaultLayout: { w: 13, h: 12 },
     limit: { minW: 11, maxW: 16, minH: 8, maxH: 20 },
-    menu: ['Taiwan', 'United States'],
+    menu: ['Taiwan', 'United States'] as string[],
   },
   weather: {
     style: {},
     data: {},
     defaultLayout: { w: 13, h: 8 },
     limit: { minW: 5, maxW: 13, minH: 4, maxH: 8 },
-    menu: [],
+    menu: [] as string[],
   },
   calendar: {
     style: {},
     data: {},
     defaultLayout: { w: 14, h: 12 },
     limit: { minW: 11, maxW: 20, minH: 10, maxH: 20 },
-    menu: [],
+    menu: [] as string[],
   },
-};
+} as const;
 
 export const widgetDemo = {
   clock: {

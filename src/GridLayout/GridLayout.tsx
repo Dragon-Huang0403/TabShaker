@@ -16,6 +16,7 @@ import {
 } from './utils/positionFn';
 import { WidgetData } from '../types/WidgetTypes';
 import { getScreenInfo } from './config';
+import { defaultConfig } from '../Widget';
 
 const Wrapper = styled.div`
   position: relative;
@@ -97,7 +98,8 @@ function GridLayout({
     if (!layoutItem) return null;
     const targetWidget = widgets.find((widget) => widget.id === id);
     if (!targetWidget) return null;
-    const { limit } = targetWidget;
+    const { type } = targetWidget;
+    const { limit } = defaultConfig[type];
 
     return (
       <GridItem
