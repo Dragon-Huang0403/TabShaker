@@ -7,7 +7,7 @@ import Content from './Content';
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.color.black};
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
   color: ${({ theme }) => theme.color.lavenderBlue};
   border-radius: 10px;
   padding: 15px 20px 5px;

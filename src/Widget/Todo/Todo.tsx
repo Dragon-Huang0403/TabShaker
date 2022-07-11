@@ -4,7 +4,6 @@ import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
 import IconDropDownMenu from '../../components/IconDropDownMenu';
 import { ExpandMore } from '../../components/Icons';
-import Card from '../../components/Card';
 import TodoItem from './TodoItem';
 
 export interface TodoData {
@@ -19,6 +18,11 @@ const mode = ['All', 'Active', 'Completed'] as const;
 type ShowMode = typeof mode[number];
 
 const Wrapper = styled.div`
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
+  color: ${({ theme }) => theme.color.white};
+  border-radius: 10px;
+  z-index: 0;
+  padding: 5px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -155,49 +159,47 @@ function Todo({ data, onWidgetChange }: TodoProps) {
   const showedTodos = getTodosByShowMode();
 
   return (
-    <Card>
-      <Wrapper>
-        <Header>
-          <Title>
-            <ContentEditable
-              html={title}
-              onChange={onTitleChange}
-              onKeyDown={(e) => {
-                if (e.code === 'Enter') {
-                  e.preventDefault();
-                  inputRef.current?.focus();
-                }
-              }}
+    <Wrapper>
+      <Header>
+        <Title>
+          <ContentEditable
+            html={title}
+            onChange={onTitleChange}
+            onKeyDown={(e) => {
+              if (e.code === 'Enter') {
+                e.preventDefault();
+                inputRef.current?.focus();
+              }
+            }}
+          />
+        </Title>
+        <IconDropDownMenu items={menuItems} side="left" bulge>
+          <ExpandMore />
+        </IconDropDownMenu>
+      </Header>
+      <TodosContainer>
+        <StyledUl>
+          {showedTodos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              toggleChecked={toggleChecked}
+              onTodoModify={onTodoModify}
+              deleteTodo={deleteTodo}
             />
-          </Title>
-          <IconDropDownMenu items={menuItems} side="left" bulge>
-            <ExpandMore />
-          </IconDropDownMenu>
-        </Header>
-        <TodosContainer>
-          <StyledUl>
-            {showedTodos.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                toggleChecked={toggleChecked}
-                onTodoModify={onTodoModify}
-                deleteTodo={deleteTodo}
-              />
-            ))}
-          </StyledUl>
-        </TodosContainer>
-        <Input
-          ref={inputRef}
-          value={inputText}
-          onChange={onInputChange}
-          onKeyDown={onInputSubmit}
-          placeholder="New Todo"
-          onCompositionStart={handleComposition}
-          onCompositionEnd={handleComposition}
-        />
-      </Wrapper>
-    </Card>
+          ))}
+        </StyledUl>
+      </TodosContainer>
+      <Input
+        ref={inputRef}
+        value={inputText}
+        onChange={onInputChange}
+        onKeyDown={onInputSubmit}
+        placeholder="New Todo"
+        onCompositionStart={handleComposition}
+        onCompositionEnd={handleComposition}
+      />
+    </Wrapper>
   );
 }
 

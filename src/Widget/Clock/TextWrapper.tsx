@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Wrapper = styled.div<{ side: 'top' | 'bottom' }>`
-  background: ${({ theme }) => theme.color.littleTransparentBlack};
+  background: ${({ theme }) => theme.color.transparentBlack};
   display: flex;
   justify-content: center;
   align-items: center;

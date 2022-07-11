@@ -8,7 +8,7 @@ import type { NewsData } from '../../types/WidgetTypes';
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.color.black};
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
   color: ${({ theme }) => theme.color.white};
   padding: 10px 5px;
   border-radius: 10px;

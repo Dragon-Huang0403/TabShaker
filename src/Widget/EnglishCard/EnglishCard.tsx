@@ -96,7 +96,7 @@ const LoadingWrapper = styled.div`
   border-radius: 10px;
   top: 0;
   z-index: 10;
-  background: ${({ theme }) => theme.color.black};
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
 `;
 
 function EnglishCard({ data }: EnglishCardProps) {

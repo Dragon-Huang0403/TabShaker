@@ -22,7 +22,7 @@ declare const chrome: any;
 
 const Wrapper = styled.div`
   position: relative;
-  background: ${({ theme }) => theme.color.black};
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
   width: 100%;
   height: 100%;
   padding: 15px;
