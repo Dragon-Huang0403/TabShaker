@@ -14,7 +14,7 @@ import WeatherLocation from './WeatherLocation';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
   border-radius: 15px;
-  background: ${({ theme }) => theme.color.transparentBlack};
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
   color: ${({ theme }) => theme.color.purple};
   width: 100%;
   height: 100%;
@@ -66,7 +66,7 @@ const ApparentTemperature = styled.div<{ marginTop: string }>`
 `;
 
 const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
-  flex-basis: 200px;
+  flex-grow: 1;
   flex-shrink: 10;
   padding: ${({ paddingTop }) => paddingTop}px 30px 0 0;
   text-align: end;

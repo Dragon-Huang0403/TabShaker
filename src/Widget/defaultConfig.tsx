@@ -10,7 +10,7 @@ export default {
   },
   todo: {
     style: {},
-    data: { todos: [], title: 'AppWorks' },
+    data: { todos: [], title: 'Inbox' },
     defaultLayout: { w: 10, h: 10 },
     limit: { minW: 3, maxW: 15, minH: 3, maxH: 15 },
     menu: [] as string[],
@@ -19,7 +19,7 @@ export default {
     style: {},
     data: { title: '', content: '' },
     defaultLayout: { w: 10, h: 10 },
-    limit: { minW: 3, maxW: 15, minH: 3, maxH: 15 },
+    limit: { minW: 3, maxW: 30, minH: 3, maxH: 30 },
     menu: [] as string[],
   },
   englishCard: {
@@ -28,7 +28,7 @@ export default {
       tag: [],
     },
     defaultLayout: { w: 13, h: 9 },
-    limit: { minW: 11, maxW: 14, minH: 6, maxH: 9 },
+    limit: { minW: 11, maxW: 15, minH: 6, maxH: 11 },
     menu: ['Basic', 'Medium', 'Hard', 'Challenging'] as string[],
   },
   news: {
@@ -37,21 +37,21 @@ export default {
       tag: ['United States'],
     },
     defaultLayout: { w: 13, h: 12 },
-    limit: { minW: 11, maxW: 16, minH: 8, maxH: 20 },
+    limit: { minW: 11, maxW: 16, minH: 8, maxH: 30 },
     menu: ['Taiwan', 'United States'] as string[],
   },
   weather: {
     style: {},
     data: {},
     defaultLayout: { w: 13, h: 8 },
-    limit: { minW: 5, maxW: 13, minH: 4, maxH: 8 },
+    limit: { minW: 5, maxW: 16, minH: 4, maxH: 10 },
     menu: [] as string[],
   },
   calendar: {
     style: {},
     data: {},
     defaultLayout: { w: 14, h: 12 },
-    limit: { minW: 11, maxW: 20, minH: 10, maxH: 20 },
+    limit: { minW: 11, maxW: 25, minH: 10, maxH: 30 },
     menu: [] as string[],
   },
 } as const;
@@ -84,7 +84,7 @@ export const widgetDemo = {
         { text: 'Please Select Me', id: '2', completed: true },
         { text: 'Please Select Me', id: '3', completed: true },
       ],
-      title: 'AppWorks',
+      title: 'Inbox',
     },
   },
   englishCard: {

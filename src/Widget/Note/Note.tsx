@@ -5,7 +5,7 @@ import Editor from './Editor';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.color.littleTransparentBlack};
-  padding: 10px 0px;
+  padding: 5px 0px 10px;
   border-radius: 10px;
   width: 100%;
   height: 100%;

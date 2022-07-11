@@ -22,7 +22,7 @@ const Wrapper = styled.div<{ side: 'top' | 'bottom' }>`
       width: 85%;
       height: 200%;
       fill: white;
-      font-size: 1rem;
+      font-size: 16px;
     }
   `}
 `;
