@@ -10,6 +10,7 @@ import {
   getDayString,
 } from './utils';
 import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
+import { Edit } from '../../components/Icons';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
   border-radius: 15px;
@@ -95,6 +96,27 @@ const WeatherForecastWrapper = styled.div`
 
   & img {
     width: 100%;
+  }
+`;
+
+const CityNameWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const IconWrapper = styled.div`
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  & > svg {
+    width: 100%;
+    height: 100%;
+    fill: ${({ theme }) => theme.color.lightGrey};
+  }
+
+  &:hover > svg {
+    fill: ${({ theme }) => theme.color.white};
   }
 `;
 
@@ -244,7 +266,14 @@ function Weather() {
           fontSize={renderWidthMode === 1 ? 0.75 : 1}
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
-          {renderHeightMode >= 2 ? null : <div>{cityData.english}</div>}
+          {renderHeightMode >= 2 ? null : (
+            <CityNameWrapper>
+              <IconWrapper>
+                <Edit />
+              </IconWrapper>
+              <span>{cityData.english}</span>
+            </CityNameWrapper>
+          )}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
               {getWeatherDesc(weatherData[0].weatherType.value)}
