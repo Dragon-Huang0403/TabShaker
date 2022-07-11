@@ -10,11 +10,11 @@ import {
   getDayString,
 } from './utils';
 import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
-import { Edit } from '../../components/Icons';
+import WeatherLocation from './WeatherLocation';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
   border-radius: 15px;
-  background: ${({ theme }) => theme.color.black};
+  background: ${({ theme }) => theme.color.transparentBlack};
   color: ${({ theme }) => theme.color.purple};
   width: 100%;
   height: 100%;
@@ -68,7 +68,7 @@ const ApparentTemperature = styled.div<{ marginTop: string }>`
 const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
   flex-basis: 200px;
   flex-shrink: 10;
-  padding: ${({ paddingTop }) => paddingTop}px 20px 0 0;
+  padding: ${({ paddingTop }) => paddingTop}px 30px 0 0;
   text-align: end;
   display: flex;
   flex-direction: column;
@@ -99,29 +99,8 @@ const WeatherForecastWrapper = styled.div`
   }
 `;
 
-const CityNameWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const IconWrapper = styled.div`
-  margin-right: 5px;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  & > svg {
-    width: 100%;
-    height: 100%;
-    fill: ${({ theme }) => theme.color.lightGrey};
-  }
-
-  &:hover > svg {
-    fill: ${({ theme }) => theme.color.white};
-  }
-`;
-
 type Location = { lat: number; lon: number };
-type CityData = {
+export type CityData = {
   chinese: string;
   english: string;
 };
@@ -154,6 +133,7 @@ function Weather() {
       });
     });
   }, []);
+
   useEffect(() => {
     if (!location) return;
     const updateCityData = async () => {
@@ -267,12 +247,7 @@ function Weather() {
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
           {renderHeightMode >= 2 ? null : (
-            <CityNameWrapper>
-              <IconWrapper>
-                <Edit />
-              </IconWrapper>
-              <span>{cityData.english}</span>
-            </CityNameWrapper>
+            <WeatherLocation cityData={cityData} setCityData={setCityData} />
           )}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
