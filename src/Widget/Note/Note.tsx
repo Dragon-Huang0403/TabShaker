@@ -4,8 +4,8 @@ import Title from './Title';
 import Editor from './Editor';
 
 const Wrapper = styled.div`
-  background: ${({ theme }) => theme.color.black};
-  padding-bottom: 10px;
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
+  padding: 5px 0px 10px;
   border-radius: 10px;
   width: 100%;
   height: 100%;

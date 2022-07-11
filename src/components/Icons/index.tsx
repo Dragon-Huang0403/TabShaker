@@ -13,6 +13,7 @@ import Speaker from './Speaker';
 import DoubleArrow from './DoubleArrow';
 import Check from './Check';
 import Refresh from './Refresh';
+import Edit from './Edit';
 
 export {
   AppIcon,
@@ -30,4 +31,5 @@ export {
   DoubleArrow,
   Check,
   Refresh,
+  Edit,
 };

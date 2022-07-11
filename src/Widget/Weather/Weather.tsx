@@ -9,10 +9,12 @@ import {
   getWeatherDesc,
   getDayString,
 } from './utils';
-import getWeatherDataByChineseCityName from './weatherApi';
+import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
+import WeatherLocation from './WeatherLocation';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
-  background: ${({ theme }) => theme.color.black};
+  border-radius: 15px;
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
   color: ${({ theme }) => theme.color.purple};
   width: 100%;
   height: 100%;
@@ -64,9 +66,9 @@ const ApparentTemperature = styled.div<{ marginTop: string }>`
 `;
 
 const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
-  flex-basis: 200px;
+  flex-grow: 1;
   flex-shrink: 10;
-  padding: ${({ paddingTop }) => paddingTop}px 20px 0 0;
+  padding: ${({ paddingTop }) => paddingTop}px 30px 0 0;
   text-align: end;
   display: flex;
   flex-direction: column;
@@ -98,9 +100,9 @@ const WeatherForecastWrapper = styled.div`
 `;
 
 type Location = { lat: number; lon: number };
-type CityData = {
-  chinese: { state: string };
-  english: { state: string; suburb: string };
+export type CityData = {
+  chinese: string;
+  english: string;
 };
 
 export type WeatherData = {
@@ -131,11 +133,26 @@ function Weather() {
       });
     });
   }, []);
+
   useEffect(() => {
     if (!location) return;
     const updateCityData = async () => {
       const newCityData = await getCityData(location);
-      setCityData(newCityData);
+      const stateFindCity = taiwanCityList.find(
+        (taiwanCity) => taiwanCity.chinese === newCityData.state,
+      );
+      if (stateFindCity) {
+        setCityData(stateFindCity);
+        return;
+      }
+      const cityFindCity = taiwanCityList.find(
+        (taiwanCity) => taiwanCity.chinese === newCityData.city,
+      );
+      if (cityFindCity) {
+        setCityData(cityFindCity);
+        return;
+      }
+      setCityData(taiwanCityList[0]);
     };
     updateCityData();
   }, [location?.lat, location?.lon]);
@@ -143,9 +160,8 @@ function Weather() {
   useEffect(() => {
     if (!cityData) return;
     const updateWeatherData = async () => {
-      const weatherRawData = await getWeatherDataByChineseCityName(
-        cityData.chinese.state,
-      );
+      const cityName = cityData.chinese || '臺北市';
+      const weatherRawData = await getWeatherDataByChineseCityName(cityName);
       if (weatherRawData.success === 'true') {
         const weatherDataByElementType = handleWeatherDataByElementType(
           weatherRawData?.records?.locations?.[0]?.location?.[0]
@@ -230,7 +246,9 @@ function Weather() {
           fontSize={renderWidthMode === 1 ? 0.75 : 1}
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
-          {renderHeightMode >= 2 ? null : <div>{cityData.english.suburb}</div>}
+          {renderHeightMode >= 2 ? null : (
+            <WeatherLocation cityData={cityData} setCityData={setCityData} />
+          )}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
               {getWeatherDesc(weatherData[0].weatherType.value)}

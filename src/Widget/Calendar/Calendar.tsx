@@ -18,9 +18,11 @@ import googleSignInBtn from './googleIcon/googleSignInBtn.png';
 import googleSignInBtnHover from './googleIcon/googleSignInBtnHover.png';
 import googleSignInBtnPress from './googleIcon/googleSignInBtnPress.png';
 
+declare const chrome: any;
+
 const Wrapper = styled.div`
   position: relative;
-  background: ${({ theme }) => theme.color.black};
+  background: ${({ theme }) => theme.color.littleTransparentBlack};
   width: 100%;
   height: 100%;
   padding: 15px;
@@ -58,16 +60,17 @@ const Wrapper = styled.div`
 `;
 
 const LoginWrapper = styled.div`
-  z-index: 100;
   position: absolute;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 20px;
 `;
 
 const LoginButton = styled.div`
+  z-index: 100;
   display: inline-block;
   width: 191px;
   height: 46px;
@@ -143,6 +146,14 @@ function Calendar() {
       return;
     }
     setTokenShouldUpdated(false);
+
+    if (chrome?.identity?.getAuthToken) {
+      chrome.identity.getAuthToken({ interactive: true }, (token: string) => {
+        window.localStorage.setItem('googleAccessToken', token);
+        setAccessToken(token);
+      });
+      return;
+    }
 
     const oldAccessToken = window.localStorage.getItem('googleAccessToken');
     const oldAccessTokenExpiryDate = new Date(

@@ -5,10 +5,6 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html {
-    background: black;
-  }
-
   body {
     margin: 0px;
     font-family: 'Lato', sans-serif;
@@ -32,6 +28,16 @@ const GlobalStyle = createGlobalStyle`
     border: 3px solid transparent;
     border-radius: 7px;
     background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  html {
+    font-size: 20px;
+  }
+  
+  @media (max-width: 1600px) {
+    html {
+      font-size: 16px;
+    }
   }
 `;
 

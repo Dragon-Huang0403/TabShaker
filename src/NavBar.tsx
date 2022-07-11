@@ -7,8 +7,8 @@ import type { WidgetData } from './types/WidgetTypes';
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 64px;
-  padding: 8px;
+  height: 56px;
+  padding: 8px 8px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,18 +23,18 @@ const LeftPart = styled.div`
   transition: all 0.5s;
   z-index: 1;
 
-  & > div:not(:first-child) {
+  div:not(:first-child) {
     opacity: 0;
   }
 
   &:hover {
     background: ${({ theme }) => theme.color.transparentBlack};
 
-    & > div:not(:first-child) {
+    div:not(:first-child) {
       opacity: 1;
     }
 
-    & svg {
+    svg {
       fill: ${({ theme }) => theme.color.lightBlue};
     }
   }
@@ -60,6 +60,11 @@ const IconContainer = styled.div`
   padding: 3px;
   height: 30px;
   width: 30px;
+
+  &:first-child {
+    background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
+  }
+
   & > svg {
     width: 24px;
     height: 24px;
@@ -77,11 +82,18 @@ const AppIconContainer = styled(IconContainer)`
   height: 36px;
   width: 36px;
   padding: 6px;
+  background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
+  &:hover {
+    background: ${({ theme }) => theme.color.transparentBlack};
+    box-shadow: 0px 0px 10px -3px ${({ theme }) => theme.color.lightWhite};
+  }
 `;
 
 const Link = styled.a`
   user-select: none;
   margin-right: 20px;
+  text-shadow: 0.1em 0.1em 0.2em black;
+
   &,
   &:visited {
     color: ${({ theme }) => theme.color.white};

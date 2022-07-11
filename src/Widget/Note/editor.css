@@ -29,6 +29,7 @@
 .editor-list-ul {
   padding: 0;
   margin: 0;
+  margin-left: 24px;
 }
 
 .editor-listitem {

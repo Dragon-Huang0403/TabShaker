@@ -11,6 +11,7 @@ const Input = styled.input`
   font-size: 1.25rem;
   font-weight: 600;
   padding: 8px 15px 4px;
+  margin-bottom: 5px;
 `;
 
 interface TitleProps {

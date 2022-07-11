@@ -5,7 +5,8 @@ import googleIcons from './googleIconsData';
 
 const Wrapper = styled.div`
   display: inline-grid;
-  background: ${({ theme }) => theme.color.white};
+  background: ${({ theme }) => theme.color.black};
+  color: ${({ theme }) => theme.color.white};
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 20px;
@@ -26,7 +27,7 @@ const StyledLink = styled.a`
   padding: 10px 15px 5px;
 
   &:hover {
-    background: #3331;
+    background: ${({ theme }) => theme.color.white}11;
     border-radius: 10px;
   }
 `;
@@ -35,7 +36,7 @@ function GoogleMenu() {
   return (
     <Wrapper>
       {googleIcons.map((icon) => (
-        <StyledLink href={icon.url}>
+        <StyledLink key={icon.text} href={icon.url}>
           <Icon
             style={{
               backgroundPosition: icon.backgroundPosition,

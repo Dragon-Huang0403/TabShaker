@@ -5,7 +5,8 @@ import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
 import BackgroundImage from './BackgroundImage';
 import GridLayout from './GridLayout';
-import { defaultLayout, ScreenSize } from './GridLayout/config';
+import { ScreenSize } from './GridLayout/config';
+import { defaultWidgets, defaultLayouts } from './defaultValue';
 import Widget from './Widget';
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
@@ -19,8 +20,8 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-  const [widgets, setWidgets] = useState<WidgetData[]>([]);
-  const [layouts, setLayouts] = useState<Layouts>(defaultLayout);
+  const [widgets, setWidgets] = useState<WidgetData[]>([...defaultWidgets]);
+  const [layouts, setLayouts] = useState<Layouts>(defaultLayouts);
   const [isFirstRender, setIsFirstRender] = useState(true);
   useEffect(() => {
     const rawOldLayouts = window.localStorage.getItem('layouts');

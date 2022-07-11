@@ -6,7 +6,7 @@ import { ArrowBack, ArrowForward, PlayArrow, Pause } from './components/Icons';
 import useInterval from './hooks/useSetInterval';
 
 const TIME_TO_GET_NEW_PHOTOS = 3600000;
-const TIME_TO_NEXT_PHOTO = 60000;
+const TIME_TO_NEXT_PHOTO = 30000;
 
 const Wrapper = styled.div`
   position: absolute;
@@ -35,7 +35,7 @@ const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
   padding: 0px 20px 20px;
   color: ${({ theme }) => theme.color.white};
   font-size: 0.75rem;
-  opacity: 0.8;
+  user-select: none;
   ${({ url }) =>
     url &&
     css`
@@ -66,9 +66,15 @@ const IconsWrapper = styled.div`
   border-radius: 20px;
   display: flex;
   gap: 5px;
+
+  &:hover {
+    box-shadow: 0px 0px 10px -2px ${({ theme }) => theme.color.white};
+  }
 `;
 
 const IconStyle = styled.div`
+  width: 24px;
+  height: 24px;
   &:hover {
     cursor: pointer;
     background: ${({ theme }) => theme.color.transparentWhite};
@@ -76,8 +82,8 @@ const IconStyle = styled.div`
   }
   & svg {
     fill: ${({ theme }) => theme.color.lightBlue};
-    width: 24px;
-    height: 24px;
+    width: 100%;
+    height: 100%;
   }
 `;
 
