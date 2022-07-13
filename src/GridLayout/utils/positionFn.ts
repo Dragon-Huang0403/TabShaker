@@ -41,7 +41,7 @@ export function getBoundPosition(
   };
 
   let newX = Math.min(x, bounds.right);
-  let newY = Math.min(y, bounds.bottom);
+  let newY = y;
 
   newX = Math.max(newX, bounds.left);
   newY = Math.max(newY, bounds.top);

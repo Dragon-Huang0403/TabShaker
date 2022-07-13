@@ -1,7 +1,7 @@
 import { int } from './other';
 
 export function innerHeight(node: HTMLElement) {
-  let height = node.clientHeight;
+  let height = node.scrollHeight;
   const computedStyle = window.getComputedStyle(node);
   height -= int(computedStyle.paddingTop);
   height -= int(computedStyle.paddingBottom);

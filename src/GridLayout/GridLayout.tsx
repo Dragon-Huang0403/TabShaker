@@ -21,6 +21,8 @@ import { widgetConfig } from '../Widget';
 const Wrapper = styled.div`
   position: relative;
   flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const Placeholder = styled.div`
