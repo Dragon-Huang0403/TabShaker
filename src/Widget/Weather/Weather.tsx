@@ -2,12 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import getCityData from './openStreetMapApi';
-import {
-  handleWeatherDataByElementType,
-  getWeatherIcon,
-  getWeatherDesc,
-  getDayString,
-} from './utils';
+import { handleWeatherDataByElementType, getDayString } from './utils';
 import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
 import WeatherLocation from './WeatherLocation';
 
@@ -108,7 +103,9 @@ export type WeatherData = {
   startTime: Date;
   weatherType: {
     name: string;
-    value: number;
+    weatherCode: string;
+    description: string;
+    icon: string;
   };
   apparentTemperature: number;
   temperature: number;
@@ -224,7 +221,7 @@ function Weather() {
       justifyContent={renderWidthMode === 2 ? 'center' : 'space-between'}
     >
       <CurrentWeather paddingTop={renderHeightMode === 1 ? 20 : 10}>
-        <img src={getWeatherIcon(weatherData[0].weatherType.value)} alt="" />
+        <img src={weatherData[0].weatherType.icon} alt="weatherIcon" />
         {renderHeightMode === 0 ? (
           <CurrentTemperature>{weatherData[0].temperature}°</CurrentTemperature>
         ) : (
@@ -250,25 +247,19 @@ function Weather() {
           )}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
-              {getWeatherDesc(weatherData[0].weatherType.value)}
+              {weatherData[0].weatherType.description}
             </WeatherDescription>
           )}
           <WeatherForecastWrapper>
             <div>
               <span>{weatherData?.[1].temperature}°</span>
-              <img
-                src={getWeatherIcon(weatherData?.[1].weatherType.value)}
-                alt="weather"
-              />
+              <img src={weatherData?.[1].weatherType.icon} alt="weather" />
               <span>{getDayString(weatherData?.[1].startTime)}</span>
             </div>
             {renderWidthMode === 1 ? null : (
               <div>
                 <span>{weatherData?.[2].temperature}°</span>
-                <img
-                  src={getWeatherIcon(weatherData?.[2].weatherType.value)}
-                  alt="weather"
-                />
+                <img src={weatherData?.[2].weatherType.icon} alt="weather" />
                 <span>{getDayString(weatherData?.[2].startTime)}</span>
               </div>
             )}
