@@ -118,6 +118,7 @@ function Weather() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [renderWidthMode, setRenderWidthMode] = useState(0);
   const [renderHeightMode, setRenderHeightMode] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((pos) => {
@@ -165,8 +166,10 @@ function Weather() {
             ?.weatherElement,
         );
         setWeatherData(weatherDataByElementType);
+        setIsLoading(false);
       }
     };
+    setIsLoading(true);
     updateWeatherData();
   }, [cityData]);
 
@@ -205,8 +208,8 @@ function Weather() {
     updateRenderWidthMode();
     updateRenderHeightMode();
   });
-  // console.log({ width, height });
-  if (!location || !cityData || weatherData.length === 0) {
+
+  if (isLoading) {
     return (
       <Wrapper>
         <LoadingWrapper>
@@ -215,6 +218,7 @@ function Weather() {
       </Wrapper>
     );
   }
+
   return (
     <Wrapper
       ref={wrapperRef}
@@ -243,7 +247,7 @@ function Weather() {
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
           {renderHeightMode >= 2 ? null : (
-            <WeatherLocation cityData={cityData} setCityData={setCityData} />
+            <WeatherLocation cityData={cityData!} setCityData={setCityData} />
           )}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
