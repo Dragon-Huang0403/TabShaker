@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
-import { AppIcon, SettingsIcon, DeleteIcon, AddIcon } from './components/Icons';
+import { AppIcon, AddIcon } from './components/Icons';
 import SelectNewWidget from './SelectNewWidget';
 import type { WidgetData } from './types/WidgetTypes';
 
@@ -22,22 +22,6 @@ const LeftPart = styled.div`
   border-radius: 20px;
   transition: all 0.5s;
   z-index: 1;
-
-  div:not(:first-child) {
-    opacity: 0;
-  }
-
-  &:hover {
-    background: ${({ theme }) => theme.color.transparentBlack};
-
-    div:not(:first-child) {
-      opacity: 1;
-    }
-
-    svg {
-      fill: ${({ theme }) => theme.color.lightBlue};
-    }
-  }
 `;
 
 const MiddlePart = styled.div``;
@@ -60,10 +44,9 @@ const IconContainer = styled.div`
   padding: 3px;
   height: 30px;
   width: 30px;
-
-  &:first-child {
-    background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
-  }
+  cursor: pointer;
+  background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
+  border-radius: 50%;
 
   & > svg {
     width: 24px;
@@ -72,9 +55,8 @@ const IconContainer = styled.div`
   }
 
   :hover {
-    cursor: pointer;
-    background: ${({ theme }) => theme.color.transparentWhite};
-    border-radius: 50%;
+    background: ${({ theme }) => theme.color.transparentBlack};
+    box-shadow: 0px 0px 10px -3px ${({ theme }) => theme.color.lightWhite};
   }
 `;
 
@@ -82,11 +64,6 @@ const AppIconContainer = styled(IconContainer)`
   height: 36px;
   width: 36px;
   padding: 6px;
-  background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
-  &:hover {
-    background: ${({ theme }) => theme.color.transparentBlack};
-    box-shadow: 0px 0px 10px -3px ${({ theme }) => theme.color.lightWhite};
-  }
 `;
 
 const Link = styled.a`
@@ -119,18 +96,12 @@ function NavBar({ addWidget }: NavBarProps) {
   return (
     <Wrapper>
       <LeftPart>
-        <IconContainer>
-          <SettingsIcon />
-        </IconContainer>
         <IconContainer
           onClick={() => {
             setIsSelectNewWidget(true);
           }}
         >
           <AddIcon />
-        </IconContainer>
-        <IconContainer>
-          <DeleteIcon />
         </IconContainer>
       </LeftPart>
       <MiddlePart />
