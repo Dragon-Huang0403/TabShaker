@@ -62,7 +62,7 @@ const ApparentTemperature = styled.div<{ marginTop: string }>`
 const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
   flex-grow: 1;
   flex-shrink: 10;
-  padding: ${({ paddingTop }) => paddingTop}px 30px 0 0;
+  padding: ${({ paddingTop }) => paddingTop}px 25px 0 0;
   text-align: end;
   display: flex;
   flex-direction: column;
@@ -183,7 +183,7 @@ function Weather() {
         setRenderWidthMode(2);
         return;
       }
-      if (width <= 300) {
+      if (width <= 294) {
         setRenderWidthMode(1);
         return;
       }
