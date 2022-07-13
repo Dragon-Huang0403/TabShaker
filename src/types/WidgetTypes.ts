@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-cycle
-import { defaultConfig } from '../Widget';
+import { widgetConfig } from '../Widget';
 
-export type WidgetType = keyof typeof defaultConfig;
+export type WidgetType = keyof typeof widgetConfig;
 
 export type RenderWidgetData = {
   type: WidgetType;

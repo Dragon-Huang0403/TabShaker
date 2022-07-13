@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
 import { AppIcon, AddIcon } from './components/Icons';
 import SelectNewWidget from './SelectNewWidget';
-import type { WidgetData } from './types/WidgetTypes';
+import type { WidgetData, WidgetType } from './types/WidgetTypes';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -83,9 +83,10 @@ const Link = styled.a`
 
 interface NavBarProps {
   addWidget: (newWidget: WidgetData) => void;
+  availableWidgets: WidgetType[];
 }
 
-function NavBar({ addWidget }: NavBarProps) {
+function NavBar({ addWidget, availableWidgets }: NavBarProps) {
   const [idGoogleMenuOpen, setIsGoogleMenuOpen] = useState(false);
   const [isShowSelectNewWidget, setIsSelectNewWidget] = useState(false);
 
@@ -121,6 +122,7 @@ function NavBar({ addWidget }: NavBarProps) {
             setIsSelectNewWidget(false);
           }}
           addWidget={addWidget}
+          availableWidgets={availableWidgets}
         />
       )}
     </Wrapper>

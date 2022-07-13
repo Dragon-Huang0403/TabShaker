@@ -7,7 +7,8 @@ import BackgroundImage from './BackgroundImage';
 import GridLayout from './GridLayout';
 import { ScreenSize } from './GridLayout/config';
 import { defaultWidgets, defaultLayouts } from './defaultValue';
-import Widget from './Widget';
+import Widget, { widgetConfig } from './Widget';
+import { getAvailableWidgetTypes } from './utils/lib';
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
 
@@ -63,6 +64,8 @@ function App() {
     );
   };
 
+  const availableWidgets = getAvailableWidgetTypes(widgets, widgetConfig);
+
   return (
     <ThemeProvider theme={globalTheme}>
       <GoogleOAuthProvider
@@ -71,8 +74,7 @@ function App() {
         <GlobalStyle />
         <BackgroundImage />
         <Wrapper>
-          <NavBar addWidget={addWidget} />
-          {/* <Widgets widgets={widgets} setWidgets={setWidgets} /> */}
+          <NavBar addWidget={addWidget} availableWidgets={availableWidgets} />
           <GridLayout
             widgets={widgets}
             layouts={layouts}

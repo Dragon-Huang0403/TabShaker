@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { v4 } from 'uuid';
 import { DoubleArrow } from './components/Icons';
 import Modal from './Modal';
-import { defaultConfig } from './Widget';
+import { widgetConfig } from './Widget';
 import { SwiperButtonNext, SwiperButtonPrev } from './Swiper';
 import WidgetSlide from './WidgetSlide';
 import type { WidgetData, WidgetType } from './types/WidgetTypes';
@@ -53,15 +53,17 @@ const IconWrapper = styled.div<{ direction: 'left' | 'right' }>`
 interface SelectNewWidgetProps {
   hideSelectNewWidget: () => void;
   addWidget: (newWidget: WidgetData) => void;
+  availableWidgets: WidgetType[];
 }
 
 function SelectNewWidget({
   hideSelectNewWidget,
   addWidget,
+  availableWidgets,
 }: SelectNewWidgetProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleAddWidget = (widgetType: WidgetType) => {
-    addWidget({ type: widgetType, ...defaultConfig[widgetType], id: v4() });
+    addWidget({ type: widgetType, ...widgetConfig[widgetType], id: v4() });
     hideSelectNewWidget();
   };
   const handleHideSelectNewWidget = (e: React.MouseEvent) => {
@@ -93,7 +95,7 @@ function SelectNewWidget({
               <DoubleArrow direction="left" />
             </SwiperButtonPrev>
           </IconWrapper>
-          {(Object.keys(defaultConfig) as WidgetType[]).map((widgetType) => (
+          {availableWidgets.map((widgetType) => (
             <SwiperSlide key={widgetType}>
               <WidgetSlide
                 widgetType={widgetType}
