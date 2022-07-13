@@ -112,15 +112,61 @@ export function canElementMove(layout: Layout, targetItem: LayoutItem) {
   return getAllCollisions(layout, targetItem).length === 0;
 }
 
+function switchElement(
+  layout: Layout,
+  movingItem: LayoutItem,
+  targetItem: LayoutItem,
+) {
+  const layoutWithoutTargetItem = layout.filter(
+    (item) => item.id !== targetItem.id,
+  );
+  const layoutWithoutMovingItem = layout.filter(
+    (item) => item.id !== movingItem.id,
+  );
+  if (movingItem.x === targetItem.x) {
+    const newMovingItem = { ...movingItem };
+    newMovingItem.x += targetItem.w;
+    if (
+      canElementMove(layoutWithoutTargetItem, newMovingItem) &&
+      canElementMove(layoutWithoutMovingItem, targetItem)
+    ) {
+      return newMovingItem;
+    }
+  }
+  if (movingItem.x + movingItem.w === targetItem.x + targetItem.w) {
+    const newMovingItem = { ...movingItem };
+    newMovingItem.x = targetItem.x - movingItem.w;
+    if (
+      canElementMove(layoutWithoutTargetItem, newMovingItem) &&
+      canElementMove(layoutWithoutMovingItem, targetItem)
+    ) {
+      return newMovingItem;
+    }
+  }
+  if (movingItem.y === targetItem.y) {
+    const newMovingItem = { ...movingItem };
+    newMovingItem.y += targetItem.h;
+    if (
+      canElementMove(layoutWithoutTargetItem, newMovingItem) &&
+      canElementMove(layoutWithoutMovingItem, targetItem)
+    ) {
+      return newMovingItem;
+    }
+  }
+  return null;
+}
+
 export function moveElement(
   oldLayout: Layout,
   targetItem: LayoutItem,
   layout: Layout,
   cols: number,
 ) {
-  return layout.map((item) => {
+  const newLayout = [...layout];
+  newLayout.forEach((item, index) => {
     if (item.id === targetItem.id) {
-      return targetItem;
+      newLayout[index] = targetItem;
+      return;
     }
     const overLapArea = calcTwoWidgetOverlapArea(targetItem, item);
     if (!overLapArea) {
@@ -148,29 +194,39 @@ export function moveElement(
           newItem.y = y;
         }
       }
-
-      return newItem;
+      newLayout[index] = newItem;
+      return;
     }
-    const newItem = { ...item };
     if (overLapArea.w > overLapArea.h) {
+      const newItem = { ...item };
       newItem.y =
         item.y >= targetItem.y
           ? (newItem.y += overLapArea.h)
           : (newItem.y -= overLapArea.h);
       newItem.y = Math.max(0, newItem.y);
-    } else {
-      newItem.x =
-        item.x >= targetItem.x
-          ? (newItem.x += overLapArea.w)
-          : (newItem.x -= overLapArea.w);
-      newItem.x = Math.max(0, newItem.x);
-      newItem.x = Math.min(newItem.x, cols - newItem.w);
+      if (canElementMove(layout, newItem)) {
+        newLayout[index] = newItem;
+        return;
+      }
     }
+    const newItem = { ...item };
+    newItem.x =
+      item.x >= targetItem.x
+        ? (newItem.x += overLapArea.w)
+        : (newItem.x -= overLapArea.w);
+    newItem.x = Math.max(0, newItem.x);
+    newItem.x = Math.min(newItem.x, cols - newItem.w);
     if (canElementMove(layout, newItem)) {
-      return newItem;
+      newLayout[index] = newItem;
+      return;
     }
-    return item;
+    const switchedNewItem = switchElement(layout, item, targetItem);
+    if (!switchedNewItem) return;
+    if (switchedNewItem.x < 0) return;
+    if (switchedNewItem.x + switchedNewItem.w > cols) return;
+    newLayout[index] = switchedNewItem;
   });
+  return newLayout;
 }
 
 export function getAvailableLayoutItem(
