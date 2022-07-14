@@ -172,6 +172,10 @@ export function moveElement(
     if (!overLapArea) {
       const oldItem = oldLayout.find((l) => l.id === item.id)!;
       const newItem = item;
+      if (canElementMove(layout, oldItem)) {
+        newLayout[index] = oldItem;
+        return;
+      }
       if (oldItem.x !== newItem.x) {
         // eslint-disable-next-line no-constant-condition
         while (true) {
