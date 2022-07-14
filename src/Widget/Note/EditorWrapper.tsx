@@ -5,6 +5,7 @@ const EditorWrapper = styled.div`
   flex-grow: 1;
   height: 200px;
   overflow-y: auto;
+  overflow-x: hidden;
   color: white;
 
   & > div:first-child {

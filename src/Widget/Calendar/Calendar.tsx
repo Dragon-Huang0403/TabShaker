@@ -270,6 +270,11 @@ function Calendar() {
         headerToolbar={{ left: 'title', center: '', right: 'prev,next' }}
         events={events}
         height="100%"
+        views={{
+          listWeek: {
+            titleFormat: { month: 'short', day: 'numeric' },
+          },
+        }}
       />
     </Wrapper>
   );
