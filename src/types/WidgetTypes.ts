@@ -37,6 +37,7 @@ export type EnglishWordData = {
   example: string;
   example_chinese: string;
   tags: string[];
+  audioUrl: string;
 };
 
 export type NewsData = {

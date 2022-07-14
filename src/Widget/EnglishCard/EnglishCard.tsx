@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import ReactLoading from 'react-loading';
 import 'swiper/css';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl } from '../../utils/lib';
 import type { EnglishWordData } from '../../types/WidgetTypes';
 import EnglishWord from './EnglishWord';
 import { SwiperButtonNext, SwiperButtonPrev } from '../../Swiper';
 import { DoubleArrow, Refresh } from '../../components/Icons';
-import { useHover } from '../../hooks';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { handleNewEnglishWords } from './utils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const IconsContainer = styled.div<{ isIConHover: boolean }>`
+const IconsContainer = styled.div`
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -37,18 +37,15 @@ const IconsContainer = styled.div<{ isIConHover: boolean }>`
   & svg {
     fill: ${({ theme }) => theme.color.transparentWhite};
   }
+  :hover {
+    & div:not(:last-child) {
+      visibility: visible;
+    }
 
-  ${({ isIConHover }) =>
-    isIConHover &&
-    css`
-      & div:not(:last-child) {
-        visibility: visible;
-      }
-
-      & svg {
-        fill: ${({ theme }) => theme.color.lightWhite};
-      }
-    `}
+    & svg {
+      fill: ${({ theme }) => theme.color.lightWhite};
+    }
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -100,25 +97,23 @@ const LoadingWrapper = styled.div`
 `;
 
 function EnglishCard({ data }: EnglishCardProps) {
-  const [words, setWords] = useState<EnglishWordData[]>([]);
+  const [words, setWords] = useLocalStorage<EnglishWordData[]>('engWords', []);
+  const [activeSlide, setActiveSlide] = useLocalStorage(
+    'engCardActiveSlide',
+    0,
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const hoverRef = useRef<HTMLDivElement>(null);
-  const isIConHover = useHover(hoverRef);
   const { tag } = data;
 
-  const playAudio = async (word: string) => {
-    const audio = new Audio(getAudioUrl(word));
-    audio.play();
-  };
-  const updateWords = () => {
+  const updateWords = async () => {
     setIsLoading(true);
-    getCard(10, tag).then((res) => {
-      setWords(res as EnglishWordData[]);
-      window.localStorage.setItem('engWords', JSON.stringify(res));
-      const currentTime = new Date().getTime();
-      window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
-    });
+    const res = await getCard(10, tag);
+    const newEnglishWords = handleNewEnglishWords(res);
+    setWords(newEnglishWords);
+    const currentTime = new Date().getTime();
+    window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
   };
+
   useEffect(() => {
     const rawOldWords = window.localStorage.getItem('engWords');
     if (rawOldWords) {
@@ -141,13 +136,20 @@ function EnglishCard({ data }: EnglishCardProps) {
   }, [isLoading]);
   return (
     <Wrapper>
-      <Swiper simulateTouch={false} loop>
+      <Swiper
+        simulateTouch={false}
+        loop
+        initialSlide={activeSlide}
+        onSlideChange={(e) => {
+          setActiveSlide(e.activeIndex);
+        }}
+      >
         {words.map((word) => (
           <SwiperSlide key={word.id}>
-            <EnglishWord word={word} playAudio={playAudio} tags={tag} />
+            <EnglishWord word={word} tags={tag} />
           </SwiperSlide>
         ))}
-        <IconsContainer ref={hoverRef} isIConHover={isIConHover}>
+        <IconsContainer>
           <IconWrapper>
             <SwiperButtonPrev>
               <DoubleArrow direction="left" />
