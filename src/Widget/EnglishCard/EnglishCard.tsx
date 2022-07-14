@@ -103,6 +103,7 @@ function EnglishCard({ data }: EnglishCardProps) {
     0,
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const { tag } = data;
 
   const updateWords = async () => {
@@ -111,6 +112,7 @@ function EnglishCard({ data }: EnglishCardProps) {
     const newEnglishWords = handleNewEnglishWords(res);
     setWords(newEnglishWords);
     const currentTime = new Date().getTime();
+    setIsLoading(false);
     window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
   };
 
@@ -127,13 +129,15 @@ function EnglishCard({ data }: EnglishCardProps) {
     }
     updateWords();
   }, []);
+
   useEffect(() => {
-    if (isLoading === false) return undefined;
-    const id = setInterval(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearInterval(id);
-  }, [isLoading]);
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+    updateWords();
+  }, [isFirstRender, tag.length]);
+
   return (
     <Wrapper>
       <Swiper
