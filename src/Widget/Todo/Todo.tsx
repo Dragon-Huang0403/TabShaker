@@ -108,7 +108,7 @@ function Todo({ data, onWidgetChange }: TodoProps) {
   };
 
   const onInputSubmit = (e: React.KeyboardEvent) => {
-    if (e.code !== 'Enter') return;
+    if (e.key !== 'Enter') return;
     if (inputText && !isComposition) {
       addTodo();
       e.preventDefault();
@@ -166,7 +166,7 @@ function Todo({ data, onWidgetChange }: TodoProps) {
             html={title}
             onChange={onTitleChange}
             onKeyDown={(e) => {
-              if (e.code === 'Enter') {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 inputRef.current?.focus();
               }
