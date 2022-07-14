@@ -54,6 +54,9 @@ const Input = styled.input`
   outline: none;
   font-size: 1rem;
   padding: 8px 8px 4px;
+  :focus::placeholder {
+    color: ${({ theme }) => theme.color.lightGrey};
+  }
 `;
 
 const TodosContainer = styled.div`
@@ -159,7 +162,11 @@ function Todo({ data, onWidgetChange }: TodoProps) {
   const showedTodos = getTodosByShowMode();
 
   return (
-    <Wrapper>
+    <Wrapper
+      onDoubleClick={() => {
+        inputRef.current?.focus();
+      }}
+    >
       <Header>
         <Title>
           <ContentEditable
