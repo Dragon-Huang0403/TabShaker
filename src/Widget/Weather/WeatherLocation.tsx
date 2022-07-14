@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Edit } from '../../components/Icons';
 import { taiwanCityList } from './weatherApi';
@@ -43,15 +43,21 @@ const MatchedCityListWrapper = styled.div`
   max-height: 100px;
   overflow-y: auto;
   text-align: left;
+`;
 
-  & > div {
-    padding: 3px 5px;
-    cursor: pointer;
+const City = styled.div<{ focus: boolean }>`
+  padding: 3px 5px;
+  cursor: pointer;
 
-    :hover {
-      background: ${({ theme }) => theme.color.transparentWhite};
-    }
+  :hover {
+    background: ${({ theme }) => theme.color.transparentWhite};
   }
+
+  ${({ focus }) =>
+    focus &&
+    css`
+      background: ${({ theme }) => theme.color.transparentWhite};
+    `}
 `;
 
 const Input = styled.input`
@@ -74,13 +80,54 @@ interface WeatherLocationProps {
 
 function WeatherLocation({ cityData, setCityData }: WeatherLocationProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [currentFocusCityIndex, setCurrentFocusCityIndex] = useState(-1);
+  const matchedCityRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const isLocationHover = useHover(locationRef);
   const [input, setInput] = useState('');
   const filterCityList = taiwanCityList.filter(
     (city) =>
       city.english.toLowerCase().indexOf(input.toLocaleLowerCase()) !== -1,
   );
+
+  const handleStartEditing = () => {
+    setIsEditing(true);
+  };
+
+  const handleArrowKeyDown = (e: React.KeyboardEvent) => {
+    if (!matchedCityRef.current) return;
+    if (e.key === 'ArrowDown') {
+      setCurrentFocusCityIndex((prev) =>
+        prev + 1 >= filterCityList.length ? 0 : prev + 1,
+      );
+    }
+    if (e.key === 'ArrowUp') {
+      setCurrentFocusCityIndex((prev) =>
+        prev - 1 < 0 ? filterCityList.length - 1 : prev - 1,
+      );
+    }
+    if (e.key === 'Enter' && currentFocusCityIndex !== -1) {
+      setCityData(filterCityList[currentFocusCityIndex]);
+      setIsEditing(false);
+    }
+  };
+
+  useEffect(() => {
+    if (currentFocusCityIndex === -1) return;
+    (
+      matchedCityRef.current?.childNodes?.[currentFocusCityIndex] as HTMLElement
+    ).scrollIntoView(false);
+  }, [currentFocusCityIndex]);
+
+  useEffect(() => {
+    setCurrentFocusCityIndex(-1);
+  }, [filterCityList.length]);
+
+  useEffect(() => {
+    if (!isEditing) return;
+    inputRef.current?.focus();
+  }, [isEditing]);
 
   if (isEditing) {
     return (
@@ -91,19 +138,22 @@ function WeatherLocation({ cityData, setCityData }: WeatherLocationProps) {
           onChange={(e) => {
             setInput(e.target.value);
           }}
+          onKeyDown={handleArrowKeyDown}
+          ref={inputRef}
         />
-        <MatchedCityListWrapper>
-          {filterCityList.map((matchedCity) => (
-            <div
+        <MatchedCityListWrapper ref={matchedCityRef}>
+          {filterCityList.map((matchedCity, index) => (
+            <City
               key={matchedCity.english}
               onClick={() => {
                 setCityData(matchedCity);
                 setIsEditing(false);
               }}
               aria-hidden="true"
+              focus={index === currentFocusCityIndex}
             >
               {matchedCity.english}
-            </div>
+            </City>
           ))}
         </MatchedCityListWrapper>
       </CityNameWrapper>
@@ -111,12 +161,7 @@ function WeatherLocation({ cityData, setCityData }: WeatherLocationProps) {
   }
   return (
     <CityNameWrapper ref={locationRef}>
-      <IconWrapper
-        onClick={() => {
-          setIsEditing(true);
-        }}
-        hidden={!isLocationHover}
-      >
+      <IconWrapper onClick={handleStartEditing} hidden={!isLocationHover}>
         <Edit />
       </IconWrapper>
       <span>{cityData.english}</span>
