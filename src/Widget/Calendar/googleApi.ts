@@ -1,4 +1,3 @@
-import type { CodeResponse } from '@react-oauth/google';
 import type {
   EventFromGoogle,
   EventForFullCalendar,
@@ -47,32 +46,4 @@ export async function getCalendarEvents(
   const res = await fetch(url, { headers });
   const data = await res.json();
   return data as GoogleEventsResponse;
-}
-
-export async function getRefreshTokenAndAccessToken(
-  authorizationCode: CodeResponse,
-) {
-  const url = 'http://localhost:5000/login';
-  // const url = 'https://tapshaker-server.herokuapp.com/googleAccessToken';
-  const fetchOptions = {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ authorizationCode }),
-  };
-  const res = await fetch(url, fetchOptions);
-  const data = await res.json();
-  return data;
-}
-
-export async function getNewAccessToken(refreshToken: string) {
-  const url = 'http://localhost:5000/refreshAccessToken';
-  // const url = 'https://tapshaker-server.herokuapp.com/googleAccessToken';
-  const fetchOptions = {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ refreshToken }),
-  };
-  const res = await fetch(url, fetchOptions);
-  const data = await res.json();
-  return data;
 }
