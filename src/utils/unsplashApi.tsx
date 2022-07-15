@@ -2,10 +2,9 @@ const url = 'https://api.unsplash.com';
 
 export type UnsplashResponseData = {
   id: string;
+  color: string;
   urls: {
     raw: string;
-    full: string;
-    regular: string;
   };
   links: {
     html: string;
@@ -21,6 +20,24 @@ export type UnsplashResponseData = {
   };
 };
 
+function handleDataFromUnsplash(rawData: UnsplashResponseData[]) {
+  return rawData.map((photo) => ({
+    id: photo.id,
+    color: photo.color,
+    urls: { raw: photo.urls.raw },
+    links: { html: photo.links.html },
+    user: {
+      name: photo.user.name,
+      links: {
+        html: photo.user.links.html,
+      },
+    },
+    location: {
+      title: photo.location.title,
+    },
+  }));
+}
+
 export default async function getRandomPhotos() {
   const response = await fetch(
     `${url}/photos/random?count=10&collections=2183172`,
@@ -30,6 +47,7 @@ export default async function getRandomPhotos() {
       },
     },
   );
-  const data: UnsplashResponseData[] = await response.json();
+  const rawData: UnsplashResponseData[] = await response.json();
+  const data = handleDataFromUnsplash(rawData);
   return data;
 }
