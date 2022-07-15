@@ -5,7 +5,7 @@ export type WidgetType = keyof typeof widgetConfig;
 
 export type RenderWidgetData = {
   type: WidgetType;
-  data: TodoData | NoteData | EnglishWordData | NewsData | any;
+  data: TodoData | NoteData | EnglishData | NewsData | any;
   style: any;
 };
 
@@ -27,17 +27,8 @@ export type NoteData = {
   content: string;
 };
 
-export type EnglishWordData = {
-  id: string;
-  word: string;
-  ipa: string;
-  type: string;
-  chinese: string;
-  definition: string;
-  example: string;
-  example_chinese: string;
-  tags: string[];
-  audioUrl: string;
+export type EnglishData = {
+  tag: string[];
 };
 
 export type NewsData = {

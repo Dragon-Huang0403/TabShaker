@@ -4,8 +4,7 @@ import ReactLoading from 'react-loading';
 import 'swiper/css';
 import styled from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import type { EnglishWordData } from '../../types/WidgetTypes';
-import EnglishWord from './EnglishWord';
+import EnglishWord, { EnglishWordData } from './EnglishWord';
 import { SwiperButtonNext, SwiperButtonPrev } from '../../Swiper';
 import { DoubleArrow, Refresh } from '../../components/Icons';
 import useLocalStorage from '../../hooks/useLocalStorage';
@@ -77,12 +76,6 @@ const IconWrapper = styled.div`
   }
 `;
 
-interface EnglishCardProps {
-  data: {
-    tag: string[];
-  };
-}
-
 const LoadingWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -95,6 +88,12 @@ const LoadingWrapper = styled.div`
   z-index: 10;
   background: ${({ theme }) => theme.color.littleTransparentBlack};
 `;
+
+interface EnglishCardProps {
+  data: {
+    tag: string[];
+  };
+}
 
 const ENGLISH_WORDS_IN_ONE_DAY = 5;
 

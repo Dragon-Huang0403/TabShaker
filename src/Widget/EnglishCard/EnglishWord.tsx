@@ -2,7 +2,6 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Speaker } from '../../components/Icons';
-import type { EnglishWordData } from '../../types/WidgetTypes';
 import Content from './Content';
 
 const Wrapper = styled.div`
@@ -71,6 +70,19 @@ const ContentWrapper = styled.div`
   width: 100%;
   overflow-x: hidden;
 `;
+
+export type EnglishWordData = {
+  id: string;
+  word: string;
+  ipa: string;
+  type: string;
+  chinese: string;
+  definition: string;
+  example: string;
+  example_chinese: string;
+  tags: string[];
+  audioUrl: string;
+};
 
 interface WordProps {
   word: EnglishWordData;
