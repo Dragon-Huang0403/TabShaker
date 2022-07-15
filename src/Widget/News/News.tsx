@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { fetchNews } from '../../utils/backendApis';
 import NewsItem, { NewsData } from './NewsItem';
-import afterOneHour from './util';
+import { afterOneHour } from '../../utils/lib';
 import useLocalStorage from '../../hooks/useLocalStorage';
 
 const Wrapper = styled.div`

@@ -1,11 +1,12 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import unsplashApi, { UnsplashResponseData } from './utils/unsplashApi';
 import { ArrowBack, ArrowForward, PlayArrow, Pause } from './components/Icons';
 import useInterval from './hooks/useSetInterval';
+import useLocalStorage from './hooks/useLocalStorage';
+import { afterOneHour } from './utils/lib';
 
-const TIME_TO_GET_NEW_PHOTOS = 3600000;
 const TIME_TO_NEXT_PHOTO = 30000;
 
 const Wrapper = styled.div`
@@ -87,13 +88,33 @@ const IconStyle = styled.div`
   }
 `;
 
+type PhotoData = {
+  photos: UnsplashResponseData[];
+  updatedAt: string;
+};
+
 function BackgroundImage() {
-  const [photos, setPhotos] = useState<UnsplashResponseData[]>([]);
-  const [isPlay, setIsPlay] = useState(false);
-  const [currentPhoto, setCurrentPhoto] = useState(0);
+  const [photoData, setPhotoData] = useLocalStorage<PhotoData>('bgImgData', {
+    photos: [],
+    updatedAt: String(new Date()),
+  });
+  const [bgImgSettings, setBgImgSettings] = useLocalStorage('bgImgSettings', {
+    isPlay: false,
+    currentPhoto: 0,
+  });
+  const { photos, updatedAt } = photoData;
+  const { isPlay, currentPhoto } = bgImgSettings;
   const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
   const prevPhoto =
     currentPhoto - 1 >= 0 ? currentPhoto - 1 : photos.length - 1;
+
+  const setCurrentPhoto = (photoIndex: number) => {
+    setBgImgSettings({ ...bgImgSettings, currentPhoto: photoIndex });
+  };
+
+  const setIsPlay = (newIsPlay: boolean) => {
+    setBgImgSettings({ ...bgImgSettings, isPlay: newIsPlay });
+  };
 
   useInterval(
     () => {
@@ -103,31 +124,16 @@ function BackgroundImage() {
   );
 
   useEffect(() => {
-    const rawData = window.localStorage.getItem('backgroundImages');
-    const currentTime = new Date();
-    if (rawData) {
-      const data = JSON.parse(rawData);
-      const lastPhotoUpdateTime = Number(data.updateTime);
-      if (
-        currentTime.getTime() - lastPhotoUpdateTime <
-        TIME_TO_GET_NEW_PHOTOS
-      ) {
-        const oldPhotos = data.photos;
-        setPhotos(oldPhotos);
-        return;
-      }
+    if (photos.length > 0 && !afterOneHour(updatedAt)) {
+      return;
     }
-    unsplashApi().then((newPhotos) => {
-      setPhotos(newPhotos);
-      window.localStorage.setItem(
-        'backgroundImages',
-        JSON.stringify({
-          photos: newPhotos,
-          updateTime: currentTime.getTime(),
-        }),
-      );
-    });
-  }, []);
+    const updatePhotos = async () => {
+      const newPhotos = await unsplashApi();
+      setPhotoData({ photos: newPhotos, updatedAt: String(new Date()) });
+    };
+
+    updatePhotos();
+  }, [updatedAt, photos.length]);
 
   return (
     <Wrapper>
