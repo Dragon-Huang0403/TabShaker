@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 import { fetchNews } from '../../utils/backendApis';
-import NewsItem from './NewsItem';
-import type { NewsData } from '../../types/WidgetTypes';
+import NewsItem, { NewsData } from './NewsItem';
+import afterOneHour from './util';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -33,60 +34,56 @@ const LoadingWrapper = styled.div`
   flex-grow: 1;
   margin: auto;
 `;
-interface NewsProps {
+
+type AllNews = {
+  [key: string]: { news: NewsData[]; updatedAt: string };
+};
+
+export interface NewsProps {
   data: { tag: string };
 }
 
 function News({ data }: NewsProps) {
-  const [newsData, setNewsData] = useState<NewsData[]>([]);
+  const [allNews, setAllNews] = useLocalStorage<AllNews>('allNewsData', {});
   const [isLoading, setIsLoading] = useState(true);
-
   const { tag } = data;
+  const news = allNews[tag]?.news || [];
+  const updatedAt = allNews[tag]?.updatedAt;
+
   useEffect(() => {
-    const rawNewsLastUpdateInfo = window.localStorage.getItem('newsUpdateInfo');
-    const rawNewsLastUpdateData = window.localStorage.getItem('newsData');
-    if (rawNewsLastUpdateInfo && rawNewsLastUpdateData) {
-      const newsLastUpdateInfo = JSON.parse(rawNewsLastUpdateInfo);
-      const lastUpdatedTime = new Date(newsLastUpdateInfo.time);
-      const currentTime = new Date();
-      const oldTag = newsLastUpdateInfo.tag;
-      if (
-        oldTag === tag &&
-        currentTime.getHours() === lastUpdatedTime.getHours()
-      ) {
-        if (newsData.length > 0) return;
-        const oldNewsData = JSON.parse(rawNewsLastUpdateData);
-        setNewsData(oldNewsData);
-        setIsLoading(false);
-        return;
-      }
+    if (updatedAt && !afterOneHour(updatedAt) && news.length > 0) {
+      setIsLoading(false);
+      return;
     }
+
     const getNews = async () => {
       setIsLoading(true);
       const res = await fetchNews(tag);
       if (res.status === 'ok') {
         const articles = res.articles as NewsData[];
-        setNewsData(articles);
+        setAllNews({
+          ...allNews,
+          [tag]: { news: articles, updatedAt: String(new Date()) },
+        });
         setIsLoading(false);
-        const newsUpdateInfo = { tag, time: new Date() };
-        localStorage.setItem('newsUpdateInfo', JSON.stringify(newsUpdateInfo));
-        localStorage.setItem('newsData', JSON.stringify(articles));
       }
     };
+
     getNews();
-  }, [tag]);
+  }, [tag, news.length, updatedAt]);
+
   return (
     <Wrapper>
       <Title>Top Headlines</Title>
-      {(newsData.length === 0 || isLoading) && (
+      {(news.length === 0 || isLoading) && (
         <LoadingWrapper>
           <ReactLoading type="spin" />
         </LoadingWrapper>
       )}
       <NewsContainer>
-        {newsData.map((news, index) => (
+        {news.map((newsData, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <NewsItem data={news} key={index} />
+          <NewsItem newsData={newsData} key={index} />
         ))}
       </NewsContainer>
     </Wrapper>
