@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import getCityData from './openStreetMapApi';
@@ -111,11 +111,15 @@ export type WeatherData = {
   temperature: number;
 };
 
-function Weather() {
+interface WeatherProps {
+  width: number;
+  height: number;
+}
+
+function Weather({ width, height }: WeatherProps) {
   const [location, setLocation] = useState<Location | null>(null);
   const [cityData, setCityData] = useState<CityData | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const [renderWidthMode, setRenderWidthMode] = useState(0);
   const [renderHeightMode, setRenderHeightMode] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -174,10 +178,8 @@ function Weather() {
   }, [cityData]);
 
   useEffect(() => {
-    if (!wrapperRef.current) return;
-    const gridItem = wrapperRef.current.parentNode as HTMLElement;
-    const width = gridItem.clientWidth;
-    const height = gridItem.clientHeight;
+    if (width === -1 || height === -1) return;
+
     const updateRenderWidthMode = () => {
       if (width <= 250) {
         setRenderWidthMode(2);
@@ -207,7 +209,7 @@ function Weather() {
 
     updateRenderWidthMode();
     updateRenderHeightMode();
-  });
+  }, [width, height]);
 
   if (isLoading) {
     return (
@@ -221,7 +223,6 @@ function Weather() {
 
   return (
     <Wrapper
-      ref={wrapperRef}
       justifyContent={renderWidthMode === 2 ? 'center' : 'space-between'}
     >
       <CurrentWeather paddingTop={renderHeightMode === 1 ? 20 : 10}>

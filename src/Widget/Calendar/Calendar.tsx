@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import ReactLoading from 'react-loading';
 import listPlugin from '@fullcalendar/list';
 import {
   getCalendarList,
@@ -50,16 +51,42 @@ const Wrapper = styled.div`
   }
 `;
 
-function Calendar() {
+const LoadingWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & ~ div .fc-scrollgrid.fc-scrollgrid-liquid {
+    visibility: hidden;
+  }
+`;
+
+function getInitialView(width: number): 'dayGridMonth' | 'listWeek' {
+  if (width > 450) return 'dayGridMonth';
+  return 'listWeek';
+}
+
+interface CalendarProps {
+  width: number;
+}
+
+function Calendar({ width }: CalendarProps) {
   const [error, setError] = useState('');
   const [accessToken, clearTokens] = useGoogleAccessToken(setError);
+  const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<EventForFullCalendar[]>([]);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<FullCalendar>(null);
   const isModeUpdating = useRef(false);
+  const calendarRef = useRef<FullCalendar>(null);
 
   useEffect(() => {
-    if (!accessToken || events.length > 0) return;
+    if (!accessToken || events.length > 0) {
+      return;
+    }
     const updateEventsFromGoogleCalendar = async () => {
       const calendarList = await getCalendarList(accessToken);
       if (calendarList.error) {
@@ -83,7 +110,7 @@ function Calendar() {
           backgroundColor,
         );
         setEvents((prevEvent) => [...prevEvent, ...handledEvents]);
-
+        setIsLoading(false);
         const { nextPageToken } = eventsFromGoogle;
         if (nextPageToken) {
           handleCalendarListData(id, backgroundColor, nextPageToken);
@@ -97,57 +124,59 @@ function Calendar() {
   }, [accessToken]);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current!;
-    let width = wrapper.clientWidth;
-    if (events.length === 0) return;
-    if (!calendarRef.current) return;
-    if (isModeUpdating.current) return;
-    const currentView = calendarRef.current!.getApi().view;
+    if (width === -1) return undefined;
+    if (!calendarRef.current) return undefined;
+    const calender = calendarRef.current?.getApi();
+    if (!calender) return undefined;
 
-    const updateCalendarView = (
-      viewMode: 'listWeek' | 'dayGridMonth',
-      delay = 200,
-    ) => {
-      isModeUpdating.current = true;
-      setTimeout(() => {
-        if (wrapper.clientWidth !== width) {
-          width = wrapper.clientWidth;
-          updateCalendarView(viewMode, delay);
-          return;
-        }
-        calendarRef.current!.getApi().changeView(viewMode);
-        isModeUpdating.current = false;
-      }, delay);
-    };
-
+    const currentView = calender.view;
+    let newView = '';
     if (width <= 450) {
       if (currentView.type !== 'listWeek') {
-        updateCalendarView('listWeek');
+        newView = 'listWeek';
       }
     } else if (currentView.type !== 'dayGridMonth') {
-      updateCalendarView('dayGridMonth', 500);
+      newView = 'dayGridMonth';
     }
-  });
+    if (!newView) return undefined;
+    const id = setTimeout(() => {
+      calender.batchRendering(() => {
+        calender.changeView(newView);
+      });
+      isModeUpdating.current = false;
+    }, 100);
+    return () => {
+      clearInterval(id);
+    };
+  }, [width]);
+
+  if (error) {
+    return <Wrapper>{error}</Wrapper>;
+  }
 
   return (
-    <Wrapper ref={wrapperRef}>
-      {error || (
-        <FullCalendar
-          ref={calendarRef}
-          eventMaxStack={3}
-          dayMaxEventRows={2}
-          plugins={[dayGridPlugin, listPlugin]}
-          initialView="listWeek"
-          headerToolbar={{ left: 'title', center: '', right: 'prev,next' }}
-          events={events}
-          height="100%"
-          views={{
-            listWeek: {
-              titleFormat: { month: 'short', day: 'numeric' },
-            },
-          }}
-        />
+    <Wrapper>
+      {isLoading && (
+        <LoadingWrapper>
+          <ReactLoading type="spin" />
+        </LoadingWrapper>
       )}
+      <FullCalendar
+        ref={calendarRef}
+        eventMaxStack={3}
+        dayMaxEventRows={2}
+        rerenderDelay={1000}
+        plugins={[dayGridPlugin, listPlugin]}
+        initialView={getInitialView(width)}
+        headerToolbar={{ left: 'title', center: '', right: 'prev,next' }}
+        events={events}
+        height="100%"
+        views={{
+          listWeek: {
+            titleFormat: { month: 'short', day: 'numeric' },
+          },
+        }}
+      />
     </Wrapper>
   );
 }

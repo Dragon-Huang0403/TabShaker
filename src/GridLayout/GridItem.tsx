@@ -78,7 +78,7 @@ function GridItem(props: GridItemProp) {
   const position = movingPosition || getPosition(layoutItem, gridUnit);
   const constraint = getConstraint(limit, gridUnit);
   const style = createCSSTransform(position);
-  const { left, top } = position;
+  const { left, top, width, height } = position;
 
   const handleOnDrag = (e: MouseEvent, draggerData: DraggerData) => {
     const { deltaX, deltaY } = draggerData;
@@ -132,7 +132,7 @@ function GridItem(props: GridItemProp) {
         onResizingEnd={onResizingEnd}
       >
         <Wrapper ref={nodeRef} style={style} isMoving={movingPosition !== null}>
-          {children}
+          {React.cloneElement(children, { width, height })}
         </Wrapper>
       </Resizer>
     </Dragger>

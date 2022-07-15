@@ -210,7 +210,7 @@ const weatherCodeData = [
   },
 ];
 
-const dayName = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export function getDayString(date: Date) {
   const day = date.getDay();
