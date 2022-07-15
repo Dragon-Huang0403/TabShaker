@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-  const [widgets, setWidgets] = useLocalStorage<WidgetData[]>('widgets', [
+  const [widgets, setWidgets] = useLocalStorage<WidgetData[]>('widgetData', [
     ...defaultWidgets,
   ]);
   const [layouts, setLayouts] = useLocalStorage<Layouts>(
@@ -52,7 +52,6 @@ function App() {
       ),
     );
   };
-
   const availableWidgets = getAvailableWidgetTypes(widgets, widgetConfig);
 
   return (

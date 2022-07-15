@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 
-declare const chrome: any;
-
 function useGoogleAccessToken(
   setError: React.Dispatch<React.SetStateAction<string>>,
 ): [string, () => void] {

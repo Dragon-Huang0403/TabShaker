@@ -18,6 +18,6 @@
     "client_id": "728982193090-p33gadj656ntoskdrp91qn99ifvg0705.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/calendar.readonly"]
   },
-  "permissions": ["geolocation", "identity"],
+  "permissions": ["geolocation", "identity", "storage"],
   "version": "0.1.0"
 }
