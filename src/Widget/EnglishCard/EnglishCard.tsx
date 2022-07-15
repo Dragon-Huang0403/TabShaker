@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import ReactLoading from 'react-loading';
 import 'swiper/css';
@@ -9,7 +9,7 @@ import EnglishWord from './EnglishWord';
 import { SwiperButtonNext, SwiperButtonPrev } from '../../Swiper';
 import { DoubleArrow, Refresh } from '../../components/Icons';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { handleNewEnglishWords } from './utils';
+import { handleNewEnglishWords, afterOneDay } from './utils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -96,6 +96,8 @@ const LoadingWrapper = styled.div`
   background: ${({ theme }) => theme.color.littleTransparentBlack};
 `;
 
+const ENGLISH_WORDS_IN_ONE_DAY = 5;
+
 function EnglishCard({ data }: EnglishCardProps) {
   const [words, setWords] = useLocalStorage<EnglishWordData[]>('engWords', []);
   const [activeSlide, setActiveSlide] = useLocalStorage(
@@ -103,40 +105,38 @@ function EnglishCard({ data }: EnglishCardProps) {
     0,
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const prevTagLength = useRef(-1);
   const { tag } = data;
 
   const updateWords = async () => {
     setIsLoading(true);
-    const res = await getCard(10, tag);
+    const res = await getCard(ENGLISH_WORDS_IN_ONE_DAY, tag);
     const newEnglishWords = handleNewEnglishWords(res);
     setWords(newEnglishWords);
-    const currentTime = new Date().getTime();
     setIsLoading(false);
-    window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
+    window.localStorage.setItem('wordsUpdatedAt', String(new Date()));
   };
 
   useEffect(() => {
-    const rawOldWords = window.localStorage.getItem('engWords');
-    if (rawOldWords) {
-      const wordsUpdatedAt = localStorage.getItem('wordsUpdatedAt');
-      const currentTime = new Date().getTime();
-      if (!wordsUpdatedAt || currentTime - Number(wordsUpdatedAt) <= 86400000) {
-        const oldWords = JSON.parse(rawOldWords);
-        setWords(oldWords);
-        return;
-      }
-    }
-    updateWords();
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender) {
-      setIsFirstRender(false);
+    if (words.length === 0) {
+      updateWords();
       return;
     }
-    updateWords();
-  }, [isFirstRender, tag.length]);
+    const wordsUpdatedAt = localStorage.getItem('wordsUpdatedAt');
+    if (wordsUpdatedAt && afterOneDay(wordsUpdatedAt)) {
+      updateWords();
+    }
+  }, [words.length]);
+
+  useEffect(() => {
+    if (prevTagLength.current === -1) {
+      prevTagLength.current = tag.length;
+      return;
+    }
+    if (prevTagLength.current !== tag.length) {
+      updateWords();
+    }
+  }, [tag.length]);
 
   return (
     <Wrapper>

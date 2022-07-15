@@ -1,6 +1,6 @@
 import type { EnglishWordDataInFireStore } from '../../utils/firebase';
 
-export function getAudioUrl(word: string) {
+function getAudioUrl(word: string) {
   const str = word.toLocaleLowerCase();
   let url = `https://www.oxfordlearnersdictionaries.com/media/english/us_pron/${str.charAt(
     0,
@@ -21,4 +21,12 @@ export function handleNewEnglishWords(
     const audioUrl = getAudioUrl(word);
     return { ...englishWord, audioUrl };
   });
+}
+
+const DAY_TIME_IN_SECOND = 86400000;
+export function afterOneDay(rawPrevTime: Date | string) {
+  const prevTime =
+    typeof rawPrevTime === 'string' ? new Date(rawPrevTime) : rawPrevTime;
+  const now = new Date();
+  return now.getTime() - prevTime.getTime() > DAY_TIME_IN_SECOND;
 }
