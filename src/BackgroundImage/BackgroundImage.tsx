@@ -1,13 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import unsplashApi, { UnsplashResponseData } from './utils/unsplashApi';
-import { ArrowBack, ArrowForward, PlayArrow, Pause } from './components/Icons';
-import useInterval from './hooks/useSetInterval';
-import useLocalStorage from './hooks/useLocalStorage';
-import { afterOneHour } from './utils/lib';
-
-const TIME_TO_NEXT_PHOTO = 30000;
+import unsplashApi, { UnsplashResponseData } from '../utils/unsplashApi';
+import { ArrowBack, ArrowForward, PlayArrow, Pause } from '../components/Icons';
+import useInterval from '../hooks/useSetInterval';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { afterOneHour } from '../utils/lib';
+import defaultPhoto from './photos';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -101,9 +100,10 @@ function BackgroundImage() {
   const [bgImgSettings, setBgImgSettings] = useLocalStorage('bgImgSettings', {
     isPlay: false,
     currentPhoto: 0,
+    timeToNextPhoto: 30000,
   });
   const { photos, updatedAt } = photoData;
-  const { isPlay, currentPhoto } = bgImgSettings;
+  const { isPlay, currentPhoto, timeToNextPhoto } = bgImgSettings;
   const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
   const prevPhoto =
     currentPhoto - 1 >= 0 ? currentPhoto - 1 : photos.length - 1;
@@ -120,7 +120,7 @@ function BackgroundImage() {
     () => {
       setCurrentPhoto(nextPhoto);
     },
-    isPlay ? TIME_TO_NEXT_PHOTO : null,
+    isPlay ? timeToNextPhoto : null,
   );
 
   useEffect(() => {
@@ -129,9 +129,11 @@ function BackgroundImage() {
     }
     const updatePhotos = async () => {
       const newPhotos = await unsplashApi();
-      setPhotoData({ photos: newPhotos, updatedAt: String(new Date()) });
+      if (!newPhotos.error && newPhotos.data) {
+        setPhotoData({ photos: newPhotos.data, updatedAt: String(new Date()) });
+      }
+      setPhotoData({ photos: defaultPhoto, updatedAt: String(new Date()) });
     };
-
     updatePhotos();
   }, [updatedAt, photos.length]);
 
@@ -140,25 +142,25 @@ function BackgroundImage() {
       {photos.map((photo, index) => (
         <BackgroundImg
           key={photo.id}
-          url={`${photo.urls.raw}&q=85&w=1920`}
+          url={photo.urls.url}
           isCurrentPhoto={index === currentPhoto}
         >
           <Links>
             <a
-              href={`${photo.links.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
+              href={`${photo.links?.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
             >
               Photo
             </a>
             <a
-              href={`${photo.user.links.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
+              href={`${photo.user?.links?.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
             >
-              {photo.user.name}
+              {photo.user?.name}
             </a>
             <a href="https://unsplash.com/?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit">
               Unsplash
             </a>
           </Links>
-          <div>{photo.location.title}</div>
+          <div>{photo.location?.title}</div>
         </BackgroundImg>
       ))}
 
