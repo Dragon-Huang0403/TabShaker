@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
-import BackgroundImage from './BackgroundImage';
+import Background from './Background';
 import GridLayout from './GridLayout';
 import { ScreenSize } from './GridLayout/config';
 import { defaultWidgets, defaultLayouts } from './defaultValue';
@@ -57,7 +57,7 @@ function App() {
   return (
     <ThemeProvider theme={globalTheme}>
       <GlobalStyle />
-      <BackgroundImage />
+      <Background />
       <Wrapper>
         <NavBar addWidget={addWidget} availableWidgets={availableWidgets} />
         <GridLayout widgets={widgets} layouts={layouts} setLayouts={setLayouts}>

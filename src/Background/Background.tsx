@@ -1,12 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import unsplashApi, { UnsplashResponseData } from '../utils/unsplashApi';
 import { ArrowBack, ArrowForward, PlayArrow, Pause } from '../components/Icons';
 import useInterval from '../hooks/useSetInterval';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { afterOneHour } from '../utils/lib';
 import defaultPhoto from './photos';
+import BackgroundImage from './BackgroundImage';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -17,44 +18,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-`;
-
-const BackgroundImg = styled.div<{ url: string; isCurrentPhoto: boolean }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  transition: opacity 0.5s;
-  visibility: visible;
-  background-size: cover;
-  background-position: 50% 50%;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 0px 20px 20px;
-  color: ${({ theme }) => theme.color.white};
-  font-size: 0.75rem;
-  user-select: none;
-  ${({ url }) =>
-    url &&
-    css`
-      background-image: url(${url});
-    `}
-  ${({ isCurrentPhoto }) =>
-    !isCurrentPhoto &&
-    css`
-      visibility: hidden;
-      opacity: 0;
-    `}
-`;
-
-const Links = styled.div`
-  display: flex;
-  gap: 5px;
-  & > a:hover {
-    text-decoration: underline;
-  }
 `;
 
 const IconsWrapper = styled.div`
@@ -92,7 +55,7 @@ type PhotoData = {
   updatedAt: string;
 };
 
-function BackgroundImage() {
+function Background() {
   const [photoData, setPhotoData] = useLocalStorage<PhotoData>('bgImgData', {
     photos: [],
     updatedAt: String(new Date()),
@@ -131,39 +94,21 @@ function BackgroundImage() {
       const newPhotos = await unsplashApi();
       if (!newPhotos.error && newPhotos.data) {
         setPhotoData({ photos: newPhotos.data, updatedAt: String(new Date()) });
+        return;
       }
       setPhotoData({ photos: defaultPhoto, updatedAt: String(new Date()) });
     };
     updatePhotos();
   }, [updatedAt, photos.length]);
-
   return (
     <Wrapper>
       {photos.map((photo, index) => (
-        <BackgroundImg
+        <BackgroundImage
           key={photo.id}
-          url={photo.urls.url}
-          isCurrentPhoto={index === currentPhoto}
-        >
-          <Links>
-            <a
-              href={`${photo.links?.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
-            >
-              Photo
-            </a>
-            <a
-              href={`${photo.user?.links?.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
-            >
-              {photo.user?.name}
-            </a>
-            <a href="https://unsplash.com/?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit">
-              Unsplash
-            </a>
-          </Links>
-          <div>{photo.location?.title}</div>
-        </BackgroundImg>
+          photo={photo}
+          currentPhoto={index === currentPhoto}
+        />
       ))}
-
       <IconsWrapper>
         <IconStyle
           onClick={() => {
@@ -201,4 +146,4 @@ function BackgroundImage() {
   );
 }
 
-export default BackgroundImage;
+export default Background;

@@ -10,6 +10,28 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Lato', sans-serif;
     overflow: hidden;
     font-size: 1rem;
+    animation: placeholder ease-in-out 2s infinite;
+  }
+
+  @keyframes placeholder {
+    0% {
+      background-color: #666;
+    }
+    50% {
+      background-color: #888;
+    }
+    100% {
+      background-color: #666;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0%;
+    }
+    100% {
+      opacity: 100%;
+    }
   }
 
   a, a:visited, a:hover, a:active {
