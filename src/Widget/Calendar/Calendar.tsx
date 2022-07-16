@@ -11,6 +11,7 @@ import {
 } from './googleApi';
 import type { EventForFullCalendar } from './type';
 import useGoogleAccessToken from '../../hooks/useGoogleAccessToken';
+import GoogleLoginButton from '../../components/GoogleLoginButton';
 
 const Wrapper = styled.div`
   position: relative;
@@ -51,7 +52,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const LoadingWrapper = styled.div`
+const EventWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -60,8 +61,13 @@ const LoadingWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  color: ${({ theme }) => theme.color.red};
+  text-align: center;
+  z-index: 2;
 
-  & ~ div .fc-scrollgrid.fc-scrollgrid-liquid {
+  & ~ div .fc-scrollgrid.fc-scrollgrid-liquid,
+  & ~ div .fc-view-harness.fc-view-harness-active {
     visibility: hidden;
   }
 `;
@@ -76,22 +82,27 @@ interface CalendarProps {
 }
 
 function Calendar({ width }: CalendarProps) {
-  const [error, setError] = useState('');
-  const [accessToken, clearTokens] = useGoogleAccessToken(setError);
+  const [error, setError] = useState({ status: 0, text: '' });
+  const [accessToken, clearTokens, activeLogin] =
+    useGoogleAccessToken(setError);
   const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<EventForFullCalendar[]>([]);
   const isModeUpdating = useRef(false);
   const calendarRef = useRef<FullCalendar>(null);
 
   useEffect(() => {
-    if (!accessToken || events.length > 0) {
+    if (events.length > 0) {
+      return;
+    }
+    if (!accessToken) {
+      setIsLoading(false);
       return;
     }
     const updateEventsFromGoogleCalendar = async () => {
       const calendarList = await getCalendarList(accessToken);
       if (calendarList.error) {
         clearTokens();
-        setError(calendarList.error.message);
+        setError({ status: 2, text: calendarList.error.message });
         return;
       }
       const handleCalendarListData = async (
@@ -144,22 +155,24 @@ function Calendar({ width }: CalendarProps) {
         calender.changeView(newView);
       });
       isModeUpdating.current = false;
-    }, 100);
+    }, 300);
     return () => {
       clearInterval(id);
     };
   }, [width]);
 
-  if (error) {
-    return <Wrapper>{error}</Wrapper>;
-  }
-
   return (
     <Wrapper>
+      {error.status === 1 && (
+        <EventWrapper>
+          <GoogleLoginButton onClick={activeLogin} />
+        </EventWrapper>
+      )}
+      {error.status > 1 && <EventWrapper>{error.text}</EventWrapper>}
       {isLoading && (
-        <LoadingWrapper>
+        <EventWrapper>
           <ReactLoading type="spin" />
-        </LoadingWrapper>
+        </EventWrapper>
       )}
       <FullCalendar
         ref={calendarRef}

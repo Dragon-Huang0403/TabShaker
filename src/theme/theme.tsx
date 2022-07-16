@@ -12,6 +12,7 @@ const theme = {
     transparentBlack: '#0009',
     littleTransparentBlack: 'rgba(15, 15, 15, 0.925)',
     transparentWhite: 'rgba(255,255,255, 0.15)',
+    red: '#ff6060',
   },
   screens: {
     sm: { screenWidth: 500, cols: 20 },

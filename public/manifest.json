@@ -19,5 +19,5 @@
     "scopes": ["https://www.googleapis.com/auth/calendar.readonly"]
   },
   "permissions": ["geolocation", "identity", "storage"],
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

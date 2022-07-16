@@ -33,7 +33,7 @@ export default {
     defaultLayout: { w: 13, h: 9 },
     limit: { minW: 11, maxW: 15, minH: 6, maxH: 11 },
     menu: ['Basic', 'Medium', 'Hard', 'Challenging'] as string[],
-    maxQuantity: 2,
+    maxQuantity: 1,
   },
   news: {
     style: {},
@@ -43,7 +43,7 @@ export default {
     defaultLayout: { w: 13, h: 12 },
     limit: { minW: 11, maxW: 16, minH: 8, maxH: 30 },
     menu: ['Taiwan', 'United States'] as string[],
-    maxQuantity: 2,
+    maxQuantity: 1,
   },
   weather: {
     style: {},

@@ -14,6 +14,7 @@ import DoubleArrow from './DoubleArrow';
 import Check from './Check';
 import Refresh from './Refresh';
 import Edit from './Edit';
+import GoogleLogo from './GoogleLogo';
 
 export {
   AppIcon,
@@ -32,4 +33,5 @@ export {
   Check,
   Refresh,
   Edit,
+  GoogleLogo,
 };
