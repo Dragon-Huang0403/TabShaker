@@ -90,15 +90,21 @@ function Background() {
     if (photos.length > 0 && !afterOneHour(updatedAt)) {
       return;
     }
-    const updatePhotos = async () => {
-      const newPhotos = await unsplashApi();
-      if (!newPhotos.error && newPhotos.data) {
-        setPhotoData({ photos: newPhotos.data, updatedAt: String(new Date()) });
+    const getNewPhotos = async () => {
+      const response = await unsplashApi();
+      if (!response.error && response.data) {
+        const oldPhoto =
+          photos.length >= 1 ? photos[photos.length - 1] : defaultPhoto[0];
+        const newPhotos = [oldPhoto, ...response.data];
+        setPhotoData({
+          photos: newPhotos,
+          updatedAt: String(new Date()),
+        });
         return;
       }
       setPhotoData({ photos: defaultPhoto, updatedAt: String(new Date()) });
     };
-    updatePhotos();
+    getNewPhotos();
   }, [updatedAt, photos.length]);
   return (
     <Wrapper>

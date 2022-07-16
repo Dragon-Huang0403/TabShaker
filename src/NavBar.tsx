@@ -4,6 +4,7 @@ import GoogleMenu from './components/GoogleMenu';
 import { AppIcon, AddIcon } from './components/Icons';
 import SelectNewWidget from './SelectNewWidget';
 import type { WidgetData, WidgetType } from './types/WidgetTypes';
+import ShortCuts from './ShortCuts';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,10 +23,11 @@ const LeftPart = styled.div`
   border-radius: 20px;
   transition: all 0.5s;
   z-index: 1;
+  flex-basis: 177px;
 `;
 
-const MiddlePart = styled.div``;
 const RightPart = styled.div`
+  flex-basis: 177px;
   padding-right: 10px;
   position: relative;
   display: flex;
@@ -105,7 +107,7 @@ function NavBar({ addWidget, availableWidgets }: NavBarProps) {
           <AddIcon />
         </IconContainer>
       </LeftPart>
-      <MiddlePart />
+      <ShortCuts />
       <RightPart>
         <Link href="https://mail.google.com/mail/">Gmail</Link>
         <Link href="https://www.google.com.tw/imghp">Images</Link>
