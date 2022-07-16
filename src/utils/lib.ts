@@ -38,3 +38,20 @@ export function afterOneHour(rawPrevTime: Date | string) {
   const now = new Date();
   return now.getTime() - prevTime.getTime() > ONE_HOUR_IN_SECOND;
 }
+
+export function getDomain(url: string) {
+  try {
+    const domain = new URL(url);
+    return domain.hostname;
+  } catch {
+    return '';
+  }
+}
+
+export function getValidateURL(url: string) {
+  try {
+    return new URL(url).href;
+  } catch {
+    return new URL(`https://${url}`).href;
+  }
+}

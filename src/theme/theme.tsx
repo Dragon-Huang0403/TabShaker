@@ -13,6 +13,7 @@ const theme = {
     transparentBlack: '#0007',
     littleTransparentBlack: 'rgba(15, 15, 15, 0.925)',
     transparentWhite: 'rgba(255,255,255, 0.15)',
+    moreTransparentWhite: 'rgba(255,255,255, 0.05)',
     red: '#ff6060',
   },
   screens: {

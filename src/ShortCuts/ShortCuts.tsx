@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { v4 } from 'uuid';
 import styled from 'styled-components';
 import Modal from '../Modal';
-// import useLocalStorage from './hooks/useLocalStorage';
+import useLocalStorage from '../hooks/useLocalStorage';
 import {
   RoundAddButton,
   RoundLinkButtonProps,
@@ -15,25 +16,29 @@ const Wrapper = styled.div`
   gap: 10px;
 `;
 
-// type ShortCutItem = {
-//   id: string;
-//   title: string;
-//   url: string;
-// };
+type ShortCutItem = {
+  id: string;
+  title: string;
+  url: string;
+};
 
 function ShortCuts() {
   const [showAddNewShortCut, setShowAddNewShortCut] = useState(false);
-  // const [items, setItems] = useLocalStorage<ShortCutItem[]>(
-  //   'shortCutItems',
-  //   [],
-  // );
+  const [items, setItems] = useLocalStorage<ShortCutItem[]>(
+    'shortCutItems',
+    [],
+  );
+
+  const addNewItem = (title: string, url: string) => {
+    setItems([...items, { title, url, id: v4() }]);
+  };
 
   return (
     <Wrapper>
-      <RoundLinkButtonProps
-        url="https://trello.com/b/1C3MlmHo/tabshaker-dragon"
-        title="Trello"
-      />
+      {items.map((item) => (
+        <RoundLinkButtonProps key={item.id} url={item.url} title={item.title} />
+      ))}
+
       <RoundAddButton
         onClick={() => {
           setShowAddNewShortCut(true);
@@ -41,7 +46,12 @@ function ShortCuts() {
       />
       {showAddNewShortCut && (
         <Modal>
-          <AddNewShortCut />
+          <AddNewShortCut
+            close={() => {
+              setShowAddNewShortCut(false);
+            }}
+            addNewItem={addNewItem}
+          />
         </Modal>
       )}
     </Wrapper>
