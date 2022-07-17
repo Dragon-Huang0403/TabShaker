@@ -6,12 +6,13 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import { RoundAddButton } from '../components/RoundButton';
 import AddNewShortCut from './AddNewShortCut';
 import ShortCutItem, { ShortCutItemType } from './ShortCutItem';
+import { defaultShortCuts } from '../defaultValue';
 
 const Wrapper = styled.div`
   padding-right: 20px;
   flex-grow: 1;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: flex-end;
   gap: 14px;
   height: 100%;
@@ -24,7 +25,7 @@ function ShortCuts() {
   const [showAddNewShortCut, setShowAddNewShortCut] = useState(false);
   const [items, setItems] = useLocalStorage<ShortCutItemType[]>(
     'shortCutItems',
-    [],
+    [...defaultShortCuts],
   );
 
   const addNewItem = (title: string, url: string) => {

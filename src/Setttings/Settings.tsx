@@ -27,7 +27,7 @@ function Settings() {
   const restoreSettings = () => {
     window.localStorage.clear();
     chrome?.storage?.sync?.clear();
-    window.location.href = '/';
+    window.location.reload();
   };
   return (
     <Wrapper>
