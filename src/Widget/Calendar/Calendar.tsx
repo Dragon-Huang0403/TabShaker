@@ -165,7 +165,12 @@ function Calendar({ width }: CalendarProps) {
     <Wrapper>
       {error.status === 1 && (
         <EventWrapper>
-          <GoogleLoginButton onClick={activeLogin} />
+          <GoogleLoginButton
+            onClick={() => {
+              setError({ status: 0, text: '' });
+              activeLogin();
+            }}
+          />
         </EventWrapper>
       )}
       {error.status > 1 && <EventWrapper>{error.text}</EventWrapper>}
