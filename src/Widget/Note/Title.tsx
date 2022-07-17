@@ -23,7 +23,7 @@ interface TitleProps {
 function Title({ title, setTitle, onEnter }: TitleProps) {
   const [isComposition, setIsComposition] = useState(false);
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.code !== 'Enter' || isComposition) return;
+    if (e.key !== 'Enter' || isComposition) return;
     e.preventDefault();
     onEnter();
   };

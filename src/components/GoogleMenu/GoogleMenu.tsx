@@ -25,6 +25,7 @@ const StyledLink = styled.a`
   width: 94px;
   text-align: center;
   padding: 10px 15px 5px;
+  font-size: 16px;
 
   &:hover {
     background: ${({ theme }) => theme.color.white}11;

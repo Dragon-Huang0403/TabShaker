@@ -27,6 +27,17 @@ const db = getFirestore(app);
 
 const dictionaryTableName = 'dictionary';
 
+export type EnglishWordDataInFireStore = {
+  id: string;
+  word: string;
+  ipa: string;
+  type: string;
+  chinese: string;
+  definition: string;
+  example: string;
+  example_chinese: string;
+  tags: string[];
+};
 export async function getCard(quantity: number, tag: string[]) {
   let q: Query<DocumentData>;
   if (tag.length > 0) {
@@ -44,6 +55,8 @@ export async function getCard(quantity: number, tag: string[]) {
     );
   }
   const querySnapshot = await getDocs(q);
-  const data = querySnapshot.docs.map((doc) => doc.data());
+  const data = querySnapshot.docs.map(
+    (doc) => doc.data() as EnglishWordDataInFireStore,
+  );
   return data;
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/media-has-caption */
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Speaker } from '../../components/Icons';
-import type { EnglishWordData } from '../../types/WidgetTypes';
 import Content from './Content';
 
 const Wrapper = styled.div`
@@ -71,14 +71,28 @@ const ContentWrapper = styled.div`
   overflow-x: hidden;
 `;
 
+export type EnglishWordData = {
+  id: string;
+  word: string;
+  ipa: string;
+  type: string;
+  chinese: string;
+  definition: string;
+  example: string;
+  example_chinese: string;
+  tags: string[];
+  audioUrl: string;
+};
+
 interface WordProps {
   word: EnglishWordData;
   tags: string[];
-  playAudio: (word: string) => void;
 }
 
-function EnglishWord({ word, playAudio, tags }: WordProps) {
+function EnglishWord({ word, tags }: WordProps) {
   const [isShowExample, setIsShowExample] = useState(false);
+  const [isAudioLoaded, setIsAudioLoaded] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const toggleIsShowExample = () => {
     setIsShowExample((prev) => !prev);
   };
@@ -108,7 +122,15 @@ function EnglishWord({ word, playAudio, tags }: WordProps) {
       </Header>
       <Pronunciation>
         <span>{word.ipa}</span>
-        <Speaker onClick={() => playAudio(word.word)} />
+        <audio
+          ref={audioRef}
+          onLoadedData={() => {
+            setIsAudioLoaded(true);
+          }}
+        >
+          <source src={word.audioUrl} type="audio/mpeg" />
+        </audio>
+        {isAudioLoaded && <Speaker onClick={() => audioRef.current?.play()} />}
       </Pronunciation>
 
       <ContentWrapper>

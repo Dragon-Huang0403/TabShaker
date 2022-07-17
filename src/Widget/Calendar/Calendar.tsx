@@ -1,24 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useGoogleLogin, CodeResponse } from '@react-oauth/google';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import ReactLoading from 'react-loading';
 import listPlugin from '@fullcalendar/list';
 import {
   getCalendarList,
   getCalendarEvents,
   handleEventsFromGoogleCalendar,
 } from './googleApi';
-import {
-  getRefreshTokenAndAccessToken,
-  getNewAccessToken,
-} from '../../utils/backendApis';
 import type { EventForFullCalendar } from './type';
-import googleSignInBtn from './googleIcon/googleSignInBtn.png';
-import googleSignInBtnHover from './googleIcon/googleSignInBtnHover.png';
-import googleSignInBtnPress from './googleIcon/googleSignInBtnPress.png';
-
-declare const chrome: any;
+import useGoogleAccessToken from '../../hooks/useGoogleAccessToken';
+import GoogleLoginButton from '../../components/GoogleLoginButton';
 
 const Wrapper = styled.div`
   position: relative;
@@ -59,137 +52,57 @@ const Wrapper = styled.div`
   }
 `;
 
-const LoginWrapper = styled.div`
+const EventWrapper = styled.div`
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 20px;
-`;
+  padding: 20px;
+  color: ${({ theme }) => theme.color.red};
+  text-align: center;
+  z-index: 2;
 
-const LoginButton = styled.div`
-  z-index: 100;
-  display: inline-block;
-  width: 191px;
-  height: 46px;
-  background-size: cover;
-  background-position: center;
-  background-image: url(${googleSignInBtn});
-  cursor: pointer;
-  &:hover {
-    background-image: url(${googleSignInBtnHover});
-  }
-  &:active {
-    background-image: url(${googleSignInBtnPress});
+  & ~ div .fc-scrollgrid.fc-scrollgrid-liquid,
+  & ~ div .fc-view-harness.fc-view-harness-active {
+    visibility: hidden;
   }
 `;
 
-type GoogleTokens = {
-  access_token: string;
-  expiry_date: number;
-  refresh_token?: string;
-  scope: string;
-  id_token: string;
-};
+function getInitialView(width: number): 'dayGridMonth' | 'listWeek' {
+  if (width > 450) return 'dayGridMonth';
+  return 'listWeek';
+}
 
-function Calendar() {
-  const [accessToken, setAccessToken] = useState('');
-  const [tokenShouldUpdated, setTokenShouldUpdated] = useState(false);
+interface CalendarProps {
+  width: number;
+}
+
+function Calendar({ width }: CalendarProps) {
+  const [error, setError] = useState({ status: 0, text: '' });
+  const [accessToken, clearTokens, activeLogin] =
+    useGoogleAccessToken(setError);
+  const [isLoading, setIsLoading] = useState(true);
   const [events, setEvents] = useState<EventForFullCalendar[]>([]);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const calendarRef = useRef<FullCalendar>(null);
   const isModeUpdating = useRef(false);
-
-  const storeTokensInLocalStorage = (tokens: GoogleTokens) => {
-    const newAccessToken = tokens.access_token as string;
-    const expiryDate = tokens.expiry_date as number;
-
-    window.localStorage.setItem('googleAccessToken', newAccessToken);
-    window.localStorage.setItem(
-      'googleAccessTokenExpiryDate',
-      String(expiryDate),
-    );
-    const refreshToken = tokens.refresh_token as string;
-    if (refreshToken) {
-      window.localStorage.setItem('googleRefreshToken', refreshToken);
-    }
-    setTokenShouldUpdated(true);
-  };
-
-  const handleLoginSuccess = async (codeResponse: CodeResponse) => {
-    const tokens = await getRefreshTokenAndAccessToken(codeResponse);
-    storeTokensInLocalStorage(tokens);
-  };
-
-  const googleLogin = useGoogleLogin({
-    onSuccess: handleLoginSuccess,
-    onError: console.error,
-    flow: 'auth-code',
-    ux_mode: 'popup',
-    scope: 'https://www.googleapis.com/auth/calendar.readonly',
-  });
-
-  const handleLogin = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      googleLogin();
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const calendarRef = useRef<FullCalendar>(null);
 
   useEffect(() => {
-    if (!tokenShouldUpdated && accessToken) {
+    if (events.length > 0) {
       return;
     }
-    setTokenShouldUpdated(false);
-
-    if (chrome?.identity?.getAuthToken) {
-      chrome.identity.getAuthToken({ interactive: true }, (token: string) => {
-        window.localStorage.setItem('googleAccessToken', token);
-        setAccessToken(token);
-      });
+    if (!accessToken) {
+      setIsLoading(false);
       return;
     }
-
-    const oldAccessToken = window.localStorage.getItem('googleAccessToken');
-    const oldAccessTokenExpiryDate = new Date(
-      Number(window.localStorage.getItem('googleAccessTokenExpiryDate')),
-    );
-
-    const now = new Date();
-    if (oldAccessToken && oldAccessTokenExpiryDate > now) {
-      setAccessToken(oldAccessToken);
-      return;
-    }
-
-    const updateAccessToken = async (refreshToken: string) => {
-      const tokens = await getNewAccessToken(refreshToken);
-      if (tokens.error) {
-        console.error(tokens.error);
-        window.localStorage.removeItem('googleRefreshToken');
-        return;
-      }
-      storeTokensInLocalStorage(tokens);
-    };
-
-    const refreshToken = window.localStorage.getItem('googleRefreshToken');
-    if (refreshToken) {
-      updateAccessToken(refreshToken);
-    }
-  }, [tokenShouldUpdated]);
-
-  useEffect(() => {
-    if (!accessToken || events.length > 0) return;
     const updateEventsFromGoogleCalendar = async () => {
       const calendarList = await getCalendarList(accessToken);
       if (calendarList.error) {
-        setTokenShouldUpdated(true);
-        window.localStorage.removeItem('googleAccessToken');
-        console.error(calendarList.error.message);
+        clearTokens();
+        setError({ status: 2, text: calendarList.error.message });
         return;
       }
       const handleCalendarListData = async (
@@ -208,7 +121,7 @@ function Calendar() {
           backgroundColor,
         );
         setEvents((prevEvent) => [...prevEvent, ...handledEvents]);
-
+        setIsLoading(false);
         const { nextPageToken } = eventsFromGoogle;
         if (nextPageToken) {
           handleCalendarListData(id, backgroundColor, nextPageToken);
@@ -222,54 +135,60 @@ function Calendar() {
   }, [accessToken]);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current!;
-    let width = wrapper.clientWidth;
-    if (events.length === 0) return;
-    if (!calendarRef.current) return;
-    if (isModeUpdating.current) return;
-    const currentView = calendarRef.current!.getApi().view;
+    if (width === -1) return undefined;
+    if (!calendarRef.current) return undefined;
+    const calender = calendarRef.current?.getApi();
+    if (!calender) return undefined;
 
-    const updateCalendarView = (
-      viewMode: 'listWeek' | 'dayGridMonth',
-      delay = 200,
-    ) => {
-      isModeUpdating.current = true;
-      setTimeout(() => {
-        if (wrapper.clientWidth !== width) {
-          width = wrapper.clientWidth;
-          updateCalendarView(viewMode, delay);
-          return;
-        }
-        calendarRef.current!.getApi().changeView(viewMode);
-        isModeUpdating.current = false;
-      }, delay);
-    };
-
+    const currentView = calender.view;
+    let newView = '';
     if (width <= 450) {
       if (currentView.type !== 'listWeek') {
-        updateCalendarView('listWeek');
+        newView = 'listWeek';
       }
     } else if (currentView.type !== 'dayGridMonth') {
-      updateCalendarView('dayGridMonth', 500);
+      newView = 'dayGridMonth';
     }
-  });
+    if (!newView) return undefined;
+    const id = setTimeout(() => {
+      calender.batchRendering(() => {
+        calender.changeView(newView);
+      });
+      isModeUpdating.current = false;
+    }, 300);
+    return () => {
+      clearInterval(id);
+    };
+  }, [width]);
 
   return (
-    <Wrapper ref={wrapperRef}>
-      {!accessToken && (
-        <LoginWrapper>
-          <LoginButton onClick={handleLogin} />
-        </LoginWrapper>
+    <Wrapper>
+      {error.status === 1 && (
+        <EventWrapper>
+          <GoogleLoginButton onClick={activeLogin} />
+        </EventWrapper>
+      )}
+      {error.status > 1 && <EventWrapper>{error.text}</EventWrapper>}
+      {isLoading && (
+        <EventWrapper>
+          <ReactLoading type="spin" />
+        </EventWrapper>
       )}
       <FullCalendar
         ref={calendarRef}
         eventMaxStack={3}
         dayMaxEventRows={2}
+        rerenderDelay={1000}
         plugins={[dayGridPlugin, listPlugin]}
-        initialView="listWeek"
+        initialView={getInitialView(width)}
         headerToolbar={{ left: 'title', center: '', right: 'prev,next' }}
         events={events}
         height="100%"
+        views={{
+          listWeek: {
+            titleFormat: { month: 'short', day: 'numeric' },
+          },
+        }}
       />
     </Wrapper>
   );

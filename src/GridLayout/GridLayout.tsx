@@ -16,11 +16,13 @@ import {
 } from './utils/positionFn';
 import { WidgetData } from '../types/WidgetTypes';
 import { getScreenInfo } from './config';
-import { defaultConfig } from '../Widget';
+import { widgetConfig } from '../Widget';
 
 const Wrapper = styled.div`
   position: relative;
   flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 const Placeholder = styled.div`
@@ -44,7 +46,10 @@ function GridLayout({
   layouts,
   setLayouts,
 }: GridLayoutProps) {
-  const [gridLayoutWidth, setGridLayoutWidget] = useState(1280);
+  const [gridLayoutWidth, setGridLayoutWidth] = useState(
+    () => window.innerWidth,
+  );
+  const [isFirstRender, setIsFirstRender] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
   const [screenSize, cols] = getScreenInfo(gridLayoutWidth);
   const gridUnit = [gridLayoutWidth / cols, gridLayoutWidth / cols];
@@ -99,7 +104,7 @@ function GridLayout({
     const targetWidget = widgets.find((widget) => widget.id === id);
     if (!targetWidget) return null;
     const { type } = targetWidget;
-    const { limit } = defaultConfig[type];
+    const { limit } = widgetConfig[type];
 
     return (
       <GridItem
@@ -168,10 +173,11 @@ function GridLayout({
   useEffect(() => {
     const updateGridLayoutWidth = () => {
       if (!gridRef.current) return;
-      setGridLayoutWidget(gridRef.current.offsetWidth);
+      setGridLayoutWidth(gridRef.current.offsetWidth);
     };
     window.addEventListener('resize', updateGridLayoutWidth);
     updateGridLayoutWidth();
+    setIsFirstRender(false);
     return () => {
       window.removeEventListener('resize', updateGridLayoutWidth);
     };
@@ -180,6 +186,10 @@ function GridLayout({
   useEffect(() => {
     latestCurrentLayout.current = currentLayout;
   }, [currentLayout]);
+
+  if (isFirstRender) {
+    return <Wrapper ref={gridRef} />;
+  }
 
   return (
     <Wrapper ref={gridRef}>

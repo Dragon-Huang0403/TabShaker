@@ -26,10 +26,10 @@ export const taiwanCityList = [
   { chinese: '屏東縣', english: 'Pingtung County' },
 ] as const;
 
-export default async function getWeatherNoDataByChineseCityName(
+export default async function getWeatherDataByChineseCityName(
   cityName = '臺北市',
 ) {
-  const url = `${baseUrl}F-D0047-089?Authorization=${API_KEY}&locationName=${cityName}&sort=time`;
+  const url = `${baseUrl}F-D0047-091?Authorization=${API_KEY}&locationName=${cityName}&sort=time`;
   const res = await fetch(url);
   const data = await res.json();
   return data;

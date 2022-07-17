@@ -14,9 +14,7 @@ import RestoreContentPlugin from './RestoreContentPlugin';
 import editorTheme from './editorTheme';
 import EditorWrapper, { PlaceHolder } from './EditorWrapper';
 
-function onError(error: any) {
-  console.error(error);
-}
+function onError() {}
 
 const initialConfig = {
   namespace: 'MyEditor',

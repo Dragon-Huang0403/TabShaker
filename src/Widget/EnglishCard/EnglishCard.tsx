@@ -2,14 +2,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import ReactLoading from 'react-loading';
 import 'swiper/css';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { getCard } from '../../utils/firebase';
-import { getAudioUrl } from '../../utils/lib';
-import type { EnglishWordData } from '../../types/WidgetTypes';
-import EnglishWord from './EnglishWord';
+import EnglishWord, { EnglishWordData } from './EnglishWord';
 import { SwiperButtonNext, SwiperButtonPrev } from '../../Swiper';
 import { DoubleArrow, Refresh } from '../../components/Icons';
-import { useHover } from '../../hooks';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { handleNewEnglishWords, afterOneDay } from './utils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,7 +21,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const IconsContainer = styled.div<{ isIConHover: boolean }>`
+const IconsContainer = styled.div`
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -37,18 +36,15 @@ const IconsContainer = styled.div<{ isIConHover: boolean }>`
   & svg {
     fill: ${({ theme }) => theme.color.transparentWhite};
   }
+  :hover {
+    & div:not(:last-child) {
+      visibility: visible;
+    }
 
-  ${({ isIConHover }) =>
-    isIConHover &&
-    css`
-      & div:not(:last-child) {
-        visibility: visible;
-      }
-
-      & svg {
-        fill: ${({ theme }) => theme.color.lightWhite};
-      }
-    `}
+    & svg {
+      fill: ${({ theme }) => theme.color.lightWhite};
+    }
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -80,12 +76,6 @@ const IconWrapper = styled.div`
   }
 `;
 
-interface EnglishCardProps {
-  data: {
-    tag: string[];
-  };
-}
-
 const LoadingWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -99,55 +89,70 @@ const LoadingWrapper = styled.div`
   background: ${({ theme }) => theme.color.littleTransparentBlack};
 `;
 
+interface EnglishCardProps {
+  data: {
+    tag: string[];
+  };
+}
+
+const ENGLISH_WORDS_IN_ONE_DAY = 5;
+
 function EnglishCard({ data }: EnglishCardProps) {
-  const [words, setWords] = useState<EnglishWordData[]>([]);
+  const [words, setWords] = useLocalStorage<EnglishWordData[]>('engWords', []);
+  const [activeSlide, setActiveSlide] = useLocalStorage(
+    'engCardActiveSlide',
+    0,
+  );
   const [isLoading, setIsLoading] = useState(false);
-  const hoverRef = useRef<HTMLDivElement>(null);
-  const isIConHover = useHover(hoverRef);
+  const prevTagLength = useRef(-1);
   const { tag } = data;
 
-  const playAudio = async (word: string) => {
-    const audio = new Audio(getAudioUrl(word));
-    audio.play();
-  };
-  const updateWords = () => {
+  const updateWords = async () => {
     setIsLoading(true);
-    getCard(10, tag).then((res) => {
-      setWords(res as EnglishWordData[]);
-      window.localStorage.setItem('engWords', JSON.stringify(res));
-      const currentTime = new Date().getTime();
-      window.localStorage.setItem('wordsUpdatedAt', String(currentTime));
-    });
+    const res = await getCard(ENGLISH_WORDS_IN_ONE_DAY, tag);
+    const newEnglishWords = handleNewEnglishWords(res);
+    setWords(newEnglishWords);
+    setIsLoading(false);
+    window.localStorage.setItem('wordsUpdatedAt', String(new Date()));
   };
+
   useEffect(() => {
-    const rawOldWords = window.localStorage.getItem('engWords');
-    if (rawOldWords) {
-      const wordsUpdatedAt = localStorage.getItem('wordsUpdatedAt');
-      const currentTime = new Date().getTime();
-      if (!wordsUpdatedAt || currentTime - Number(wordsUpdatedAt) <= 86400000) {
-        const oldWords = JSON.parse(rawOldWords);
-        setWords(oldWords);
-        return;
-      }
+    if (words.length === 0) {
+      updateWords();
+      return;
     }
-    updateWords();
-  }, []);
+    const wordsUpdatedAt = localStorage.getItem('wordsUpdatedAt');
+    if (wordsUpdatedAt && afterOneDay(wordsUpdatedAt)) {
+      updateWords();
+    }
+  }, [words.length]);
+
   useEffect(() => {
-    if (isLoading === false) return undefined;
-    const id = setInterval(() => {
-      setIsLoading(false);
-    }, 500);
-    return () => clearInterval(id);
-  }, [isLoading]);
+    if (prevTagLength.current === -1) {
+      prevTagLength.current = tag.length;
+      return;
+    }
+    if (prevTagLength.current !== tag.length) {
+      updateWords();
+    }
+  }, [tag.length]);
+
   return (
     <Wrapper>
-      <Swiper simulateTouch={false} loop>
+      <Swiper
+        simulateTouch={false}
+        loop
+        initialSlide={activeSlide}
+        onSlideChange={(e) => {
+          setActiveSlide(e.activeIndex);
+        }}
+      >
         {words.map((word) => (
           <SwiperSlide key={word.id}>
-            <EnglishWord word={word} playAudio={playAudio} tags={tag} />
+            <EnglishWord word={word} tags={tag} />
           </SwiperSlide>
         ))}
-        <IconsContainer ref={hoverRef} isIConHover={isIConHover}>
+        <IconsContainer>
           <IconWrapper>
             <SwiperButtonPrev>
               <DoubleArrow direction="left" />

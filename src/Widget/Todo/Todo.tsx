@@ -54,6 +54,9 @@ const Input = styled.input`
   outline: none;
   font-size: 1rem;
   padding: 8px 8px 4px;
+  :focus::placeholder {
+    color: ${({ theme }) => theme.color.lightGrey};
+  }
 `;
 
 const TodosContainer = styled.div`
@@ -108,7 +111,7 @@ function Todo({ data, onWidgetChange }: TodoProps) {
   };
 
   const onInputSubmit = (e: React.KeyboardEvent) => {
-    if (e.code !== 'Enter') return;
+    if (e.key !== 'Enter') return;
     if (inputText && !isComposition) {
       addTodo();
       e.preventDefault();
@@ -159,14 +162,18 @@ function Todo({ data, onWidgetChange }: TodoProps) {
   const showedTodos = getTodosByShowMode();
 
   return (
-    <Wrapper>
+    <Wrapper
+      onDoubleClick={() => {
+        inputRef.current?.focus();
+      }}
+    >
       <Header>
         <Title>
           <ContentEditable
             html={title}
             onChange={onTitleChange}
             onKeyDown={(e) => {
-              if (e.code === 'Enter') {
+              if (e.key === 'Enter') {
                 e.preventDefault();
                 inputRef.current?.focus();
               }

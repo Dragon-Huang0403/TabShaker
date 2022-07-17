@@ -11,6 +11,8 @@ import Calendar from './Calendar';
 export default function renderWidget(
   widget: RenderWidgetData,
   onWidgetChange: (data: any) => void = () => {},
+  width: number = -1,
+  height: number = -1,
 ) {
   const { type, data, style } = widget;
   switch (type) {
@@ -25,9 +27,9 @@ export default function renderWidget(
     case 'news':
       return <News data={data} />;
     case 'weather':
-      return <Weather />;
+      return <Weather width={width} height={height} />;
     case 'calendar':
-      return <Calendar />;
+      return <Calendar width={width} />;
     default:
       return null;
   }

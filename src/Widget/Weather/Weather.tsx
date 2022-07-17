@@ -1,14 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components';
 import getCityData from './openStreetMapApi';
-import {
-  handleWeatherDataByElementType,
-  getWeatherIcon,
-  getWeatherDayByDay,
-  getWeatherDesc,
-  getDayString,
-} from './utils';
+import { handleWeatherDataByElementType, getDayString } from './utils';
 import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
 import WeatherLocation from './WeatherLocation';
 
@@ -68,7 +62,7 @@ const ApparentTemperature = styled.div<{ marginTop: string }>`
 const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
   flex-grow: 1;
   flex-shrink: 10;
-  padding: ${({ paddingTop }) => paddingTop}px 30px 0 0;
+  padding: ${({ paddingTop }) => paddingTop}px 25px 0 0;
   text-align: end;
   display: flex;
   flex-direction: column;
@@ -107,23 +101,28 @@ export type CityData = {
 
 export type WeatherData = {
   startTime: Date;
-  endTime: Date;
   weatherType: {
     name: string;
-    value: number;
+    weatherCode: string;
+    description: string;
+    icon: string;
   };
-  precipitationProbability: number;
   apparentTemperature: number;
   temperature: number;
 };
 
-function Weather() {
+interface WeatherProps {
+  width: number;
+  height: number;
+}
+
+function Weather({ width, height }: WeatherProps) {
   const [location, setLocation] = useState<Location | null>(null);
   const [cityData, setCityData] = useState<CityData | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const [renderWidthMode, setRenderWidthMode] = useState(0);
   const [renderHeightMode, setRenderHeightMode] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((pos) => {
@@ -135,7 +134,10 @@ function Weather() {
   }, []);
 
   useEffect(() => {
-    if (!location) return;
+    if (!location) {
+      setCityData(taiwanCityList[0]);
+      return;
+    }
     const updateCityData = async () => {
       const newCityData = await getCityData(location);
       const stateFindCity = taiwanCityList.find(
@@ -160,31 +162,30 @@ function Weather() {
   useEffect(() => {
     if (!cityData) return;
     const updateWeatherData = async () => {
-      const cityName = cityData.chinese || '臺北市';
+      const cityName = cityData.chinese;
       const weatherRawData = await getWeatherDataByChineseCityName(cityName);
       if (weatherRawData.success === 'true') {
         const weatherDataByElementType = handleWeatherDataByElementType(
           weatherRawData?.records?.locations?.[0]?.location?.[0]
             ?.weatherElement,
         );
-        const weatherDataByDay = getWeatherDayByDay(weatherDataByElementType);
-        setWeatherData(weatherDataByDay);
+        setWeatherData(weatherDataByElementType);
+        setIsLoading(false);
       }
     };
+    setIsLoading(true);
     updateWeatherData();
   }, [cityData]);
 
   useEffect(() => {
-    if (!wrapperRef.current) return;
-    const gridItem = wrapperRef.current.parentNode as HTMLElement;
-    const width = gridItem.clientWidth;
-    const height = gridItem.clientHeight;
+    if (width === -1 || height === -1) return;
+
     const updateRenderWidthMode = () => {
       if (width <= 250) {
         setRenderWidthMode(2);
         return;
       }
-      if (width <= 300) {
+      if (width <= 294) {
         setRenderWidthMode(1);
         return;
       }
@@ -208,9 +209,9 @@ function Weather() {
 
     updateRenderWidthMode();
     updateRenderHeightMode();
-  });
-  // console.log({ width, height });
-  if (!location || !cityData || weatherData.length === 0) {
+  }, [width, height]);
+
+  if (isLoading) {
     return (
       <Wrapper>
         <LoadingWrapper>
@@ -219,13 +220,13 @@ function Weather() {
       </Wrapper>
     );
   }
+
   return (
     <Wrapper
-      ref={wrapperRef}
       justifyContent={renderWidthMode === 2 ? 'center' : 'space-between'}
     >
       <CurrentWeather paddingTop={renderHeightMode === 1 ? 20 : 10}>
-        <img src={getWeatherIcon(weatherData[0].weatherType.value)} alt="" />
+        <img src={weatherData[0].weatherType.icon} alt="weatherIcon" />
         {renderHeightMode === 0 ? (
           <CurrentTemperature>{weatherData[0].temperature}°</CurrentTemperature>
         ) : (
@@ -247,30 +248,24 @@ function Weather() {
           paddingTop={renderHeightMode >= 2 ? 10 : 20}
         >
           {renderHeightMode >= 2 ? null : (
-            <WeatherLocation cityData={cityData} setCityData={setCityData} />
+            <WeatherLocation cityData={cityData!} setCityData={setCityData} />
           )}
           {renderHeightMode === 3 ? null : (
             <WeatherDescription>
-              {getWeatherDesc(weatherData[0].weatherType.value)}
+              {weatherData[0].weatherType.description}
             </WeatherDescription>
           )}
           <WeatherForecastWrapper>
             <div>
               <span>{weatherData?.[1].temperature}°</span>
-              <img
-                src={getWeatherIcon(weatherData?.[1].weatherType.value)}
-                alt="weather"
-              />
+              <img src={weatherData?.[1].weatherType.icon} alt="weather" />
               <span>{getDayString(weatherData?.[1].startTime)}</span>
             </div>
             {renderWidthMode === 1 ? null : (
               <div>
-                <span>{weatherData?.[1].temperature}°</span>
-                <img
-                  src={getWeatherIcon(weatherData?.[1].weatherType.value)}
-                  alt="weather"
-                />
-                <span>{getDayString(weatherData?.[1].startTime)}</span>
+                <span>{weatherData?.[2].temperature}°</span>
+                <img src={weatherData?.[2].weatherType.icon} alt="weather" />
+                <span>{getDayString(weatherData?.[2].startTime)}</span>
               </div>
             )}
           </WeatherForecastWrapper>

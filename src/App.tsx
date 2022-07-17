@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { GoogleOAuthProvider } from '@react-oauth/google';
+
 import globalTheme, { GlobalStyle } from './theme';
 import NavBar from './NavBar';
-import BackgroundImage from './BackgroundImage';
+import Background from './Background';
 import GridLayout from './GridLayout';
 import { ScreenSize } from './GridLayout/config';
 import { defaultWidgets, defaultLayouts } from './defaultValue';
-import Widget from './Widget';
+import Widget, { widgetConfig } from './Widget';
+import { getAvailableWidgetTypes } from './utils/lib';
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
+import useLocalStorage from './hooks/useLocalStorage';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -20,25 +22,13 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-  const [widgets, setWidgets] = useState<WidgetData[]>([...defaultWidgets]);
-  const [layouts, setLayouts] = useState<Layouts>(defaultLayouts);
-  const [isFirstRender, setIsFirstRender] = useState(true);
-  useEffect(() => {
-    const rawOldLayouts = window.localStorage.getItem('layouts');
-    if (rawOldLayouts) {
-      setLayouts(JSON.parse(rawOldLayouts));
-    }
-    const rawOldWidget = window.localStorage.getItem('widgets');
-    if (rawOldWidget) {
-      setWidgets(JSON.parse(rawOldWidget));
-    }
-    setIsFirstRender(false);
-  }, []);
-  useEffect(() => {
-    if (isFirstRender) return;
-    window.localStorage.setItem('widgets', JSON.stringify(widgets));
-    window.localStorage.setItem('layouts', JSON.stringify(layouts));
-  }, [widgets, layouts]);
+  const [widgets, setWidgets] = useLocalStorage<WidgetData[]>('widgetData', [
+    ...defaultWidgets,
+  ]);
+  const [layouts, setLayouts] = useLocalStorage<Layouts>(
+    'layouts',
+    defaultLayouts,
+  );
 
   const addWidget = (newWidget: WidgetData) => {
     setWidgets([...widgets, newWidget]);
@@ -62,33 +52,25 @@ function App() {
       ),
     );
   };
+  const availableWidgets = getAvailableWidgetTypes(widgets, widgetConfig);
 
   return (
     <ThemeProvider theme={globalTheme}>
-      <GoogleOAuthProvider
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID as string}
-      >
-        <GlobalStyle />
-        <BackgroundImage />
-        <Wrapper>
-          <NavBar addWidget={addWidget} />
-          {/* <Widgets widgets={widgets} setWidgets={setWidgets} /> */}
-          <GridLayout
-            widgets={widgets}
-            layouts={layouts}
-            setLayouts={setLayouts}
-          >
-            {widgets.map((widget) => (
-              <Widget
-                key={widget.id}
-                widget={widget}
-                deleteWidget={() => deleteWidget(widget.id)}
-                onWidgetChange={onWidgetChange}
-              />
-            ))}
-          </GridLayout>
-        </Wrapper>
-      </GoogleOAuthProvider>
+      <GlobalStyle />
+      <Background />
+      <Wrapper>
+        <NavBar addWidget={addWidget} availableWidgets={availableWidgets} />
+        <GridLayout widgets={widgets} layouts={layouts} setLayouts={setLayouts}>
+          {widgets.map((widget) => (
+            <Widget
+              key={widget.id}
+              widget={widget}
+              deleteWidget={() => deleteWidget(widget.id)}
+              onWidgetChange={onWidgetChange}
+            />
+          ))}
+        </GridLayout>
+      </Wrapper>
     </ThemeProvider>
   );
 }

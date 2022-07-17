@@ -1,47 +1,37 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
-import { AppIcon, SettingsIcon, DeleteIcon, AddIcon } from './components/Icons';
+import { AppIcon, AddIcon, SettingsIcon } from './components/Icons';
 import SelectNewWidget from './SelectNewWidget';
-import type { WidgetData } from './types/WidgetTypes';
+import type { WidgetData, WidgetType } from './types/WidgetTypes';
+import ShortCuts from './ShortCuts';
+import Modal from './Modal';
+import Settings from './Setttings';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 56px;
-  padding: 8px 8px 0px;
+  padding: 0px 8px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 10;
+  position: relative;
 `;
 
 const LeftPart = styled.div`
+  padding-top: 8px;
   display: flex;
-  padding: 5px 10px;
-  align-self: flex-start;
+  gap: 5px;
+  padding: 5px 10px 5px 5px;
   border-radius: 20px;
   transition: all 0.5s;
   z-index: 1;
-
-  div:not(:first-child) {
-    opacity: 0;
-  }
-
-  &:hover {
-    background: ${({ theme }) => theme.color.transparentBlack};
-
-    div:not(:first-child) {
-      opacity: 1;
-    }
-
-    svg {
-      fill: ${({ theme }) => theme.color.lightBlue};
-    }
-  }
 `;
 
-const MiddlePart = styled.div``;
 const RightPart = styled.div`
+  padding-top: 8px;
+  flex-basis: 177px;
   padding-right: 10px;
   position: relative;
   display: flex;
@@ -60,10 +50,9 @@ const IconContainer = styled.div`
   padding: 3px;
   height: 30px;
   width: 30px;
-
-  &:first-child {
-    background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
-  }
+  cursor: pointer;
+  background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
+  border-radius: 50%;
 
   & > svg {
     width: 24px;
@@ -72,9 +61,8 @@ const IconContainer = styled.div`
   }
 
   :hover {
-    cursor: pointer;
-    background: ${({ theme }) => theme.color.transparentWhite};
-    border-radius: 50%;
+    background: ${({ theme }) => theme.color.transparentBlack};
+    box-shadow: 0px 0px 10px -3px ${({ theme }) => theme.color.lightWhite};
   }
 `;
 
@@ -82,11 +70,6 @@ const AppIconContainer = styled(IconContainer)`
   height: 36px;
   width: 36px;
   padding: 6px;
-  background: radial-gradient(circle, #3333 25%, #3332 50%, #33333305 70%);
-  &:hover {
-    background: ${({ theme }) => theme.color.transparentBlack};
-    box-shadow: 0px 0px 10px -3px ${({ theme }) => theme.color.lightWhite};
-  }
 `;
 
 const Link = styled.a`
@@ -106,20 +89,29 @@ const Link = styled.a`
 
 interface NavBarProps {
   addWidget: (newWidget: WidgetData) => void;
+  availableWidgets: WidgetType[];
 }
 
-function NavBar({ addWidget }: NavBarProps) {
+function NavBar({ addWidget, availableWidgets }: NavBarProps) {
   const [idGoogleMenuOpen, setIsGoogleMenuOpen] = useState(false);
   const [isShowSelectNewWidget, setIsSelectNewWidget] = useState(false);
+  const [isSettingsShow, setIsSettingsShow] = useState(false);
 
   const toggleGoogleMenuOpen = () => {
     setIsGoogleMenuOpen((prev) => !prev);
+  };
+  const toggleSettingsShow = () => {
+    setIsSettingsShow((prev) => !prev);
   };
 
   return (
     <Wrapper>
       <LeftPart>
-        <IconContainer>
+        <IconContainer
+          onClick={() => {
+            toggleSettingsShow();
+          }}
+        >
           <SettingsIcon />
         </IconContainer>
         <IconContainer
@@ -129,11 +121,8 @@ function NavBar({ addWidget }: NavBarProps) {
         >
           <AddIcon />
         </IconContainer>
-        <IconContainer>
-          <DeleteIcon />
-        </IconContainer>
       </LeftPart>
-      <MiddlePart />
+      <ShortCuts />
       <RightPart>
         <Link href="https://mail.google.com/mail/">Gmail</Link>
         <Link href="https://www.google.com.tw/imghp">Images</Link>
@@ -145,13 +134,17 @@ function NavBar({ addWidget }: NavBarProps) {
         </GoogleMenuWrapper>
       </RightPart>
       {isShowSelectNewWidget && (
-        <SelectNewWidget
-          hideSelectNewWidget={() => {
-            setIsSelectNewWidget(false);
-          }}
-          addWidget={addWidget}
-        />
+        <Modal>
+          <SelectNewWidget
+            hideSelectNewWidget={() => {
+              setIsSelectNewWidget(false);
+            }}
+            addWidget={addWidget}
+            availableWidgets={availableWidgets}
+          />
+        </Modal>
       )}
+      {isSettingsShow && <Settings />}
     </Wrapper>
   );
 }

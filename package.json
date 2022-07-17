@@ -9,7 +9,6 @@
     "@lexical/list": "^0.3.7",
     "@lexical/markdown": "^0.3.7",
     "@lexical/react": "^0.3.7",
-    "@react-oauth/google": "^0.2.6",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
@@ -59,6 +58,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
+    "@types/chrome": "^0.0.193",
     "@types/styled-components": "^5.1.25",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.27.1",

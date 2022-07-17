@@ -1,5 +1,5 @@
 import Widget from './Widget';
-import defaultConfig from './defaultConfig';
+import widgetConfig, { widgetDemo } from './widgetConfig';
 
 export default Widget;
-export { defaultConfig };
+export { widgetConfig, widgetDemo };

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { NewsData } from '../../types/WidgetTypes';
 
 const Wrapper = styled.div`
   display: flex;
@@ -27,12 +26,23 @@ const Title = styled.div`
   }
 `;
 
+export type NewsData = {
+  author: string;
+  content: string;
+  description: string;
+  publishedAt: string;
+  source: { name: string };
+  title: string;
+  url: string;
+  urlToImage: string;
+};
+
 interface NewsItemProps {
-  data: NewsData;
+  newsData: NewsData;
 }
 
-function NewsItem({ data }: NewsItemProps) {
-  const { title, url, urlToImage } = data;
+function NewsItem({ newsData }: NewsItemProps) {
+  const { title, url, urlToImage } = newsData;
   if (!urlToImage) return null;
   return (
     <Wrapper>

@@ -12,13 +12,26 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 `;
-interface WidgetProps {
+
+const defaultProps = {
+  width: -1,
+  height: -1,
+};
+type WidgetProps = {
   widget: WidgetData;
   deleteWidget: () => void;
   onWidgetChange: (newWidget: WidgetData) => void;
-}
+  width?: number;
+  height?: number;
+} & typeof defaultProps;
 
-function Widget({ widget, deleteWidget, onWidgetChange }: WidgetProps) {
+function Widget({
+  widget,
+  deleteWidget,
+  onWidgetChange,
+  width,
+  height,
+}: WidgetProps) {
   const hoverRef = useRef<HTMLDivElement>(null);
   const isHover = useHover(hoverRef);
   const handleOnWidgetChange = (data: any) => {
@@ -45,9 +58,11 @@ function Widget({ widget, deleteWidget, onWidgetChange }: WidgetProps) {
       >
         <MoreDots />
       </IconDropDownMenu>
-      {renderWidget(widget, handleOnWidgetChange)}
+      {renderWidget(widget, handleOnWidgetChange, width, height)}
     </Wrapper>
   );
 }
+
+Widget.defaultProps = defaultProps;
 
 export default Widget;
