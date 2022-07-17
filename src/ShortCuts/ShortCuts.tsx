@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   align-items: flex-end;
   gap: 14px;
   height: 100%;
+  padding-bottom: 4px;
   overflow-x: auto;
   overflow-y: hidden;
   user-select: none;
