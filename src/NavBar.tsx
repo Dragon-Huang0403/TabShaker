@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import GoogleMenu from './components/GoogleMenu';
-import { AppIcon, AddIcon } from './components/Icons';
+import { AppIcon, AddIcon, SettingsIcon } from './components/Icons';
 import SelectNewWidget from './SelectNewWidget';
 import type { WidgetData, WidgetType } from './types/WidgetTypes';
 import ShortCuts from './ShortCuts';
+import Modal from './Modal';
+import Settings from './Setttings';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -14,12 +16,14 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   z-index: 10;
+  position: relative;
 `;
 
 const LeftPart = styled.div`
   padding-top: 8px;
   display: flex;
-  padding: 5px 10px;
+  gap: 5px;
+  padding: 5px 10px 5px 5px;
   border-radius: 20px;
   transition: all 0.5s;
   z-index: 1;
@@ -91,14 +95,25 @@ interface NavBarProps {
 function NavBar({ addWidget, availableWidgets }: NavBarProps) {
   const [idGoogleMenuOpen, setIsGoogleMenuOpen] = useState(false);
   const [isShowSelectNewWidget, setIsSelectNewWidget] = useState(false);
+  const [isSettingsShow, setIsSettingsShow] = useState(false);
 
   const toggleGoogleMenuOpen = () => {
     setIsGoogleMenuOpen((prev) => !prev);
+  };
+  const toggleSettingsShow = () => {
+    setIsSettingsShow((prev) => !prev);
   };
 
   return (
     <Wrapper>
       <LeftPart>
+        <IconContainer
+          onClick={() => {
+            toggleSettingsShow();
+          }}
+        >
+          <SettingsIcon />
+        </IconContainer>
         <IconContainer
           onClick={() => {
             setIsSelectNewWidget(true);
@@ -119,14 +134,17 @@ function NavBar({ addWidget, availableWidgets }: NavBarProps) {
         </GoogleMenuWrapper>
       </RightPart>
       {isShowSelectNewWidget && (
-        <SelectNewWidget
-          hideSelectNewWidget={() => {
-            setIsSelectNewWidget(false);
-          }}
-          addWidget={addWidget}
-          availableWidgets={availableWidgets}
-        />
+        <Modal>
+          <SelectNewWidget
+            hideSelectNewWidget={() => {
+              setIsSelectNewWidget(false);
+            }}
+            addWidget={addWidget}
+            availableWidgets={availableWidgets}
+          />
+        </Modal>
       )}
+      {isSettingsShow && <Settings />}
     </Wrapper>
   );
 }

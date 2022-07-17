@@ -4,7 +4,6 @@ import { EffectCoverflow } from 'swiper';
 import styled from 'styled-components';
 import { v4 } from 'uuid';
 import { DoubleArrow } from './components/Icons';
-import Modal from './Modal';
 import { widgetConfig } from './Widget';
 import { SwiperButtonNext, SwiperButtonPrev } from './Swiper';
 import WidgetSlide from './WidgetSlide';
@@ -72,47 +71,45 @@ function SelectNewWidget({
     }
   };
   return (
-    <Modal>
-      <Wrapper ref={wrapperRef} onClick={handleHideSelectNewWidget}>
-        <Swiper
-          effect="coverflow"
-          grabCursor
-          centeredSlides
-          slidesPerView={3}
-          loop
-          coverflowEffect={{
-            rotate: 50,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: true,
-          }}
-          modules={[EffectCoverflow]}
-          className="selectNewWidget"
-        >
-          <IconWrapper direction="left">
-            <SwiperButtonPrev>
-              <DoubleArrow direction="left" />
-            </SwiperButtonPrev>
-          </IconWrapper>
-          {availableWidgets.map((widgetType) => (
-            <SwiperSlide key={widgetType}>
-              <WidgetSlide
-                widgetType={widgetType}
-                addWidget={() => {
-                  handleAddWidget(widgetType as WidgetType);
-                }}
-              />
-            </SwiperSlide>
-          ))}
-          <IconWrapper direction="right">
-            <SwiperButtonNext>
-              <DoubleArrow direction="right" />
-            </SwiperButtonNext>
-          </IconWrapper>
-        </Swiper>
-      </Wrapper>
-    </Modal>
+    <Wrapper ref={wrapperRef} onClick={handleHideSelectNewWidget}>
+      <Swiper
+        effect="coverflow"
+        grabCursor
+        centeredSlides
+        slidesPerView={3}
+        loop
+        coverflowEffect={{
+          rotate: 50,
+          stretch: 0,
+          depth: 100,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        modules={[EffectCoverflow]}
+        className="selectNewWidget"
+      >
+        <IconWrapper direction="left">
+          <SwiperButtonPrev>
+            <DoubleArrow direction="left" />
+          </SwiperButtonPrev>
+        </IconWrapper>
+        {availableWidgets.map((widgetType) => (
+          <SwiperSlide key={widgetType}>
+            <WidgetSlide
+              widgetType={widgetType}
+              addWidget={() => {
+                handleAddWidget(widgetType as WidgetType);
+              }}
+            />
+          </SwiperSlide>
+        ))}
+        <IconWrapper direction="right">
+          <SwiperButtonNext>
+            <DoubleArrow direction="right" />
+          </SwiperButtonNext>
+        </IconWrapper>
+      </Swiper>
+    </Wrapper>
   );
 }
 

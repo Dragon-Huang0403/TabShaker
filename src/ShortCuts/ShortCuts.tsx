@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   height: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  user-select: none;
 `;
 
 function ShortCuts() {

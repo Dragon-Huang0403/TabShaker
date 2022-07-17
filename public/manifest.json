@@ -19,12 +19,6 @@
     "scopes": ["https://www.googleapis.com/auth/calendar.readonly"]
   },
   "offline_enabled": true,
-  "permissions": [
-    "geolocation",
-    "identity",
-    "storage",
-    "topSites",
-    "chrome://favicon/"
-  ],
+  "permissions": ["geolocation", "identity", "storage"],
   "version": "0.2.0"
 }
