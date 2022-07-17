@@ -15,6 +15,7 @@ import Check from './Check';
 import Refresh from './Refresh';
 import Edit from './Edit';
 import GoogleLogo from './GoogleLogo';
+import ContentCopy from './ContentCopy';
 
 export {
   AppIcon,
@@ -34,4 +35,5 @@ export {
   Refresh,
   Edit,
   GoogleLogo,
+  ContentCopy,
 };
