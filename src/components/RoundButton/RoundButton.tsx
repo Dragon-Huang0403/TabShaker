@@ -8,8 +8,8 @@ const Wrapper = styled.div`
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: ${({ theme }) => theme.color.lightWhite};
   box-shadow: 0px 0px 4px 0px ${({ theme }) => theme.color.transparentBlack};
   opacity: 0.9;

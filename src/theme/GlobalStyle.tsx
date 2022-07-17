@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Lato', sans-serif;
     overflow: hidden;
     font-size: 1rem;
-    animation: placeholder ease-in-out 2s infinite;
+     background-color: #666;
   }
 
   @keyframes placeholder {

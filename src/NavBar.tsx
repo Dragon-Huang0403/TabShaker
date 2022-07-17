@@ -9,7 +9,7 @@ import ShortCuts from './ShortCuts';
 const Wrapper = styled.div`
   width: 100%;
   height: 56px;
-  padding: 8px 8px 0px;
+  padding: 0px 8px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,9 +17,9 @@ const Wrapper = styled.div`
 `;
 
 const LeftPart = styled.div`
+  padding-top: 8px;
   display: flex;
   padding: 5px 10px;
-  align-self: flex-start;
   border-radius: 20px;
   transition: all 0.5s;
   z-index: 1;
@@ -27,6 +27,7 @@ const LeftPart = styled.div`
 `;
 
 const RightPart = styled.div`
+  padding-top: 8px;
   flex-basis: 177px;
   padding-right: 10px;
   position: relative;
