@@ -15,9 +15,7 @@ const Wrapper = styled.div`
   left: 20px;
   border-radius: 8px;
   width: 400px;
-  height: 245px;
-
-  padding: 20px 5px;
+  padding: 20px 5px 15px;
   background: ${({ theme }) => theme.color.black};
   box-shadow: 0px 0px 5px 0px ${({ theme }) => theme.color.white};
   color: ${({ theme }) => theme.color.white};

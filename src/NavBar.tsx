@@ -78,6 +78,8 @@ const Link = styled.a`
   text-shadow: 0.1em 0.1em 0.2em black;
 
   &,
+  &:visited,
+  &:hover,
   &:visited {
     color: ${({ theme }) => theme.color.white};
   }
