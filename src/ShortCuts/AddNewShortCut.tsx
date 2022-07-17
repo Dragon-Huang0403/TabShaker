@@ -78,12 +78,20 @@ function AddNewShortCut({ close, addNewItem }: AddNewShortCutProps) {
     <Wrapper ref={wrapperRef} onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
       <Container isBlur={isBlur}>
         <Title>Add Short Cut</Title>
-        <FormInput title="Name" value={name} onChange={setName} />
-        <FormInput title="URL" value={url} onChange={setUrl} />
-        <ButtonContainer>
-          <Button onClick={close} text="Cancel" />
-          <Button onClick={handleAddNewItem} text="Done" main disable={!url} />
-        </ButtonContainer>
+        <form action="" onSubmit={handleAddNewItem}>
+          <FormInput title="Name" value={name} onChange={setName} />
+          <FormInput title="URL" value={url} onChange={setUrl} required />
+          <ButtonContainer>
+            <Button onClick={close} text="Cancel" />
+            <Button
+              onClick={handleAddNewItem}
+              text="Done"
+              main
+              disable={!url}
+            />
+          </ButtonContainer>
+          <input type="submit" hidden />
+        </form>
       </Container>
     </Wrapper>
   );

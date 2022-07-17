@@ -51,13 +51,17 @@ const UnderLine = styled.div<{ focused: boolean }>`
     `}
 `;
 
-interface FormInputProps {
+const defaultProps = {
+  required: false,
+};
+type FormInputProps = {
   title: string;
   value: string;
+  required?: boolean;
   onChange: (newValue: string) => void;
-}
+} & typeof defaultProps;
 
-function FormInput({ title, value, onChange }: FormInputProps) {
+function FormInput({ title, value, onChange, required }: FormInputProps) {
   const [focused, setFocus] = useState(false);
   return (
     <Wrapper>
@@ -74,11 +78,14 @@ function FormInput({ title, value, onChange }: FormInputProps) {
           onBlur={() => {
             setFocus(false);
           }}
+          required={required}
         />
         <UnderLine focused={focused} />
       </InputContainer>
     </Wrapper>
   );
 }
+
+FormInput.defaultProps = defaultProps;
 
 export default FormInput;
