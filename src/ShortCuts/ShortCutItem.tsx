@@ -48,7 +48,7 @@ function ShortCutItem({ item, deleteItem }: ShortCutItemProps) {
   const [isDropDownShow, setIsDropDownShow] = useState(false);
   const itemWrapperRef = useRef<HTMLDivElement>(null);
   const isHover = useHover(itemWrapperRef);
-  const showIcon = useDebounce(isHover, 2000);
+  const showIcon = useDebounce(isHover, 1000);
   useClickAnyWhere(() => {
     setIsDropDownShow(false);
   });

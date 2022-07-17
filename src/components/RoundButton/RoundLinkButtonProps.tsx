@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import RoundButton from './RoundButton';
 import { getDomain } from '../../utils/lib';
 
-const ICON_SIZE = 32;
+const ICON_SIZE = 24;
 
 const Img = styled.img`
   display: inline-block;
   width: ${ICON_SIZE}px;
   height: ${ICON_SIZE}px;
+  border-radius: 4px;
 `;
 
 interface RoundLinkButtonProps {

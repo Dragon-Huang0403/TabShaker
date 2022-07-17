@@ -23,7 +23,6 @@ const LeftPart = styled.div`
   border-radius: 20px;
   transition: all 0.5s;
   z-index: 1;
-  flex-basis: 177px;
 `;
 
 const RightPart = styled.div`

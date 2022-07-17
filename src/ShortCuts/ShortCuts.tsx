@@ -8,12 +8,15 @@ import AddNewShortCut from './AddNewShortCut';
 import ShortCutItem, { ShortCutItemType } from './ShortCutItem';
 
 const Wrapper = styled.div`
+  padding-right: 20px;
   flex-grow: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: flex-end;
   gap: 14px;
   height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 `;
 
 function ShortCuts() {
