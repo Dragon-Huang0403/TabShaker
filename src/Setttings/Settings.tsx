@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import {
-  Linkedin,
-  Gmail,
-  Instagram,
+  ContentCopy,
   Github,
-} from '@icons-pack/react-simple-icons';
-import { ContentCopy } from '../components/Icons';
+  Mail,
+  Instagram,
+  LinkedIn,
+} from '../components/Icons';
 import Button from '../components/Button/Button';
 
 const Wrapper = styled.div`
@@ -115,10 +115,10 @@ function Settings() {
               <Github />
             </Link>
             <Link href="https://www.linkedin.com/in/xuanlong-huang-6a439a183/">
-              <Linkedin />
+              <LinkedIn />
             </Link>
             <Link href="mailto:j0918023423@gmail.com?subject=TabShaker&body=Dear Dragon">
-              <Gmail />
+              <Mail />
             </Link>
             <Link href="https://www.instagram.com/dragon0403/">
               <Instagram />

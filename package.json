@@ -6,7 +6,6 @@
     "@fullcalendar/daygrid": "^5.11.0",
     "@fullcalendar/list": "^5.11.0",
     "@fullcalendar/react": "^5.11.1",
-    "@icons-pack/react-simple-icons": "^5.2.0",
     "@lexical/list": "^0.3.7",
     "@lexical/markdown": "^0.3.7",
     "@lexical/react": "^0.3.7",
