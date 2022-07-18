@@ -1,0 +1,41 @@
+.editor-paragraph {
+  margin: 0;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.editor-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.editor-list-ol {
+  padding: 0;
+  margin: 0;
+  list-style-position: inside;
+}
+.editor-list-ol2 {
+  list-style-type: upper-alpha;
+}
+.editor-list-ol3 {
+  list-style-type: lower-alpha;
+}
+.editor-list-ol4 {
+  list-style-type: upper-roman;
+}
+.editor-list-ol5 {
+  list-style-type: lower-roman;
+}
+
+.editor-list-ul {
+  padding: 0;
+  margin: 0;
+  margin-left: 24px;
+}
+
+.editor-listitem {
+  margin: 4px 16px;
+}
+
+.editor-nested-listitem {
+  list-style-type: none;
+}
