@@ -1,10 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { DropDownMenu } from '../components/IconDropDownMenu';
-import { MoreDots } from '../components/Icons';
+import { Close } from '../components/Icons';
 import { RoundLinkButtonProps } from '../components/RoundButton';
 import { useHover } from '../hooks';
-import useClickAnyWhere from '../hooks/useClickAnyWhere';
 import useDebounce from '../hooks/useDebounce';
 
 const ItemWrapper = styled.div`
@@ -14,22 +12,26 @@ const ItemWrapper = styled.div`
 const IconWrapper = styled.div<{ visible: boolean }>`
   z-index: 2;
   position: absolute;
-  top: -12px;
-  right: -12px;
+  top: -6px;
+  right: -6px;
   width: 20px;
   height: 20px;
   cursor: pointer;
   border-radius: 50%;
+  background: ${({ theme }) => theme.color.transparentWhite};
   visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
 
   svg {
     width: 20px;
     height: 20px;
-    fill: ${({ theme }) => theme.color.littleTransparentBlack};
+    fill: ${({ theme }) => theme.color.transparentBlack};
   }
 
   :hover {
     background: ${({ theme }) => theme.color.transparentBlack};
+    svg {
+      fill: ${({ theme }) => theme.color.lightWhite};
+    }
   }
 `;
 
@@ -45,36 +47,18 @@ interface ShortCutItemProps {
 }
 
 function ShortCutItem({ item, deleteItem }: ShortCutItemProps) {
-  const [isDropDownShow, setIsDropDownShow] = useState(false);
   const itemWrapperRef = useRef<HTMLDivElement>(null);
   const isHover = useHover(itemWrapperRef);
   const showIcon = useDebounce(isHover, 1000);
-  useClickAnyWhere(() => {
-    setIsDropDownShow(false);
-  });
   return (
     <ItemWrapper ref={itemWrapperRef}>
       <IconWrapper
-        onClick={(e) => {
-          if (!isDropDownShow) {
-            setIsDropDownShow(true);
-            e.preventDefault();
-            e.stopPropagation();
-          }
+        onClick={() => {
+          deleteItem();
         }}
         visible={isHover && showIcon}
       >
-        <MoreDots />
-        {isDropDownShow && (
-          <DropDownMenu
-            items={[
-              {
-                text: 'Delete',
-                onClick: deleteItem,
-              },
-            ]}
-          />
-        )}
+        <Close />
       </IconWrapper>
       <RoundLinkButtonProps url={item.url} title={item.title} />
     </ItemWrapper>

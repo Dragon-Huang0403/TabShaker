@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './editor.css';
 
 import { ListItemNode, ListNode } from '@lexical/list';
@@ -30,9 +30,24 @@ interface EditorProps {
 }
 
 function Editor({ onChange, content, editorRef }: EditorProps) {
+  const [isFocused, setIsFocused] = useState(false);
+  const onMouseDown = (e: React.MouseEvent) => {
+    if (isFocused) {
+      e.stopPropagation();
+    }
+  };
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <EditorWrapper ref={editorRef}>
+      <EditorWrapper
+        ref={editorRef}
+        onMouseDown={onMouseDown}
+        onFocus={() => {
+          setIsFocused(true);
+        }}
+        onBlur={() => {
+          setIsFocused(false);
+        }}
+      >
         <RichTextPlugin
           contentEditable={<ContentEditable />}
           placeholder={<PlaceHolder>Enter some text...</PlaceHolder>}

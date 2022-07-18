@@ -15,8 +15,17 @@ import Check from './Check';
 import Refresh from './Refresh';
 import Edit from './Edit';
 import GoogleLogo from './GoogleLogo';
+import ContentCopy from './ContentCopy';
+import Github from './Github';
+import Mail from './Mail';
+import LinkedIn from './LinkedIn';
+import Instagram from './Instagram';
 
 export {
+  Github,
+  Mail,
+  LinkedIn,
+  Instagram,
   AppIcon,
   DeleteIcon,
   SettingsIcon,
@@ -34,4 +43,5 @@ export {
   Refresh,
   Edit,
   GoogleLogo,
+  ContentCopy,
 };
