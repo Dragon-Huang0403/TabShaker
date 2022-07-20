@@ -1,4 +1,4 @@
-import type { EnglishWordDataInFireStore } from '../../utils/firebase';
+import type { EnglishWordDataInFireStore } from './fireStore';
 
 function getAudioUrl(word: string) {
   const str = word.toLocaleLowerCase();

@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import ReactLoading from 'react-loading';
 import 'swiper/css';
 import styled from 'styled-components';
-import { getCard } from '../../utils/firebase';
+import { getCard } from './fireStore';
 import EnglishWord, { EnglishWordData } from './EnglishWord';
 import { SwiperButtonNext, SwiperButtonPrev } from '../../components/Swiper';
 import { DoubleArrow, Refresh } from '../../components/Icons';
