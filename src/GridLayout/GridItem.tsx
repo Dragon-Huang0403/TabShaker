@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 
 import Resizer from './Resizer';
 import Dragger from './Dragger';
-
 import { getBoundPosition, getPosition } from './utils/positionFn';
 import {
   createCSSTransform,
@@ -124,7 +123,7 @@ function GridItem(props: GridItemProp) {
         onResizingStart={onResizingStart}
         onResizingEnd={onResizingEnd}
       >
-        <Wrapper ref={nodeRef} style={style} isMoving={movingPosition !== null}>
+        <Wrapper ref={nodeRef} style={style} isMoving={!!movingPosition}>
           {React.cloneElement(children, { width, height })}
         </Wrapper>
       </Resizer>

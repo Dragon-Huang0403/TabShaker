@@ -9,6 +9,7 @@ import styled from 'styled-components';
 
 import GridItem from './GridItem';
 import { findLayoutItem } from './utils/other';
+import { useEventListener } from '../hooks';
 import {
   canElementMove,
   moveElement,
@@ -59,13 +60,13 @@ function GridLayout({
   const [gridLayoutWidth, setGridLayoutWidth] = useState(
     () => window.innerWidth,
   );
-  const [isFirstRender, setIsFirstRender] = useState(true);
   const gridRef = useRef<HTMLDivElement>(null);
   const [screenSize, cols] = getScreenInfo(gridLayoutWidth);
   const gridUnit = [gridLayoutWidth / cols, gridLayoutWidth / cols];
   const currentLayout = layouts[screenSize];
   const latestCurrentLayout = useRef(currentLayout);
   const [placeholder, setPlaceHolder] = useState<LayoutItem | null>(null);
+
   const updateLayout = (layout: Layout) => {
     const newLayouts = { ...layouts };
     newLayouts[screenSize] = layout;
@@ -78,6 +79,7 @@ function GridLayout({
     );
     updateLayout(newLayout);
   };
+
   const onDrag = (
     e: MouseEvent,
     draggerData: DraggerData,
@@ -96,6 +98,7 @@ function GridLayout({
     latestCurrentLayout.current = newLayout;
     updateLayout(newLayout);
   };
+
   const onDragEnd = () => {
     if (placeholder) {
       updateLayoutItem(placeholder);
@@ -103,8 +106,9 @@ function GridLayout({
     setPlaceHolder(null);
   };
   const onResize = (layoutItem: LayoutItem) => {
-    if (!canElementMove(currentLayout, layoutItem)) return;
-    updateLayoutItem(layoutItem);
+    if (canElementMove(currentLayout, layoutItem)) {
+      updateLayoutItem(layoutItem);
+    }
   };
 
   useEffect(() => {
@@ -137,20 +141,10 @@ function GridLayout({
     }
   }, [Children.count(children), layouts, screenSize]);
 
-  useEffect(() => {
-    setIsFirstRender(false);
-
-    const updateGridLayoutWidth = () => {
-      if (!gridRef.current) return;
-      setGridLayoutWidth(gridRef.current.offsetWidth);
-    };
-
-    window.addEventListener('resize', updateGridLayoutWidth);
-    updateGridLayoutWidth();
-    return () => {
-      window.removeEventListener('resize', updateGridLayoutWidth);
-    };
-  }, []);
+  useEventListener('resize', () => {
+    if (!gridRef.current) return;
+    setGridLayoutWidth(gridRef.current.offsetWidth);
+  });
 
   useEffect(() => {
     latestCurrentLayout.current = currentLayout;
@@ -158,7 +152,7 @@ function GridLayout({
 
   return (
     <Wrapper ref={gridRef}>
-      {!isFirstRender && (
+      {gridRef.current && (
         <>
           {placeholder && (
             <GridItem
@@ -166,7 +160,7 @@ function GridLayout({
               id={placeholder.id}
               layoutItem={placeholder}
               limit={getLayoutLimit(placeholder.id)}
-              bound={gridRef.current!}
+              bound={gridRef.current}
               gridUnit={gridUnit}
               onResize={onResize}
               onDrag={onDrag}
