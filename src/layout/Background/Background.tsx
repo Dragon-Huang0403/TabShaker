@@ -3,13 +3,9 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 import BackgroundImage from './BackgroundImage';
+import Controller from './Controller';
 import unsplashApi, { UnsplashResponseData } from './unsplashApi';
-import {
-  ArrowBack,
-  ArrowForward,
-  PlayArrow,
-  Pause,
-} from '../../components/Icons';
+import { getNextPhoto, getPrevPhoto } from './lib';
 import { useInterval, useLocalStorage } from '../../hooks';
 import { afterOneHour } from '../../utils/lib';
 import defaultPhoto from './photos';
@@ -23,36 +19,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-`;
-
-const IconsWrapper = styled.div`
-  display: inline-block;
-  background: ${({ theme }) => theme.color.transparentBlack};
-  z-index: 1;
-  margin-bottom: 20px;
-  padding: 5px 15px;
-  border-radius: 20px;
-  display: flex;
-  gap: 5px;
-
-  &:hover {
-    box-shadow: 0px 0px 10px -2px ${({ theme }) => theme.color.white};
-  }
-`;
-
-const IconStyle = styled.div`
-  width: 24px;
-  height: 24px;
-  &:hover {
-    cursor: pointer;
-    background: ${({ theme }) => theme.color.transparentWhite};
-    border-radius: 50%;
-  }
-  & svg {
-    fill: ${({ theme }) => theme.color.lightBlue};
-    width: 100%;
-    height: 100%;
-  }
 `;
 
 type PhotoData = {
@@ -72,9 +38,9 @@ function Background() {
   });
   const { photos, updatedAt } = photoData;
   const { isPlay, currentPhoto, timeToNextPhoto } = bgImgSettings;
-  const nextPhoto = currentPhoto + 1 < photos.length ? currentPhoto + 1 : 0;
-  const prevPhoto =
-    currentPhoto - 1 >= 0 ? currentPhoto - 1 : photos.length - 1;
+
+  const nextPhoto = getNextPhoto(currentPhoto, photos.length - 1);
+  const prevPhoto = getPrevPhoto(currentPhoto, photos.length - 1);
 
   const setCurrentPhoto = (photoIndex: number) => {
     setBgImgSettings({ ...bgImgSettings, currentPhoto: photoIndex });
@@ -120,39 +86,13 @@ function Background() {
           currentPhoto={index === currentPhoto}
         />
       ))}
-      <IconsWrapper>
-        <IconStyle
-          onClick={() => {
-            setCurrentPhoto(prevPhoto);
-          }}
-        >
-          <ArrowBack />
-        </IconStyle>
-        {isPlay ? (
-          <IconStyle
-            onClick={() => {
-              setIsPlay(false);
-            }}
-          >
-            <Pause />
-          </IconStyle>
-        ) : (
-          <IconStyle
-            onClick={() => {
-              setIsPlay(true);
-            }}
-          >
-            <PlayArrow />
-          </IconStyle>
-        )}
-        <IconStyle
-          onClick={() => {
-            setCurrentPhoto(nextPhoto);
-          }}
-        >
-          <ArrowForward />
-        </IconStyle>
-      </IconsWrapper>
+      <Controller
+        isPlay={isPlay}
+        nextPhoto={nextPhoto}
+        prevPhoto={prevPhoto}
+        setIsPlay={setIsPlay}
+        setCurrentPhoto={setCurrentPhoto}
+      />
     </Wrapper>
   );
 }
