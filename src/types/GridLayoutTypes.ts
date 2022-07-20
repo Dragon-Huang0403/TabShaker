@@ -1,12 +1,15 @@
 import type { ScreenSize } from '../GridLayout/config';
 
-export type LayoutItem = {
-  id: string;
+export type DefaultLayout = {
   w: number;
   h: number;
+};
+
+export type LayoutItem = {
+  id: string;
   x: number;
   y: number;
-};
+} & DefaultLayout;
 
 export type Layout = LayoutItem[];
 

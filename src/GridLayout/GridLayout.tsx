@@ -1,4 +1,10 @@
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+  Children,
+} from 'react';
 import styled from 'styled-components';
 
 import GridItem from './GridItem';
@@ -7,18 +13,18 @@ import {
   canElementMove,
   moveElement,
   getAvailableLayoutItem,
-  getOtherScreenSizeLayoutItem,
+  getDefaultLayout,
 } from './utils/positionFn';
 import { getScreenInfo } from './config';
-import { widgetConfig } from '../Widget';
 
 import type {
   DraggerData,
   Layout,
   LayoutItem,
   Layouts,
+  Limit,
+  DefaultLayout,
 } from '../types/GridLayoutTypes';
-import type { WidgetData } from '../types/WidgetTypes';
 
 const Wrapper = styled.div`
   position: relative;
@@ -37,16 +43,18 @@ const Placeholder = styled.div`
 
 type GridLayoutProps = {
   children: React.ReactNode;
-  widgets: WidgetData[];
   layouts: Layouts;
   setLayouts: React.Dispatch<Layouts>;
+  getLayoutLimit: (id: string) => Limit;
+  getWidgetDefaultLayout: (id: string) => DefaultLayout;
 };
 
 function GridLayout({
   children,
-  widgets,
   layouts,
   setLayouts,
+  getLayoutLimit,
+  getWidgetDefaultLayout,
 }: GridLayoutProps) {
   const [gridLayoutWidth, setGridLayoutWidth] = useState(
     () => window.innerWidth,
@@ -98,65 +106,21 @@ function GridLayout({
     if (!canElementMove(currentLayout, layoutItem)) return;
     updateLayoutItem(layoutItem);
   };
-  const renderGridItem = (child: ReactElement) => {
-    const id = child.key as string;
-    if (!id) return null;
-    const layoutItem = findLayoutItem(currentLayout, id)!;
-    if (!layoutItem) return null;
-    const targetWidget = widgets.find((widget) => widget.id === id);
-    if (!targetWidget) return null;
-    const { type } = targetWidget;
-    const { limit } = widgetConfig[type];
-
-    return (
-      <GridItem
-        key={id}
-        layoutItem={layoutItem}
-        limit={limit}
-        bound={gridRef.current!}
-        gridUnit={gridUnit}
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
-        onResize={onResize}
-      >
-        {child}
-      </GridItem>
-    );
-  };
-
-  const renderPlaceHolder = () => {
-    if (!placeholder) return null;
-    const { id } = placeholder;
-    const targetWidget = widgets.find((widget) => widget.id === id);
-    if (!targetWidget) return null;
-    const { limit } = targetWidget;
-    return (
-      <GridItem
-        layoutItem={placeholder}
-        limit={limit}
-        bound={gridRef.current!}
-        gridUnit={gridUnit}
-        onResize={onResize}
-        onDrag={onDrag}
-      >
-        <Placeholder />
-      </GridItem>
-    );
-  };
 
   useEffect(() => {
     const newLayouts = { ...layouts };
     newLayouts[screenSize] = [...newLayouts[screenSize]];
-    let shouldUpdate = false;
-    widgets.forEach((widget) => {
-      const { id } = widget;
+    let shouldLayoutUpdate = false;
+    React.Children.forEach(children as ReactElement[], (child) => {
+      const id = child.key as string;
       if (newLayouts[screenSize].some((item) => item.id === id)) return;
-      shouldUpdate = true;
-      const defaultLayout = getOtherScreenSizeLayoutItem(id, newLayouts) || {
-        ...widget.defaultLayout,
-        x: 0,
-        y: 0,
-      };
+      shouldLayoutUpdate = true;
+      const widgetDefaultLayout = getWidgetDefaultLayout(id);
+      const defaultLayout = getDefaultLayout(
+        id,
+        newLayouts,
+        widgetDefaultLayout,
+      );
       const availableLayoutItem = getAvailableLayoutItem(
         newLayouts[screenSize],
         cols,
@@ -167,19 +131,22 @@ function GridLayout({
       );
       newLayouts[screenSize].push(availableLayoutItem);
     });
-    if (shouldUpdate) {
+
+    if (shouldLayoutUpdate) {
       setLayouts(newLayouts);
     }
-  }, [widgets, layouts, screenSize]);
+  }, [Children.count(children), layouts, screenSize]);
 
   useEffect(() => {
+    setIsFirstRender(false);
+
     const updateGridLayoutWidth = () => {
       if (!gridRef.current) return;
       setGridLayoutWidth(gridRef.current.offsetWidth);
     };
+
     window.addEventListener('resize', updateGridLayoutWidth);
     updateGridLayoutWidth();
-    setIsFirstRender(false);
     return () => {
       window.removeEventListener('resize', updateGridLayoutWidth);
     };
@@ -189,15 +156,45 @@ function GridLayout({
     latestCurrentLayout.current = currentLayout;
   }, [currentLayout]);
 
-  if (isFirstRender) {
-    return <Wrapper ref={gridRef} />;
-  }
-
   return (
     <Wrapper ref={gridRef}>
-      {renderPlaceHolder()}
-      {React.Children.map(children, (child) =>
-        renderGridItem(child as ReactElement),
+      {!isFirstRender && (
+        <>
+          {placeholder && (
+            <GridItem
+              key="placeHolder"
+              id={placeholder.id}
+              layoutItem={placeholder}
+              limit={getLayoutLimit(placeholder.id)}
+              bound={gridRef.current!}
+              gridUnit={gridUnit}
+              onResize={onResize}
+              onDrag={onDrag}
+            >
+              <Placeholder />
+            </GridItem>
+          )}
+          {React.Children.map(children as ReactElement[], (child) => {
+            const id = child.key as string;
+            const layoutItem = findLayoutItem(currentLayout, id);
+            if (!layoutItem) return null;
+            return (
+              <GridItem
+                key={id}
+                id={id}
+                layoutItem={layoutItem}
+                limit={getLayoutLimit(id)}
+                bound={gridRef.current!}
+                gridUnit={gridUnit}
+                onDrag={onDrag}
+                onDragEnd={onDragEnd}
+                onResize={onResize}
+              >
+                {child}
+              </GridItem>
+            );
+          })}
+        </>
       )}
     </Wrapper>
   );

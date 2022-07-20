@@ -53,6 +53,19 @@ function App() {
       ),
     );
   };
+
+  const getLayoutLimit = (id: string) => {
+    const targetWidget = widgets.find((widget) => widget.id === id)!;
+    const { limit } = widgetConfig[targetWidget.type];
+    return limit;
+  };
+
+  const getWidgetDefaultLayout = (id: string) => {
+    const targetWidget = widgets.find((widget) => widget.id === id)!;
+    const { defaultLayout } = widgetConfig[targetWidget.type];
+    return defaultLayout;
+  };
+
   const availableWidgets = getAvailableWidgetTypes(widgets, widgetConfig);
 
   return (
@@ -61,7 +74,12 @@ function App() {
       <Background />
       <Wrapper>
         <NavBar addWidget={addWidget} availableWidgets={availableWidgets} />
-        <GridLayout widgets={widgets} layouts={layouts} setLayouts={setLayouts}>
+        <GridLayout
+          layouts={layouts}
+          setLayouts={setLayouts}
+          getLayoutLimit={getLayoutLimit}
+          getWidgetDefaultLayout={getWidgetDefaultLayout}
+        >
           {widgets.map((widget) => (
             <Widget
               key={widget.id}

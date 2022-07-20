@@ -39,9 +39,7 @@ const Wrapper = styled.div<{ isMoving: boolean }>`
 `;
 
 const defaultProps = {
-  onDragStart: () => {},
   onDragEnd: () => {},
-  onResizeEnd: () => {},
 };
 
 type GridItemProp = {
@@ -50,15 +48,14 @@ type GridItemProp = {
   children: ReactElement;
   bound: HTMLDivElement;
   gridUnit: number[];
+  id: string;
   onDrag: (
     e: MouseEvent,
     draggerData: DraggerData,
     updatedLayoutItem: LayoutItem,
   ) => void;
-  onDragStart?: (e: React.MouseEvent, id: string) => void;
   onDragEnd?: () => void;
   onResize: (updatedLayoutItem: LayoutItem) => void;
-  onResizeEnd?: () => void;
 } & typeof defaultProps;
 
 function GridItem(props: GridItemProp) {
@@ -68,16 +65,14 @@ function GridItem(props: GridItemProp) {
     limit,
     bound,
     gridUnit,
+    id,
     onDrag,
-    onDragStart,
     onDragEnd,
     onResize,
-    onResizeEnd,
   } = props;
   const [isResizing, setIsResizing] = useState(false);
   const [movingPosition, setMovingPosition] = useState<Position | null>(null);
   const nodeRef = useRef<HTMLDivElement>(null);
-  const id = children.key as string;
   const position = movingPosition || getPosition(layoutItem, gridUnit);
   const constraint = getConstraint(limit, gridUnit);
   const style = createCSSTransform(position);
@@ -99,9 +94,6 @@ function GridItem(props: GridItemProp) {
     const updatedLayoutItem = { ...layoutItem, x: newX, y: newY };
     onDrag(e, draggerData, updatedLayoutItem);
   };
-  const handleOnDragStart = (e: React.MouseEvent) => {
-    onDragStart(e, id);
-  };
   const handleOnDragEnd = () => {
     setMovingPosition(null);
     onDragEnd();
@@ -118,13 +110,11 @@ function GridItem(props: GridItemProp) {
   const onResizingEnd = () => {
     setIsResizing(false);
     setMovingPosition(null);
-    onResizeEnd();
   };
   return (
     <Dragger
       disable={isResizing}
       onDrag={handleOnDrag}
-      onDragStart={handleOnDragStart}
       onDragEnd={handleOnDragEnd}
     >
       <Resizer

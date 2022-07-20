@@ -7,6 +7,7 @@ import type {
   LayoutItem,
   Position,
   Layouts,
+  DefaultLayout,
 } from '../../types/GridLayoutTypes';
 import type { ScreenSize } from '../config';
 
@@ -255,7 +256,7 @@ export function getAvailableLayoutItem(
   return availableLayoutItem;
 }
 
-export function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
+function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
   let layoutItem: LayoutItem | null = null;
 
   (Object.keys(layouts) as ScreenSize[]).forEach((screenSize) =>
@@ -267,4 +268,14 @@ export function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
   );
 
   return layoutItem;
+}
+
+export function getDefaultLayout(
+  id: string,
+  layouts: Layouts,
+  defaultLayout: DefaultLayout,
+) {
+  const otherScreenLayout = getOtherScreenSizeLayoutItem(id, layouts);
+  if (otherScreenLayout) return otherScreenLayout;
+  return { ...defaultLayout, x: 0, y: 0 };
 }
