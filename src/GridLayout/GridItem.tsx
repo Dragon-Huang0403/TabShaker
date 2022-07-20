@@ -45,7 +45,7 @@ type GridItemProp = {
   layoutItem: LayoutItem;
   limit: Limit;
   children: ReactElement;
-  bound: HTMLDivElement;
+  bound: HTMLDivElement | null;
   gridUnit: number[];
   id: string;
   onDrag: (
@@ -81,12 +81,14 @@ function GridItem(props: GridItemProp) {
     const { deltaX, deltaY } = draggerData;
     let newLeft = left + deltaX;
     let newTop = top + deltaY;
-    [newLeft, newTop] = getBoundPosition(
-      nodeRef.current!,
-      bound,
-      newLeft,
-      newTop,
-    );
+    if (bound) {
+      [newLeft, newTop] = getBoundPosition(
+        nodeRef.current!,
+        bound,
+        newLeft,
+        newTop,
+      );
+    }
     const newPosition = { ...position, left: newLeft, top: newTop };
     setMovingPosition(newPosition);
     const [newX, newY] = calcXY(newPosition, gridUnit);

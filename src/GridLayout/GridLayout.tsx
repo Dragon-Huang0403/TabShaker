@@ -152,44 +152,40 @@ function GridLayout({
 
   return (
     <Wrapper ref={gridRef}>
-      {gridRef.current && (
-        <>
-          {placeholder && (
-            <GridItem
-              key="placeHolder"
-              id={placeholder.id}
-              layoutItem={placeholder}
-              limit={getLayoutLimit(placeholder.id)}
-              bound={gridRef.current}
-              gridUnit={gridUnit}
-              onResize={onResize}
-              onDrag={onDrag}
-            >
-              <Placeholder />
-            </GridItem>
-          )}
-          {React.Children.map(children as ReactElement[], (child) => {
-            const id = child.key as string;
-            const layoutItem = findLayoutItem(currentLayout, id);
-            if (!layoutItem) return null;
-            return (
-              <GridItem
-                key={id}
-                id={id}
-                layoutItem={layoutItem}
-                limit={getLayoutLimit(id)}
-                bound={gridRef.current!}
-                gridUnit={gridUnit}
-                onDrag={onDrag}
-                onDragEnd={onDragEnd}
-                onResize={onResize}
-              >
-                {child}
-              </GridItem>
-            );
-          })}
-        </>
+      {placeholder && (
+        <GridItem
+          key="placeHolder"
+          id={placeholder.id}
+          layoutItem={placeholder}
+          limit={getLayoutLimit(placeholder.id)}
+          bound={gridRef.current}
+          gridUnit={gridUnit}
+          onResize={onResize}
+          onDrag={onDrag}
+        >
+          <Placeholder />
+        </GridItem>
       )}
+      {React.Children.map(children as ReactElement[], (child) => {
+        const id = child.key as string;
+        const layoutItem = findLayoutItem(currentLayout, id);
+        if (!layoutItem) return null;
+        return (
+          <GridItem
+            key={id}
+            id={id}
+            layoutItem={layoutItem}
+            limit={getLayoutLimit(id)}
+            bound={gridRef.current!}
+            gridUnit={gridUnit}
+            onDrag={onDrag}
+            onDragEnd={onDragEnd}
+            onResize={onResize}
+          >
+            {child}
+          </GridItem>
+        );
+      })}
     </Wrapper>
   );
 }
