@@ -4,9 +4,17 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 
 import WeatherLocation from './WeatherLocation';
+import CurrentWeather from './CurrentWeather';
+import WeatherForecast from './WeatherForecast';
 import getCityData from './openStreetMapApi';
 import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
-import { handleWeatherDataByElementType, getDayString } from './utils';
+import {
+  handleWeatherDataByElementType,
+  getRenderWidthMode,
+  getRenderHeightMode,
+} from './utils';
+
+import type { Location, CityData, WeatherData } from './type';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
   border-radius: 15px;
@@ -26,41 +34,6 @@ const LoadingWrapper = styled.div`
   align-items: center;
 `;
 
-const CurrentWeather = styled.div<{ paddingTop: number }>`
-  flex-shrink: 1;
-  flex-basis: 140px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: ${({ paddingTop }) => paddingTop}px;
-  text-align: center;
-  position: relative;
-`;
-
-const CurrentTemperature = styled.div`
-  margin-top: auto;
-  font-size: 2.5rem;
-`;
-
-const CurrentTemperatureFloat = styled.div`
-  width: 50px;
-  line-height: 50px;
-  border-radius: 50%;
-  position: absolute;
-  font-size: 1.75rem;
-  top: 0px;
-  right: 0px;
-`;
-
-const ApparentTemperature = styled.div<{ marginTop: string }>`
-  color: ${({ theme }) => theme.color.lavenderBlue};
-  padding: 5px 5px 30px 10px;
-  text-align: center;
-  font-size: 1rem;
-  margin-top: ${({ marginTop }) => marginTop};
-`;
-
 const RightPartWrapper = styled.div<{ fontSize: number; paddingTop: number }>`
   flex-grow: 1;
   flex-shrink: 10;
@@ -75,43 +48,6 @@ const WeatherDescription = styled.div`
   margin-top: 5px;
   font-weight: 600;
 `;
-
-const WeatherForecastWrapper = styled.div`
-  color: ${({ theme }) => theme.color.lavenderBlue};
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  padding-bottom: 20px;
-
-  & > div {
-    width: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  & img {
-    width: 100%;
-  }
-`;
-
-type Location = { lat: number; lon: number };
-export type CityData = {
-  chinese: string;
-  english: string;
-};
-
-export type WeatherData = {
-  startTime: Date;
-  weatherType: {
-    name: string;
-    weatherCode: string;
-    description: string;
-    icon: string;
-  };
-  apparentTemperature: number;
-  temperature: number;
-};
 
 interface WeatherProps {
   width: number;
@@ -182,96 +118,52 @@ function Weather({ width, height }: WeatherProps) {
   useEffect(() => {
     if (width === -1 || height === -1) return;
 
-    const updateRenderWidthMode = () => {
-      if (width <= 250) {
-        setRenderWidthMode(2);
-        return;
-      }
-      if (width <= 294) {
-        setRenderWidthMode(1);
-        return;
-      }
-      setRenderWidthMode(0);
-    };
-    const updateRenderHeightMode = () => {
-      if (height <= 150) {
-        setRenderHeightMode(3);
-        return;
-      }
-      if (height <= 175) {
-        setRenderHeightMode(2);
-        return;
-      }
-      if (height <= 200) {
-        setRenderHeightMode(1);
-        return;
-      }
-      setRenderHeightMode(0);
-    };
-
-    updateRenderWidthMode();
-    updateRenderHeightMode();
+    const newRenderWidthMode = getRenderWidthMode(width);
+    const newRenderHeightMode = getRenderHeightMode(width);
+    setRenderWidthMode(newRenderWidthMode);
+    setRenderHeightMode(newRenderHeightMode);
   }, [width, height]);
-
-  if (isLoading) {
-    return (
-      <Wrapper>
-        <LoadingWrapper>
-          <ReactLoading type="spin" />
-        </LoadingWrapper>
-      </Wrapper>
-    );
-  }
 
   return (
     <Wrapper
       justifyContent={renderWidthMode === 2 ? 'center' : 'space-between'}
     >
-      <CurrentWeather paddingTop={renderHeightMode === 1 ? 20 : 10}>
-        <img src={weatherData[0].weatherType.icon} alt="weatherIcon" />
-        {renderHeightMode === 0 ? (
-          <CurrentTemperature>{weatherData[0].temperature}°</CurrentTemperature>
-        ) : (
-          <CurrentTemperatureFloat>
-            {weatherData[0].temperature}°
-          </CurrentTemperatureFloat>
-        )}
-        {renderHeightMode === 3 ? null : (
-          <ApparentTemperature
-            marginTop={renderHeightMode === 1 ? 'auto' : '0'}
-          >
-            Feel like {weatherData[0].apparentTemperature}°
-          </ApparentTemperature>
-        )}
-      </CurrentWeather>
-      {renderWidthMode === 2 ? null : (
-        <RightPartWrapper
-          fontSize={renderWidthMode === 1 ? 0.75 : 1}
-          paddingTop={renderHeightMode >= 2 ? 10 : 20}
-        >
-          {renderHeightMode >= 2 ? null : (
-            <WeatherLocation cityData={cityData!} setCityData={setCityData} />
+      {isLoading ? (
+        <Wrapper>
+          <LoadingWrapper>
+            <ReactLoading type="spin" />
+          </LoadingWrapper>
+        </Wrapper>
+      ) : (
+        <>
+          <CurrentWeather
+            renderHeightMode={renderHeightMode}
+            currentWeather={weatherData[0]}
+          />
+          {renderWidthMode === 2 ? null : (
+            <RightPartWrapper
+              fontSize={renderWidthMode === 1 ? 0.75 : 1}
+              paddingTop={renderHeightMode >= 2 ? 10 : 20}
+            >
+              {renderHeightMode >= 2 ? null : (
+                <WeatherLocation
+                  cityData={cityData!}
+                  setCityData={setCityData}
+                />
+              )}
+              {renderHeightMode === 3 ? null : (
+                <WeatherDescription>
+                  {weatherData[0].weatherType.description}
+                </WeatherDescription>
+              )}
+              <WeatherForecast
+                renderWidthMode={renderWidthMode}
+                tomorrowWeather={weatherData[1]}
+                datAfterTomorrowWeather={weatherData[2]}
+              />
+            </RightPartWrapper>
           )}
-          {renderHeightMode === 3 ? null : (
-            <WeatherDescription>
-              {weatherData[0].weatherType.description}
-            </WeatherDescription>
-          )}
-          <WeatherForecastWrapper>
-            <div>
-              <span>{weatherData?.[1].temperature}°</span>
-              <img src={weatherData?.[1].weatherType.icon} alt="weather" />
-              <span>{getDayString(weatherData?.[1].startTime)}</span>
-            </div>
-            {renderWidthMode === 1 ? null : (
-              <div>
-                <span>{weatherData?.[2].temperature}°</span>
-                <img src={weatherData?.[2].weatherType.icon} alt="weather" />
-                <span>{getDayString(weatherData?.[2].startTime)}</span>
-              </div>
-            )}
-          </WeatherForecastWrapper>
-        </RightPartWrapper>
+        </>
       )}
     </Wrapper>
   );
