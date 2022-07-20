@@ -66,7 +66,9 @@ function SelectNewWidget({
 }: SelectNewWidgetProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const handleAddWidget = (widgetType: WidgetType) => {
-    addWidget({ type: widgetType, ...widgetConfig[widgetType], id: v4() });
+    const { style, data, menu } = widgetConfig[widgetType];
+    const newWidget = { type: widgetType, id: v4(), style, data, menu };
+    addWidget(newWidget);
     hideSelectNewWidget();
   };
   const handleHideSelectNewWidget = (e: React.MouseEvent) => {
