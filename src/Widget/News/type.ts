@@ -1,4 +1,4 @@
-export type NewsWidgetData = { tag: string };
+export type NewsWidgetData = { tag: string[] };
 
 export type NewsData = {
   author: string;

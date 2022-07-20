@@ -46,7 +46,7 @@ export interface NewsProps {
 function News({ data }: NewsProps) {
   const [allNews, setAllNews] = useLocalStorage<AllNews>('allNewsData', {});
   const [isLoading, setIsLoading] = useState(true);
-  const { tag } = data;
+  const tag = data.tag[0];
   const news = allNews[tag]?.news || [];
   const updatedAt = allNews[tag]?.updatedAt;
 
