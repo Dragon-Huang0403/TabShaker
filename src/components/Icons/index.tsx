@@ -1,47 +1,22 @@
-import AppIcon from './AppIcon';
-import DeleteIcon from './DeleteIcon';
-import SettingsIcon from './SettingsIcon';
-import AddIcon from './AddIcon';
-import ArrowForward from './ArrowForward';
-import ArrowBack from './ArrowBack';
-import PlayArrow from './PlayArrow';
-import Pause from './Pause';
-import MoreDots from './MoreDots';
-import ExpandMore from './ExpandMore';
-import Close from './Close';
-import Speaker from './Speaker';
-import DoubleArrow from './DoubleArrow';
-import Check from './Check';
-import Refresh from './Refresh';
-import Edit from './Edit';
-import GoogleLogo from './GoogleLogo';
-import ContentCopy from './ContentCopy';
-import Github from './Github';
-import Mail from './Mail';
-import LinkedIn from './LinkedIn';
-import Instagram from './Instagram';
-
-export {
-  Github,
-  Mail,
-  LinkedIn,
-  Instagram,
-  AppIcon,
-  DeleteIcon,
-  SettingsIcon,
-  AddIcon,
-  ArrowForward,
-  ArrowBack,
-  PlayArrow,
-  Pause,
-  MoreDots,
-  ExpandMore,
-  Close,
-  Speaker,
-  DoubleArrow,
-  Check,
-  Refresh,
-  Edit,
-  GoogleLogo,
-  ContentCopy,
-};
+export { default as AppIcon } from './SVGComponents/AppIcon';
+export { default as DeleteIcon } from './SVGComponents/DeleteIcon';
+export { default as SettingsIcon } from './SVGComponents/SettingsIcon';
+export { default as AddIcon } from './SVGComponents/AddIcon';
+export { default as ArrowForward } from './SVGComponents/ArrowForward';
+export { default as ArrowBack } from './SVGComponents/ArrowBack';
+export { default as PlayArrow } from './SVGComponents/PlayArrow';
+export { default as Pause } from './SVGComponents/Pause';
+export { default as MoreDots } from './SVGComponents/MoreDots';
+export { default as ExpandMore } from './SVGComponents/ExpandMore';
+export { default as Close } from './SVGComponents/Close';
+export { default as Speaker } from './SVGComponents/Speaker';
+export { default as DoubleArrow } from './SVGComponents/DoubleArrow';
+export { default as Check } from './SVGComponents/Check';
+export { default as Refresh } from './SVGComponents/Refresh';
+export { default as Edit } from './SVGComponents/Edit';
+export { default as GoogleLogo } from './SVGComponents/GoogleLogo';
+export { default as ContentCopy } from './SVGComponents/ContentCopy';
+export { default as Github } from './SVGComponents/Github';
+export { default as Mail } from './SVGComponents/Mail';
+export { default as LinkedIn } from './SVGComponents/LinkedIn';
+export { default as Instagram } from './SVGComponents/Instagram';
