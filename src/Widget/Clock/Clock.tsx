@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import TimeWrapper from './TimeWrapper';
 import { useInterval } from '../../hooks';
 
+import type { ClockStyle } from './type';
+
 const toTwoDigit = (num: number) => String(num).padStart(2, '0');
 
 const Wrapper = styled.div`
@@ -15,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 type ClockProps = {
-  style?: { showSeconds?: boolean };
+  style?: ClockStyle;
 } & typeof defaultProps;
 
 const defaultProps = { style: { showSeconds: false } };

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import Title from './Title';
 import Editor from './Editor';
 
+import type { NoteWidgetData } from './type';
+
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.color.littleTransparentBlack};
   padding: 5px 0px 10px;
@@ -14,7 +16,7 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 interface NoteProps {
-  data: { title: string; content: string };
+  data: NoteWidgetData;
   onWidgetChange: (onChangedData: { title?: string; content?: string }) => void;
 }
 

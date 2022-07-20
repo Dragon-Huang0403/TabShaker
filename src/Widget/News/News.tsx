@@ -4,9 +4,11 @@ import styled from 'styled-components';
 import ReactLoading from 'react-loading';
 
 import fetchNews from './newsApis';
-import NewsItem, { NewsData } from './NewsItem';
+import NewsItem from './NewsItem';
 import { afterOneHour } from '../../utils/lib';
 import { useLocalStorage } from '../../hooks';
+
+import type { NewsWidgetData, NewsData, AllNews } from './type';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -37,12 +39,8 @@ const LoadingWrapper = styled.div`
   margin: auto;
 `;
 
-type AllNews = {
-  [key: string]: { news: NewsData[]; updatedAt: string };
-};
-
 export interface NewsProps {
-  data: { tag: string };
+  data: NewsWidgetData;
 }
 
 function News({ data }: NewsProps) {

@@ -6,10 +6,11 @@ import ReactLoading from 'react-loading';
 
 import Controller from './Controller';
 import { getCard } from './fireStore';
-import EnglishWord, { EnglishWordData } from './EnglishWord';
+import EnglishWord from './EnglishWord';
 import { handleNewEnglishWords, afterOneDay } from './utils';
-
 import { useLocalStorage } from '../../hooks';
+
+import type { EnglishCardWidgetData, EnglishWordData } from './type';
 
 import 'swiper/css';
 
@@ -38,9 +39,7 @@ const LoadingWrapper = styled.div`
 `;
 
 interface EnglishCardProps {
-  data: {
-    tag: string[];
-  };
+  data: EnglishCardWidgetData;
 }
 
 const ENGLISH_WORDS_IN_ONE_DAY = 5;

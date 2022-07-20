@@ -3,9 +3,10 @@ import styled, { css } from 'styled-components';
 
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 
-import type { TodoData } from './Todo';
 import { Close } from '../../components/Icons';
 import { useHover } from '../../hooks';
+
+import type { TodoData } from './type';
 
 const Wrapper = styled.li<{ checked: boolean }>`
   display: flex;

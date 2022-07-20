@@ -1,9 +1,9 @@
 import React from 'react';
-import Clock from './Clock';
-import Note from './Note';
-import Todo from './Todo';
-import EnglishCard from './EnglishCard';
-import News from './News';
+import Clock, { ClockStyle } from './Clock';
+import Note, { NoteWidgetData } from './Note';
+import Todo, { TodoWidgetData } from './Todo';
+import EnglishCard, { EnglishCardWidgetData } from './EnglishCard';
+import News, { NewsWidgetData } from './News';
 import Weather from './Weather';
 import Calendar from './Calendar';
 
@@ -18,15 +18,19 @@ export default function renderWidget(
   const { type, data, style } = widget;
   switch (type) {
     case 'clock':
-      return <Clock style={style} />;
+      return <Clock style={style as ClockStyle} />;
     case 'note':
-      return <Note data={data} onWidgetChange={onWidgetChange} />;
+      return (
+        <Note data={data as NoteWidgetData} onWidgetChange={onWidgetChange} />
+      );
     case 'todo':
-      return <Todo data={data} onWidgetChange={onWidgetChange} />;
+      return (
+        <Todo data={data as TodoWidgetData} onWidgetChange={onWidgetChange} />
+      );
     case 'englishCard':
-      return <EnglishCard data={data} />;
+      return <EnglishCard data={data as EnglishCardWidgetData} />;
     case 'news':
-      return <News data={data} />;
+      return <News data={data as NewsWidgetData} />;
     case 'weather':
       return <Weather width={width} height={height} />;
     case 'calendar':
@@ -42,18 +46,19 @@ export function handleWidgetTagUpdate(
 ): WidgetData {
   const { type } = widget;
   const newWidget = { ...widget };
-  newWidget.data = { ...newWidget.data };
   if (type === 'englishCard') {
-    if (newWidget.data.tag.includes(newTag)) {
-      newWidget.data.tag = newWidget.data.tag.filter(
-        (tag: string) => tag !== newTag,
-      );
+    let tags = (newWidget.data as EnglishCardWidgetData).tag;
+    if (tags.includes(newTag)) {
+      tags = tags.filter((tag: string) => tag !== newTag);
     } else {
-      newWidget.data.tag = [...newWidget.data.tag, newTag];
+      tags = [...tags, newTag];
     }
+    newWidget.data = { tag: tags };
+    return newWidget;
   }
   if (type === 'news') {
-    newWidget.data.tag = newTag;
+    newWidget.data = { tag: newTag };
+    return newWidget;
   }
-  return newWidget;
+  return widget;
 }
