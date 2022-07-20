@@ -6,7 +6,7 @@ import ReactLoading from 'react-loading';
 import fetchNews from './newsApis';
 import NewsItem, { NewsData } from './NewsItem';
 import { afterOneHour } from '../../utils/lib';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import { useLocalStorage } from '../../hooks';
 
 const Wrapper = styled.div`
   width: 100%;
