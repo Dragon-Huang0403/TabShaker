@@ -14,7 +14,6 @@ export { default as DoubleArrow } from './SVGComponents/DoubleArrow';
 export { default as Check } from './SVGComponents/Check';
 export { default as Refresh } from './SVGComponents/Refresh';
 export { default as Edit } from './SVGComponents/Edit';
-export { default as GoogleLogo } from './SVGComponents/GoogleLogo';
 export { default as ContentCopy } from './SVGComponents/ContentCopy';
 export { default as Github } from './SVGComponents/Github';
 export { default as Mail } from './SVGComponents/Mail';

@@ -1,8 +1,9 @@
 import React from 'react';
+import { defaultProps, SVGIconProps } from './type/svgIconType';
 
-interface DoubleArrowProps {
+type DoubleArrowProps = {
   direction: 'left' | 'right';
-}
+} & SVGIconProps;
 
 const rotate = {
   left: 'rotate(180deg)',
@@ -22,5 +23,7 @@ function DoubleArrow({ direction }: DoubleArrowProps) {
     </svg>
   );
 }
+
+DoubleArrow.defaultProps = defaultProps;
 
 export default DoubleArrow;
