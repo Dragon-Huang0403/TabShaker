@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import GoogleMenu from './components/GoogleMenu';
-import { AppIcon, AddIcon, SettingsIcon } from './components/Icons';
+import GoogleMenu from '../../components/GoogleMenu';
+import { AppIcon, AddIcon, SettingsIcon } from '../../components/Icons';
 import SelectNewWidget from './SelectNewWidget';
-import type { WidgetData, WidgetType } from './types/WidgetTypes';
+import type { WidgetData, WidgetType } from '../../types/WidgetTypes';
 import ShortCuts from './ShortCuts';
-import Modal from './Modal';
+import Modal from '../../components/Modal';
 import Settings from './Settings';
 
 const Wrapper = styled.div`

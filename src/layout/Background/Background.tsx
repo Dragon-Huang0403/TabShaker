@@ -1,11 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import unsplashApi, { UnsplashResponseData } from '../utils/unsplashApi';
-import { ArrowBack, ArrowForward, PlayArrow, Pause } from '../components/Icons';
-import useInterval from '../hooks/useSetInterval';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { afterOneHour } from '../utils/lib';
+import unsplashApi, { UnsplashResponseData } from './unsplashApi';
+import {
+  ArrowBack,
+  ArrowForward,
+  PlayArrow,
+  Pause,
+} from '../../components/Icons';
+import useInterval from '../../hooks/useSetInterval';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { afterOneHour } from '../../utils/lib';
 import defaultPhoto from './photos';
 import BackgroundImage from './BackgroundImage';
 

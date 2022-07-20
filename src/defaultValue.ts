@@ -72,21 +72,3 @@ export const defaultLayouts = {
     { w: 13, h: 8, x: 46, y: 0, id: 'f4435c1e-a921-4012-b341-4dd8687ae340' },
   ],
 };
-
-export const defaultShortCuts = [
-  {
-    id: '1',
-    title: 'Netflix',
-    url: 'https://www.netflix.com/browse',
-  },
-  {
-    id: '2',
-    title: 'Google',
-    url: 'https://www.google.com.tw/',
-  },
-  {
-    id: '3',
-    title: 'Youtube',
-    url: 'http://www.youtube.com/?hl=zh-TW&gl=TW',
-  },
-] as const;

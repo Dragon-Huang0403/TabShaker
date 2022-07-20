@@ -2,8 +2,8 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import globalTheme, { GlobalStyle } from './theme';
-import NavBar from './NavBar';
-import Background from './Background';
+import NavBar from './layout/NavBar';
+import Background from './layout/Background';
 import GridLayout from './GridLayout';
 import { ScreenSize } from './GridLayout/config';
 import { defaultWidgets, defaultLayouts } from './defaultValue';

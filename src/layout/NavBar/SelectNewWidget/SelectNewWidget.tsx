@@ -3,11 +3,11 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow } from 'swiper';
 import styled from 'styled-components';
 import { v4 } from 'uuid';
-import { DoubleArrow } from './components/Icons';
-import { widgetConfig } from './Widget';
-import { SwiperButtonNext, SwiperButtonPrev } from './Swiper';
+import { DoubleArrow } from '../../../components/Icons';
+import { widgetConfig } from '../../../Widget';
+import { SwiperButtonNext, SwiperButtonPrev } from '../../../components/Swiper';
 import WidgetSlide from './WidgetSlide';
-import type { WidgetData, WidgetType } from './types/WidgetTypes';
+import type { WidgetData, WidgetType } from '../../../types/WidgetTypes';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 

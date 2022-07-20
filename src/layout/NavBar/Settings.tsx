@@ -6,8 +6,8 @@ import {
   Mail,
   Instagram,
   LinkedIn,
-} from '../components/Icons';
-import Button from '../components/Button/Button';
+} from '../../components/Icons';
+import Button from '../../components/Button/Button';
 
 const Wrapper = styled.div`
   position: absolute;

@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { WidgetType } from './types/WidgetTypes';
-import { widgetDemo } from './Widget';
-import renderWidget from './Widget/renderWidget';
+import type { WidgetType } from '../../../types/WidgetTypes';
+import { widgetDemo } from '../../../Widget';
+import renderWidget from '../../../Widget/renderWidget';
 
 const Wrapper = styled.div`
   height: 65vh;
