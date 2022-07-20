@@ -172,7 +172,7 @@ function getReversedAvailableValue(
   diff?: number,
   limit?: number,
 ): number {
-  if (value !== oldValue) return value;
+  if (value === oldValue) return value;
 
   const newValue = oldValue > value ? value + 1 : value - 1;
   if (newValue < 0) return value;
