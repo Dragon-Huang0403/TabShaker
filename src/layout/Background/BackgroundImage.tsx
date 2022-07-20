@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 import type { UnsplashResponseData } from './unsplashApi';
 
 const Wrapper = styled.div`

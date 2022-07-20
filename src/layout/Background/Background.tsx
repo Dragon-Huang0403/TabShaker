@@ -1,6 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+
+import BackgroundImage from './BackgroundImage';
 import unsplashApi, { UnsplashResponseData } from './unsplashApi';
 import {
   ArrowBack,
@@ -8,11 +10,9 @@ import {
   PlayArrow,
   Pause,
 } from '../../components/Icons';
-import useInterval from '../../hooks/useSetInterval';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import { useInterval, useLocalStorage } from '../../hooks';
 import { afterOneHour } from '../../utils/lib';
 import defaultPhoto from './photos';
-import BackgroundImage from './BackgroundImage';
 
 const Wrapper = styled.div`
   position: absolute;

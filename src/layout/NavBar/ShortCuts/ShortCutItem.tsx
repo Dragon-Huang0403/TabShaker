@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+
 import { Close } from '../../../components/Icons';
 import { RoundLinkButton } from '../../../components/RoundButton';
-import { useHover } from '../../../hooks';
-import useDebounce from '../../../hooks/useDebounce';
+import { useHover, useDebounce } from '../../../hooks';
 
 const ItemWrapper = styled.div`
   position: relative;

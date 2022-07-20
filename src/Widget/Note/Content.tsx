@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useEffect } from 'react';
-import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import styled from 'styled-components';
+
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 
 function startWithNumber(str: string) {
   const re = /^\d+[\s.]*/;

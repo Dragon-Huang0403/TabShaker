@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Speaker } from '../../components/Icons';
+
 import Content from './Content';
+import { Speaker } from '../../components/Icons';
 
 const Wrapper = styled.div`
   width: 100%;

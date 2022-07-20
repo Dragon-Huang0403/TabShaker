@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './editor.css';
 
 import { ListItemNode, ListNode } from '@lexical/list';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -13,6 +12,8 @@ import { TRANSFORMERS } from '@lexical/markdown';
 import RestoreContentPlugin from './RestoreContentPlugin';
 import editorTheme from './editorTheme';
 import EditorWrapper, { PlaceHolder } from './EditorWrapper';
+
+import './editor.css';
 
 function onError() {}
 

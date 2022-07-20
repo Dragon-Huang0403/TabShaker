@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import ReactLoading from 'react-loading';
 import styled from 'styled-components';
-import getCityData from './openStreetMapApi';
-import { handleWeatherDataByElementType, getDayString } from './utils';
-import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
+
+import ReactLoading from 'react-loading';
+
 import WeatherLocation from './WeatherLocation';
+import getCityData from './openStreetMapApi';
+import getWeatherDataByChineseCityName, { taiwanCityList } from './weatherApi';
+import { handleWeatherDataByElementType, getDayString } from './utils';
 
 const Wrapper = styled.div<{ justifyContent?: string }>`
   border-radius: 15px;

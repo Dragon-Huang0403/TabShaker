@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useInterval } from '../../hooks';
+
 import TimeWrapper from './TimeWrapper';
+import { useInterval } from '../../hooks';
 
 const toTwoDigit = (num: number) => String(num).padStart(2, '0');
 

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { v4 } from 'uuid';
 import styled from 'styled-components';
-import Modal from '../../../components/Modal';
-import useLocalStorage from '../../../hooks/useLocalStorage';
-import { RoundAddButton } from '../../../components/RoundButton';
+
+import { v4 } from 'uuid';
+
 import AddNewShortCut from './AddNewShortCut';
-import ShortCutItem, { ShortCutItemType } from './ShortCutItem';
 import defaultShortCuts from './defaultShortCut';
+import ShortCutItem, { ShortCutItemType } from './ShortCutItem';
+import Modal from '../../../components/Modal';
+import { useLocalStorage } from '../../../hooks';
+import { RoundAddButton } from '../../../components/RoundButton';
 
 const Wrapper = styled.div`
   padding-right: 20px;

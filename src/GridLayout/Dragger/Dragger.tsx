@@ -1,6 +1,8 @@
 import React, { ReactElement, useState, useEffect, useRef } from 'react';
-import type { DraggerData } from '../../types/GridLayoutTypes';
+
 import { snapToGrid } from '../utils/positionFn';
+
+import type { DraggerData } from '../../types/GridLayoutTypes';
 
 type DraggerProps = {
   children: ReactElement;

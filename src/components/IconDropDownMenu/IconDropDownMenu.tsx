@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import useClickAnyWhere from '../../hooks/useClickAnyWhere';
-import IconHoverContainer from '../IconHoverContainer';
+
 import DropDownMenu, { ItemData } from './DropDownMenu';
+import IconHoverContainer from '../IconHoverContainer';
+import useClickAnyWhere from '../../hooks/useClickAnyWhere';
 
 const Wrapper = styled.div`
   z-index: 10;

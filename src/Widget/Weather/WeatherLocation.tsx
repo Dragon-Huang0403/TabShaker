@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { Edit } from '../../components/Icons';
+
 import { taiwanCityList } from './weatherApi';
-import type { CityData } from './Weather';
+import { Edit } from '../../components/Icons';
 import { useHover } from '../../hooks';
+
+import type { CityData } from './Weather';
 
 const CityNameWrapper = styled.div`
   position: relative;

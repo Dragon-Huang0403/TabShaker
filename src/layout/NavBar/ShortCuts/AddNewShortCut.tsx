@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
+
 import FormInput from '../../../components/FormInput';
-import Button from '../../../components/Button/Button';
+import Button from '../../../components/Button';
 import { getValidateURL } from '../../../utils/lib';
 
 const Wrapper = styled.div`

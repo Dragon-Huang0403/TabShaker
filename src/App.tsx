@@ -2,16 +2,17 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import globalTheme, { GlobalStyle } from './theme';
+import Widget, { widgetConfig } from './Widget';
 import NavBar from './layout/NavBar';
 import Background from './layout/Background';
 import GridLayout from './GridLayout';
 import { ScreenSize } from './GridLayout/config';
 import { defaultWidgets, defaultLayouts } from './defaultValue';
-import Widget, { widgetConfig } from './Widget';
 import { getAvailableWidgetTypes } from './utils/lib';
+import { useLocalStorage } from './hooks';
+
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
-import useLocalStorage from './hooks/useLocalStorage';
 
 const Wrapper = styled.div`
   width: 100%;

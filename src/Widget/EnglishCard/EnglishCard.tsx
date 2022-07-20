@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
+import styled from 'styled-components';
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import ReactLoading from 'react-loading';
-import 'swiper/css';
-import styled from 'styled-components';
+
 import { getCard } from './fireStore';
 import EnglishWord, { EnglishWordData } from './EnglishWord';
-import { SwiperButtonNext, SwiperButtonPrev } from '../../components/Swiper';
-import { DoubleArrow, Refresh } from '../../components/Icons';
-import useLocalStorage from '../../hooks/useLocalStorage';
 import { handleNewEnglishWords, afterOneDay } from './utils';
+import { DoubleArrow, Refresh } from '../../components/Icons';
+import { SwiperButtonNext, SwiperButtonPrev } from '../../components/Swiper';
+import useLocalStorage from '../../hooks/useLocalStorage';
+
+import 'swiper/css';
 
 const Wrapper = styled.div`
   width: 100%;

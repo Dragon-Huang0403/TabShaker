@@ -1,13 +1,9 @@
 import React, { useRef, ReactElement, useState } from 'react';
 import styled, { css } from 'styled-components';
+
 import Resizer from './Resizer';
 import Dragger from './Dragger';
-import type {
-  Position,
-  DraggerData,
-  Limit,
-  LayoutItem,
-} from '../types/GridLayoutTypes';
+
 import { getBoundPosition, getPosition } from './utils/positionFn';
 import {
   createCSSTransform,
@@ -15,6 +11,13 @@ import {
   getConstraint,
   calcGridItemLayout,
 } from './utils/other';
+
+import type {
+  Position,
+  DraggerData,
+  Limit,
+  LayoutItem,
+} from '../types/GridLayoutTypes';
 
 const Wrapper = styled.div<{ isMoving: boolean }>`
   position: absolute;

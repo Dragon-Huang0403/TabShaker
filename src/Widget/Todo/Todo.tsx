@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
+
+import TodoItem from './TodoItem';
 import IconDropDownMenu from '../../components/IconDropDownMenu';
 import { ExpandMore } from '../../components/Icons';
-import TodoItem from './TodoItem';
 
 export interface TodoData {
   id: string;

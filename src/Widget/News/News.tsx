@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 import ReactLoading from 'react-loading';
+
 import fetchNews from './newsApis';
 import NewsItem, { NewsData } from './NewsItem';
 import { afterOneHour } from '../../utils/lib';

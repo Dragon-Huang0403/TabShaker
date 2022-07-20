@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import GoogleMenu from '../../components/GoogleMenu';
-import { AppIcon, AddIcon, SettingsIcon } from '../../components/Icons';
-import SelectNewWidget from './SelectNewWidget';
-import type { WidgetData, WidgetType } from '../../types/WidgetTypes';
-import ShortCuts from './ShortCuts';
-import Modal from '../../components/Modal';
+
 import Settings from './Settings';
+import SelectNewWidget from './SelectNewWidget';
+import ShortCuts from './ShortCuts';
+import GoogleMenu from '../../components/GoogleMenu';
+import Modal from '../../components/Modal';
+import { AppIcon, AddIcon, SettingsIcon } from '../../components/Icons';
+
+import type { WidgetData, WidgetType } from '../../types/WidgetTypes';
 
 const Wrapper = styled.div`
   width: 100%;

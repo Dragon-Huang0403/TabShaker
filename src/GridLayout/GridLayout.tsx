@@ -1,12 +1,7 @@
 import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+
 import GridItem from './GridItem';
-import type {
-  DraggerData,
-  Layout,
-  LayoutItem,
-  Layouts,
-} from '../types/GridLayoutTypes';
 import { findLayoutItem } from './utils/other';
 import {
   canElementMove,
@@ -14,9 +9,16 @@ import {
   getAvailableLayoutItem,
   getOtherScreenSizeLayoutItem,
 } from './utils/positionFn';
-import { WidgetData } from '../types/WidgetTypes';
 import { getScreenInfo } from './config';
 import { widgetConfig } from '../Widget';
+
+import type {
+  DraggerData,
+  Layout,
+  LayoutItem,
+  Layouts,
+} from '../types/GridLayoutTypes';
+import type { WidgetData } from '../types/WidgetTypes';
 
 const Wrapper = styled.div`
   position: relative;

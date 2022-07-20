@@ -1,10 +1,11 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import type { WidgetData } from '../types/WidgetTypes';
-import { useHover } from '../hooks';
-import IconDropDownMenu from '../components/IconDropDownMenu';
-import { MoreDots } from '../components/Icons';
+
 import renderWidget, { handleWidgetTagUpdate } from './renderWidget';
+import { useHover } from '../hooks';
+import { MoreDots } from '../components/Icons';
+import IconDropDownMenu from '../components/IconDropDownMenu';
+import type { WidgetData } from '../types/WidgetTypes';
 
 const Wrapper = styled.div`
   position: absolute;
