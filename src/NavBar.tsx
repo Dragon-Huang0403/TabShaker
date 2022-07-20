@@ -6,7 +6,7 @@ import SelectNewWidget from './SelectNewWidget';
 import type { WidgetData, WidgetType } from './types/WidgetTypes';
 import ShortCuts from './ShortCuts';
 import Modal from './Modal';
-import Settings from './Setttings';
+import Settings from './Settings';
 
 const Wrapper = styled.div`
   width: 100%;

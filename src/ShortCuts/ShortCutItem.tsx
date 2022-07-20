@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { Close } from '../components/Icons';
-import { RoundLinkButtonProps } from '../components/RoundButton';
+import { RoundLinkButton } from '../components/RoundButton';
 import { useHover } from '../hooks';
 import useDebounce from '../hooks/useDebounce';
 
@@ -60,7 +60,7 @@ function ShortCutItem({ item, deleteItem }: ShortCutItemProps) {
       >
         <Close />
       </IconWrapper>
-      <RoundLinkButtonProps url={item.url} title={item.title} />
+      <RoundLinkButton url={item.url} title={item.title} />
     </ItemWrapper>
   );
 }
