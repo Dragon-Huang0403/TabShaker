@@ -17,26 +17,6 @@ import TaylorLeopold from './taylor-leopold-TBoYgfj1JlM-unsplash.jpg';
 
 export default [
   {
-    id: 'wQLAGv4_OYs',
-    color: '#0c2626',
-    urls: {
-      raw: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixid=MnwzMzkwNzJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTc5NTEyOTg&ixlib=rb-1.2.1',
-      url: LucasKapla,
-    },
-    links: {
-      html: 'https://unsplash.com/photos/wQLAGv4_OYs',
-    },
-    user: {
-      name: 'Lucas Kapla',
-      links: {
-        html: 'https://unsplash.com/@aznbokchoy',
-      },
-    },
-    location: {
-      title: null,
-    },
-  },
-  {
     id: 'eTUSt12fhZY',
     color: '#404040',
     urls: {
@@ -56,6 +36,27 @@ export default [
       title: 'Lone Cypress, Del Monte Forest, United States',
     },
   },
+  {
+    id: 'wQLAGv4_OYs',
+    color: '#0c2626',
+    urls: {
+      raw: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?ixid=MnwzMzkwNzJ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NTc5NTEyOTg&ixlib=rb-1.2.1',
+      url: LucasKapla,
+    },
+    links: {
+      html: 'https://unsplash.com/photos/wQLAGv4_OYs',
+    },
+    user: {
+      name: 'Lucas Kapla',
+      links: {
+        html: 'https://unsplash.com/@aznbokchoy',
+      },
+    },
+    location: {
+      title: null,
+    },
+  },
+
   {
     id: 'WeYamle9fDM',
     color: '#402640',

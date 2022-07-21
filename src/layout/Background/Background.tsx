@@ -32,7 +32,7 @@ function Background() {
     updatedAt: String(new Date()),
   });
   const [bgImgSettings, setBgImgSettings] = useLocalStorage('bgImgSettings', {
-    isPlay: false,
+    isPlay: true,
     currentPhoto: 0,
     timeToNextPhoto: 30000,
   });
