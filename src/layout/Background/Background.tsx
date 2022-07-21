@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import BackgroundImage from './BackgroundImage';
@@ -31,6 +31,8 @@ function Background() {
     photos: [],
     updatedAt: String(new Date()),
   });
+  const [isFirstBackgroundLoading, setIsFirstBackgroundLoading] =
+    useState(false);
   const [bgImgSettings, setBgImgSettings] = useLocalStorage('bgImgSettings', {
     isPlay: true,
     currentPhoto: 0,
@@ -84,6 +86,8 @@ function Background() {
           key={photo.id}
           photo={photo}
           currentPhoto={index === currentPhoto}
+          isFirstBackgroundLoading={isFirstBackgroundLoading}
+          setIsFirstBackgroundLoading={setIsFirstBackgroundLoading}
         />
       ))}
       <Controller

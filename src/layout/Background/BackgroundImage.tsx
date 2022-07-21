@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import type { UnsplashResponseData } from './unsplashApi';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isShow: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
@@ -19,6 +19,13 @@ const Wrapper = styled.div`
   font-size: 0.75rem;
   user-select: none;
   opacity: 0;
+
+  ${({ isShow }) =>
+    isShow &&
+    css`
+      opacity: 1;
+      animation: fadeIn ease 0.5s;
+    `}
 `;
 
 const Links = styled.div`
@@ -32,32 +39,35 @@ const Links = styled.div`
 interface ImageProps {
   photo: UnsplashResponseData;
   currentPhoto: boolean;
+  isFirstBackgroundLoading: boolean;
+  setIsFirstBackgroundLoading: (loading: true) => void;
 }
 
-function BackgroundImage({ photo, currentPhoto }: ImageProps) {
+function BackgroundImage({
+  photo,
+  currentPhoto,
+  isFirstBackgroundLoading,
+  setIsFirstBackgroundLoading,
+}: ImageProps) {
   const { url: imageUrl } = photo.urls;
 
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const imageLoader = new Image();
-    imageLoader.src = imageUrl;
-    imageLoader.onload = () => {
-      setIsLoaded(true);
-    };
-  }, []);
-
-  const style: React.CSSProperties =
-    isLoaded && currentPhoto
-      ? {
-          backgroundImage: `url(${imageUrl})`,
-          animation: 'fadeIn ease 0.5s',
-          opacity: 1,
-        }
-      : {};
+    if (isLoaded) return;
+    if (isFirstBackgroundLoading || currentPhoto) {
+      const imageLoader = new Image();
+      imageLoader.src = imageUrl;
+      imageLoader.onload = () => {
+        setIsLoaded(true);
+        setIsFirstBackgroundLoading(true);
+      };
+    }
+  }, [isFirstBackgroundLoading, currentPhoto]);
+  const backgroundImage = isLoaded ? `url(${imageUrl})` : '';
 
   return (
-    <Wrapper style={style}>
+    <Wrapper style={{ backgroundImage }} isShow={isLoaded && currentPhoto}>
       <Links>
         <a
           href={`${photo.links?.html}?utm_source=TapShaker&utm_medium=referral&utm_campaign=api-credit`}
