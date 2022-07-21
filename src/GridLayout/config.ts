@@ -1,5 +1,6 @@
 import theme from '../theme';
-import { Layouts } from '../types/GridLayoutTypes';
+
+import type { Layouts } from '../types/GridLayoutTypes';
 
 export type ScreenSize = keyof typeof theme.screens;
 

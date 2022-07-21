@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import Dragger from '../Dragger';
+
 import type {
   DraggerData,
   ResizerDirections,

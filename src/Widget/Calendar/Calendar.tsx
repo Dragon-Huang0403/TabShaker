@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import ReactLoading from 'react-loading';
 import listPlugin from '@fullcalendar/list';
+import ReactLoading from 'react-loading';
+
 import {
   getCalendarList,
   getCalendarEvents,
   handleEventsFromGoogleCalendar,
 } from './googleApi';
-import type { EventForFullCalendar } from './type';
 import useGoogleAccessToken from '../../hooks/useGoogleAccessToken';
 import GoogleLoginButton from '../../components/GoogleLoginButton';
+
+import type { EventForFullCalendar } from './type';
 
 const Wrapper = styled.div`
   position: relative;

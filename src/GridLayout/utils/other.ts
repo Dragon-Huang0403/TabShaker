@@ -1,5 +1,4 @@
-import type { Limit, Position } from '../../types/GridLayoutTypes';
-import { Layout } from '../../types/GridLayoutTypes';
+import type { Limit, Position, Layout } from '../../types/GridLayoutTypes';
 
 export function createCSSTransform(position: Position) {
   const { top, left, width, height } = position;

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import googleIconsPhoto from './google_icons.png';
 import googleIcons from './googleIconsData';
 

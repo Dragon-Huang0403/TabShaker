@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { GoogleLogo } from '../Icons';
+
+import GoogleLogo from './GoogleLogo';
 
 const Wrapper = styled.div`
   background-color: rgb(66, 133, 244);

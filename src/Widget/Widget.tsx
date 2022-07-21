@@ -1,10 +1,13 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
-import type { WidgetData } from '../types/WidgetTypes';
-import { useHover } from '../hooks';
-import IconDropDownMenu from '../components/IconDropDownMenu';
-import { MoreDots } from '../components/Icons';
+
 import renderWidget, { handleWidgetTagUpdate } from './renderWidget';
+import { useHover } from '../hooks';
+import { MoreDots } from '../components/Icons';
+import IconDropDownMenu from '../components/IconDropDownMenu';
+import type { WidgetData } from '../types/WidgetTypes';
+import type { NewsWidgetData } from './News';
+import type { EnglishCardWidgetData } from './EnglishCard';
 
 const Wrapper = styled.div`
   position: absolute;
@@ -39,7 +42,9 @@ function Widget({
   };
   const menu = widget.menu.map((item) => ({
     text: item,
-    checked: widget.data.tag.includes(item),
+    checked: (
+      widget.data as NewsWidgetData | EnglishCardWidgetData
+    ).tag.includes(item),
     onClick: () => {
       const newWidget = handleWidgetTagUpdate(item, widget);
       onWidgetChange(newWidget);

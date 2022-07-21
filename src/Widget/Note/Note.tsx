@@ -1,7 +1,10 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+
 import Title from './Title';
 import Editor from './Editor';
+
+import type { NoteWidgetData } from './type';
 
 const Wrapper = styled.div`
   background: ${({ theme }) => theme.color.littleTransparentBlack};
@@ -13,7 +16,7 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 interface NoteProps {
-  data: { title: string; content: string };
+  data: NoteWidgetData;
   onWidgetChange: (onChangedData: { title?: string; content?: string }) => void;
 }
 

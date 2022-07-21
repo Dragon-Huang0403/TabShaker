@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 import ReactLoading from 'react-loading';
-import { fetchNews } from '../../utils/backendApis';
-import NewsItem, { NewsData } from './NewsItem';
+
+import fetchNews from './newsApis';
+import NewsItem from './NewsItem';
 import { afterOneHour } from '../../utils/lib';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import { useLocalStorage } from '../../hooks';
+
+import type { NewsWidgetData, NewsData, AllNews } from './type';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -35,18 +39,14 @@ const LoadingWrapper = styled.div`
   margin: auto;
 `;
 
-type AllNews = {
-  [key: string]: { news: NewsData[]; updatedAt: string };
-};
-
 export interface NewsProps {
-  data: { tag: string };
+  data: NewsWidgetData;
 }
 
 function News({ data }: NewsProps) {
   const [allNews, setAllNews] = useLocalStorage<AllNews>('allNewsData', {});
   const [isLoading, setIsLoading] = useState(true);
-  const { tag } = data;
+  const tag = data.tag[0];
   const news = allNews[tag]?.news || [];
   const updatedAt = allNews[tag]?.updatedAt;
 

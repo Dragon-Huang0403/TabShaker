@@ -1,9 +1,4 @@
-// eslint-disable-next-line import/no-cycle
 import type { WidgetData, WidgetType } from '../types/WidgetTypes';
-
-export function getRandomInt(max: number) {
-  return Math.floor(Math.random() * max);
-}
 
 export function getAvailableWidgetTypes(
   currentWidgets: WidgetData[],

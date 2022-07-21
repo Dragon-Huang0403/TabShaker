@@ -1,11 +1,13 @@
 import { innerHeight, outerHeight, innerWidth, outerWidth } from './domFns';
 import { int } from './other';
+
 import type {
   Constraint,
   Layout,
   LayoutItem,
   Position,
   Layouts,
+  DefaultLayout,
 } from '../../types/GridLayoutTypes';
 import type { ScreenSize } from '../config';
 
@@ -156,6 +158,55 @@ function switchElement(
   return null;
 }
 
+function canItemSwitch(switchedItem: LayoutItem, cols: number) {
+  const { x, w } = switchedItem;
+  if (x < 0) return false;
+  if (x + w > cols) return false;
+  return true;
+}
+
+function getReversedAvailableValue(
+  oldValue: number,
+  value: number,
+  validateFn: (value: number) => boolean,
+  diff?: number,
+  limit?: number,
+): number {
+  if (value === oldValue) return value;
+
+  const newValue = oldValue > value ? value + 1 : value - 1;
+  if (newValue < 0) return value;
+  if (diff && limit && newValue + diff >= limit) return value;
+  if (!validateFn(newValue)) return value;
+  return getReversedAvailableValue(oldValue, newValue, validateFn, diff, limit);
+}
+
+function getReversedAvailablePosition(
+  oldItem: LayoutItem,
+  item: LayoutItem,
+  layout: Layout,
+  cols: number,
+) {
+  const newItem = { ...item };
+  if (oldItem.x !== newItem.x) {
+    const validateFn = (newX: number) =>
+      canElementMove(layout, { ...newItem, x: newX });
+    newItem.x = getReversedAvailableValue(
+      oldItem.x,
+      newItem.x,
+      validateFn,
+      newItem.w,
+      cols,
+    );
+  }
+  if (oldItem.y !== newItem.y) {
+    const validateFn = (newY: number) =>
+      canElementMove(layout, { ...newItem, y: newY });
+    newItem.y = getReversedAvailableValue(oldItem.y, newItem.y, validateFn);
+  }
+  return newItem;
+}
+
 export function moveElement(
   oldLayout: Layout,
   targetItem: LayoutItem,
@@ -171,34 +222,16 @@ export function moveElement(
     const overLapArea = calcTwoWidgetOverlapArea(targetItem, item);
     if (!overLapArea) {
       const oldItem = oldLayout.find((l) => l.id === item.id)!;
-      const newItem = item;
       if (canElementMove(layout, oldItem)) {
         newLayout[index] = oldItem;
         return;
       }
-      if (oldItem.x !== newItem.x) {
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          if (newItem.x === oldItem.x) break;
-          let { x } = newItem;
-          x += oldItem.x > newItem.x ? 1 : -1;
-          if (x < 0 || x + newItem.w >= cols) break;
-          if (!canElementMove(layout, { ...newItem, x })) break;
-          newItem.x = x;
-        }
-      }
-      if (oldItem.y !== newItem.y) {
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          if (newItem.y === oldItem.y) break;
-          let { y } = newItem;
-          y += oldItem.y > newItem.y ? 1 : -1;
-          if (y < 0) break;
-          if (!canElementMove(layout, { ...newItem, y })) break;
-          newItem.y = y;
-        }
-      }
-      newLayout[index] = newItem;
+      newLayout[index] = getReversedAvailablePosition(
+        oldItem,
+        item,
+        layout,
+        cols,
+      );
       return;
     }
     if (overLapArea.w > overLapArea.h) {
@@ -225,10 +258,9 @@ export function moveElement(
       return;
     }
     const switchedNewItem = switchElement(layout, item, targetItem);
-    if (!switchedNewItem) return;
-    if (switchedNewItem.x < 0) return;
-    if (switchedNewItem.x + switchedNewItem.w > cols) return;
-    newLayout[index] = switchedNewItem;
+    if (switchedNewItem && canItemSwitch(switchedNewItem, cols)) {
+      newLayout[index] = switchedNewItem;
+    }
   });
   return newLayout;
 }
@@ -254,7 +286,7 @@ export function getAvailableLayoutItem(
   return availableLayoutItem;
 }
 
-export function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
+function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
   let layoutItem: LayoutItem | null = null;
 
   (Object.keys(layouts) as ScreenSize[]).forEach((screenSize) =>
@@ -266,4 +298,14 @@ export function getOtherScreenSizeLayoutItem(id: string, layouts: Layouts) {
   );
 
   return layoutItem;
+}
+
+export function getDefaultLayout(
+  id: string,
+  layouts: Layouts,
+  defaultLayout: DefaultLayout,
+) {
+  const otherScreenLayout = getOtherScreenSizeLayoutItem(id, layouts);
+  if (otherScreenLayout) return otherScreenLayout;
+  return { ...defaultLayout, x: 0, y: 0 };
 }

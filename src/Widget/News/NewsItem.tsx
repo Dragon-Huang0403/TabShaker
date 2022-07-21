@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import type { NewsData } from './type';
+
 const Wrapper = styled.div`
   display: flex;
   padding: 5px 5px 5px 10px;
@@ -25,17 +27,6 @@ const Title = styled.div`
     text-decoration: underline;
   }
 `;
-
-export type NewsData = {
-  author: string;
-  content: string;
-  description: string;
-  publishedAt: string;
-  source: { name: string };
-  title: string;
-  url: string;
-  urlToImage: string;
-};
 
 interface NewsItemProps {
   newsData: NewsData;
