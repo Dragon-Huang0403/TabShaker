@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { Edit } from '../../components/Icons';
+
 import { taiwanCityList } from './weatherApi';
-import type { CityData } from './Weather';
+import { Edit } from '../../components/Icons';
 import { useHover } from '../../hooks';
+
+import type { CityData } from './type';
 
 const CityNameWrapper = styled.div`
   position: relative;
@@ -129,42 +131,43 @@ function WeatherLocation({ cityData, setCityData }: WeatherLocationProps) {
     inputRef.current?.focus();
   }, [isEditing]);
 
-  if (isEditing) {
-    return (
-      <CityNameWrapper ref={locationRef}>
-        <Input
-          type="text"
-          value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
-          }}
-          onKeyDown={handleArrowKeyDown}
-          ref={inputRef}
-        />
-        <MatchedCityListWrapper ref={matchedCityRef}>
-          {filterCityList.map((matchedCity, index) => (
-            <City
-              key={matchedCity.english}
-              onClick={() => {
-                setCityData(matchedCity);
-                setIsEditing(false);
-              }}
-              aria-hidden="true"
-              focus={index === currentFocusCityIndex}
-            >
-              {matchedCity.english}
-            </City>
-          ))}
-        </MatchedCityListWrapper>
-      </CityNameWrapper>
-    );
-  }
   return (
     <CityNameWrapper ref={locationRef}>
-      <IconWrapper onClick={handleStartEditing} hidden={!isLocationHover}>
-        <Edit />
-      </IconWrapper>
-      <span>{cityData.english}</span>
+      {isEditing ? (
+        <>
+          <Input
+            type="text"
+            value={input}
+            onChange={(e) => {
+              setInput(e.target.value);
+            }}
+            onKeyDown={handleArrowKeyDown}
+            ref={inputRef}
+          />
+          <MatchedCityListWrapper ref={matchedCityRef}>
+            {filterCityList.map((matchedCity, index) => (
+              <City
+                key={matchedCity.english}
+                onClick={() => {
+                  setCityData(matchedCity);
+                  setIsEditing(false);
+                }}
+                aria-hidden="true"
+                focus={index === currentFocusCityIndex}
+              >
+                {matchedCity.english}
+              </City>
+            ))}
+          </MatchedCityListWrapper>
+        </>
+      ) : (
+        <>
+          <IconWrapper onClick={handleStartEditing} hidden={!isLocationHover}>
+            <Edit />
+          </IconWrapper>
+          <span>{cityData.english}</span>
+        </>
+      )}
     </CityNameWrapper>
   );
 }

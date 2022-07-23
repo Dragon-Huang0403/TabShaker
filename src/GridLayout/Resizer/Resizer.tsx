@@ -1,6 +1,8 @@
 import React, { ReactElement, useRef } from 'react';
+
 import ResizerHandler from './ResizeHandler';
 import { runConstraint } from '../utils/positionFn';
+
 import type {
   DraggerData,
   Position,

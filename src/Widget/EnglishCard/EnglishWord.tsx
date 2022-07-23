@@ -1,8 +1,11 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Speaker } from '../../components/Icons';
+
 import Content from './Content';
+import { Speaker } from '../../components/Icons';
+
+import type { EnglishWordData } from './type';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -70,19 +73,6 @@ const ContentWrapper = styled.div`
   width: 100%;
   overflow-x: hidden;
 `;
-
-export type EnglishWordData = {
-  id: string;
-  word: string;
-  ipa: string;
-  type: string;
-  chinese: string;
-  definition: string;
-  example: string;
-  example_chinese: string;
-  tags: string[];
-  audioUrl: string;
-};
 
 interface WordProps {
   word: EnglishWordData;

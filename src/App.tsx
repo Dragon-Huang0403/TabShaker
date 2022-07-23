@@ -2,16 +2,17 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import globalTheme, { GlobalStyle } from './theme';
-import NavBar from './NavBar';
-import Background from './Background';
+import Widget, { widgetConfig } from './Widget';
+import NavBar from './layout/NavBar';
+import Background from './layout/Background';
 import GridLayout from './GridLayout';
 import { ScreenSize } from './GridLayout/config';
 import { defaultWidgets, defaultLayouts } from './defaultValue';
-import Widget, { widgetConfig } from './Widget';
 import { getAvailableWidgetTypes } from './utils/lib';
+import { useLocalStorage } from './hooks';
+
 import type { WidgetData } from './types/WidgetTypes';
 import type { Layouts } from './types/GridLayoutTypes';
-import useLocalStorage from './hooks/useLocalStorage';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,6 +53,19 @@ function App() {
       ),
     );
   };
+
+  const getLayoutLimit = (id: string) => {
+    const targetWidget = widgets.find((widget) => widget.id === id)!;
+    const { limit } = widgetConfig[targetWidget.type];
+    return limit;
+  };
+
+  const getWidgetDefaultLayout = (id: string) => {
+    const targetWidget = widgets.find((widget) => widget.id === id)!;
+    const { defaultLayout } = widgetConfig[targetWidget.type];
+    return defaultLayout;
+  };
+
   const availableWidgets = getAvailableWidgetTypes(widgets, widgetConfig);
 
   return (
@@ -60,7 +74,12 @@ function App() {
       <Background />
       <Wrapper>
         <NavBar addWidget={addWidget} availableWidgets={availableWidgets} />
-        <GridLayout widgets={widgets} layouts={layouts} setLayouts={setLayouts}>
+        <GridLayout
+          layouts={layouts}
+          setLayouts={setLayouts}
+          getLayoutLimit={getLayoutLimit}
+          getWidgetDefaultLayout={getWidgetDefaultLayout}
+        >
           {widgets.map((widget) => (
             <Widget
               key={widget.id}

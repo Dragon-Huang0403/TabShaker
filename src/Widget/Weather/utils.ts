@@ -1,4 +1,4 @@
-import type { WeatherData } from './Weather';
+import type { WeatherData } from './type';
 
 // https://opendata.cwb.gov.tw/opendatadoc/MFC/D0047.pdf
 // https://developer.accuweather.com/weather-icons
@@ -258,4 +258,27 @@ export function handleWeatherDataByElementType(data: any): WeatherData[] {
     });
   }
   return weatherDataByElement;
+}
+
+export function getRenderWidthMode(width: number) {
+  if (width <= 250) {
+    return 2;
+  }
+  if (width <= 294) {
+    return 1;
+  }
+  return 0;
+}
+
+export function getRenderHeightMode(height: number) {
+  if (height <= 150) {
+    return 3;
+  }
+  if (height <= 175) {
+    return 2;
+  }
+  if (height <= 200) {
+    return 1;
+  }
+  return 0;
 }

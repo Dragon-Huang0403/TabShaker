@@ -1,17 +1,14 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { v4 } from 'uuid';
+
+import TodoItem from './TodoItem';
 import IconDropDownMenu from '../../components/IconDropDownMenu';
 import { ExpandMore } from '../../components/Icons';
-import TodoItem from './TodoItem';
 
-export interface TodoData {
-  id: string;
-  text: string;
-  checked: boolean;
-  time: Date;
-}
+import type { TodoData, TodoWidgetData } from './type';
 
 const mode = ['All', 'Active', 'Completed'] as const;
 
@@ -72,7 +69,7 @@ const StyledUl = styled.ul`
 `;
 
 interface TodoProps {
-  data: { todos: TodoData[]; title: string };
+  data: TodoWidgetData;
   onWidgetChange: (onChangedData: { todos: TodoData[]; title: string }) => void;
 }
 

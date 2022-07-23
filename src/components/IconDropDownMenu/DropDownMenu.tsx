@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+
 import { Check } from '../Icons';
 
 const ItemsContainer = styled.ul<{ side: 'left' | 'right'; bulge: boolean }>`
