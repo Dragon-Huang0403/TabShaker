@@ -113,7 +113,7 @@ function Settings() {
             <Link href="https://github.com/Dragon-Huang0403">
               <Github />
             </Link>
-            <Link href="https://www.linkedin.com/in/xuanlong-huang-6a439a183/">
+            <Link href="https://www.linkedin.com/in/xuanlong-huang/">
               <LinkedIn />
             </Link>
             <Link href="mailto:j0918023423@gmail.com?subject=TabShaker&body=Dear Dragon">
