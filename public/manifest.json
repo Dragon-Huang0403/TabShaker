@@ -20,5 +20,5 @@
   },
   "offline_enabled": true,
   "permissions": ["geolocation", "identity", "storage"],
-  "version": "0.4.0"
+  "version": "1.0.0"
 }
