@@ -6,6 +6,8 @@ import {
   ArrowForward,
   PlayArrow,
   Pause,
+  Pinned,
+  Unpinned,
 } from '../../components/Icons';
 
 const IconsWrapper = styled.div`
@@ -39,18 +41,22 @@ const IconStyle = styled.div`
 `;
 
 interface ControllerProps {
+  isPinned: boolean;
   isPlay: boolean;
-  setIsPlay: (isPlay: boolean) => void;
-  setCurrentPhoto: (currentPhoto: number) => void;
   nextPhoto: number;
   prevPhoto: number;
+  toggleIsPinned: () => void;
+  toggleIsPlay: () => void;
+  setCurrentPhoto: (currentPhoto: number) => void;
 }
 
 function Controller({
+  isPinned,
   isPlay,
   nextPhoto,
   prevPhoto,
-  setIsPlay,
+  toggleIsPinned,
+  toggleIsPlay,
   setCurrentPhoto,
 }: ControllerProps) {
   return (
@@ -62,23 +68,16 @@ function Controller({
       >
         <ArrowBack />
       </IconStyle>
-      {isPlay ? (
-        <IconStyle
-          onClick={() => {
-            setIsPlay(false);
-          }}
-        >
-          <Pause />
-        </IconStyle>
-      ) : (
-        <IconStyle
-          onClick={() => {
-            setIsPlay(true);
-          }}
-        >
-          <PlayArrow />
-        </IconStyle>
-      )}
+
+      <IconStyle onClick={toggleIsPlay}>
+        {isPlay ? <Pause /> : <PlayArrow />}
+      </IconStyle>
+      <IconStyle
+        title={isPinned ? 'Loading new photos' : 'Stop loading new photos'}
+        onClick={toggleIsPinned}
+      >
+        {isPinned ? <Pinned /> : <Unpinned />}
+      </IconStyle>
       <IconStyle
         onClick={() => {
           setCurrentPhoto(nextPhoto);

@@ -34,12 +34,13 @@ function Background() {
   const [isFirstBackgroundLoading, setIsFirstBackgroundLoading] =
     useState(false);
   const [bgImgSettings, setBgImgSettings] = useLocalStorage('bgImgSettings', {
+    isPinned: false,
     isPlay: true,
     currentPhoto: 0,
     timeToNextPhoto: 30000,
   });
   const { photos, updatedAt } = photoData;
-  const { isPlay, currentPhoto, timeToNextPhoto } = bgImgSettings;
+  const { isPlay, currentPhoto, timeToNextPhoto, isPinned } = bgImgSettings;
 
   const nextPhoto = getNextPhoto(currentPhoto, photos.length - 1);
   const prevPhoto = getPrevPhoto(currentPhoto, photos.length - 1);
@@ -48,8 +49,12 @@ function Background() {
     setBgImgSettings({ ...bgImgSettings, currentPhoto: photoIndex });
   };
 
-  const setIsPlay = (newIsPlay: boolean) => {
-    setBgImgSettings({ ...bgImgSettings, isPlay: newIsPlay });
+  const toggleIsPlay = () => {
+    setBgImgSettings((prev) => ({ ...prev, isPlay: !prev.isPlay }));
+  };
+
+  const toggleIsPinned = () => {
+    setBgImgSettings((prev) => ({ ...prev, isPinned: !prev.isPinned }));
   };
 
   useInterval(
@@ -58,10 +63,9 @@ function Background() {
     },
     isPlay ? timeToNextPhoto : null,
   );
-
   useEffect(() => {
-    if (photos.length > 0 && !afterOneHour(updatedAt)) {
-      return;
+    if (photos.length > 0) {
+      if (isPinned || !afterOneHour(updatedAt)) return;
     }
     const getNewPhotos = async () => {
       const response = await unsplashApi();
@@ -73,12 +77,16 @@ function Background() {
           photos: newPhotos,
           updatedAt: String(new Date()),
         });
+        setBgImgSettings((prevBgImgSettings) => ({
+          ...prevBgImgSettings,
+          currentPhoto: 0,
+        }));
         return;
       }
       setPhotoData({ photos: defaultPhoto, updatedAt: String(new Date()) });
     };
     getNewPhotos();
-  }, [updatedAt, photos.length]);
+  }, [updatedAt, photos.length, isPinned]);
   return (
     <Wrapper>
       {photos.map((photo, index) => (
@@ -91,10 +99,12 @@ function Background() {
         />
       ))}
       <Controller
+        isPinned={isPinned}
         isPlay={isPlay}
         nextPhoto={nextPhoto}
         prevPhoto={prevPhoto}
-        setIsPlay={setIsPlay}
+        toggleIsPinned={toggleIsPinned}
+        toggleIsPlay={toggleIsPlay}
         setCurrentPhoto={setCurrentPhoto}
       />
     </Wrapper>

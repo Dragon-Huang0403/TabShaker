@@ -1,6 +1,6 @@
 {
   "name": "tab-shaker",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@fullcalendar/daygrid": "^5.11.0",
