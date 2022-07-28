@@ -49,8 +49,8 @@ function Background() {
     setBgImgSettings({ ...bgImgSettings, currentPhoto: photoIndex });
   };
 
-  const setIsPlay = (newIsPlay: boolean) => {
-    setBgImgSettings({ ...bgImgSettings, isPlay: newIsPlay });
+  const toggleIsPlay = () => {
+    setBgImgSettings((prev) => ({ ...prev, isPlay: !prev.isPlay }));
   };
 
   const toggleIsPinned = () => {
@@ -101,7 +101,7 @@ function Background() {
         nextPhoto={nextPhoto}
         prevPhoto={prevPhoto}
         toggleIsPinned={toggleIsPinned}
-        setIsPlay={setIsPlay}
+        toggleIsPlay={toggleIsPlay}
         setCurrentPhoto={setCurrentPhoto}
       />
     </Wrapper>
