@@ -63,7 +63,6 @@ function Background() {
     },
     isPlay ? timeToNextPhoto : null,
   );
-
   useEffect(() => {
     if (photos.length > 0) {
       if (isPinned || !afterOneHour(updatedAt)) return;
@@ -78,6 +77,10 @@ function Background() {
           photos: newPhotos,
           updatedAt: String(new Date()),
         });
+        setBgImgSettings((prevBgImgSettings) => ({
+          ...prevBgImgSettings,
+          currentPhoto: 0,
+        }));
         return;
       }
       setPhotoData({ photos: defaultPhoto, updatedAt: String(new Date()) });

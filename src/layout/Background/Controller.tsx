@@ -76,7 +76,7 @@ function Controller({
         title={isPinned ? 'Loading new photos' : 'Stop loading new photos'}
         onClick={toggleIsPinned}
       >
-        {isPinned ? <Unpinned /> : <Pinned />}
+        {isPinned ? <Pinned /> : <Unpinned />}
       </IconStyle>
       <IconStyle
         onClick={() => {
