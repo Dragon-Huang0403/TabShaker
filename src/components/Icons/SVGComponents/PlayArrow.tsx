@@ -12,7 +12,7 @@ function PlayArrow({ style, fill, onClick }: SVGIconProps) {
       fill={fill}
       onClick={onClick}
     >
-      <path d="M16 37.85V9.85L38 23.85ZM19 23.85ZM19 32.4 32.45 23.85 19 15.3Z" />
+      <path xmlns="http://www.w3.org/2000/svg" d="M16 37.85v-28l22 14Z" />
     </svg>
   );
 }
