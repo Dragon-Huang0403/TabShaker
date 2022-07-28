@@ -19,3 +19,5 @@ export { default as Github } from './SVGComponents/Github';
 export { default as Mail } from './SVGComponents/Mail';
 export { default as LinkedIn } from './SVGComponents/LinkedIn';
 export { default as Instagram } from './SVGComponents/Instagram';
+export { default as Unpinned } from './SVGComponents/Unpinned';
+export { default as Pinned } from './SVGComponents/Pinned';
