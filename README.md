@@ -3,7 +3,7 @@
 A Customized Chrome New Tab using **TypeScript & React**.
 
 <a href="https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg">
-<img src="https://i.imgur.com/VW4eWPP.gif" title="Project demo"/>
+<img src="./asset/TabShaker_Demo.gif" title="Project demo"/>
 </a>
 
 **Chrome Extension**: [Download](https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg)
@@ -56,11 +56,11 @@ A Customized Chrome New Tab using **TypeScript & React**.
 
 #### Different Layout in different screen sizes
 
-<img src="https://i.imgur.com/O7UNoE1.gif" style="width:300px;"/>
+<img src="./asset/layout_breakpoint.gif" style="width:300px;"/>
 
 #### Independent Layout in different screen sizes
 
-<img src="https://i.imgur.com/CeYA1tt.gif" style="width:300px;"/>
+<img src="./asset/layout_independent.gif" style="width:300px;"/>
 
 ## Widgets
 
@@ -73,8 +73,8 @@ A Customized Chrome New Tab using **TypeScript & React**.
   - Monthly calendar in large size
   - Weekly list calendar in small size
 
-<img src="https://i.imgur.com/YprZsxd.png" title="big calendar" style="height:250px;"/>
-<img src="https://i.imgur.com/OJdsCVt.png" title="small calendar" style="height:250px;"/>
+<img src="./asset/calendar_big.png" title="big calendar" style="height:250px;"/>
+<img src="./asset/calendar_small_long.png" title="small calendar" style="height:250px;"/>
 
 #### Note
 
@@ -123,7 +123,7 @@ A Customized Chrome New Tab using **TypeScript & React**.
 
 - Calculate available position for adding new widget
 
-<img src="https://i.imgur.com/NMHv9gZ.gif" title="demo add new widget" style="width:300px;"/>
+<img src="./asset/TabShaker_add_new_widget.gif" title="demo add new widget" style="width:300px;"/>
 
 #### Short Cut
 
@@ -131,7 +131,7 @@ A Customized Chrome New Tab using **TypeScript & React**.
 - Show specified url's favicon
 - Debounce to show delete icon
 
-<img src="https://i.imgur.com/wrMmwy7.gif" title="demo add short cut" style="width:300px;"/>
+<img src="./asset/short_cut.gif" title="demo add short cut" style="width:300px;"/>
 
 #### Background View
 
