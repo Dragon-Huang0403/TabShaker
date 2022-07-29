@@ -8,6 +8,8 @@ A Customized Chrome New Tab using **TypeScript & React**.
 
 **Chrome Extension**: [Download](https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg)
 
+**Website Demo**: [Link](https://tabshaker.web.app/about.html)
+
 **Video Demo in Chinese** : [YouTube](https://youtu.be/N7jJCULq2Is)
 
 ## Table of Contents
