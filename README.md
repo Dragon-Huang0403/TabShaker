@@ -6,7 +6,7 @@ A Customized Chrome New Tab using **TypeScript & React**.
 <img src="./asset/TabShaker_Demo.gif" title="Project demo"/>
 </a>
 
-**Chrome Extension**: [Download](https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg)
+**Chrome Extension**: It's Waiting for Google Chrome team review to be published
 
 **Website Demo**: [Link](https://tabshaker.web.app/about.html)
 
@@ -44,7 +44,7 @@ A Customized Chrome New Tab using **TypeScript & React**.
 - Several productivity widgets with responsive visual styling, including:
   - **Calendar:** Connect with Google Calendar through Google OAuth 2 (Verified)
   - **Note:** Markdown editor
-  - **Weather:** Geo-location & OpenSourceMap APIs
+  - **Weather:** Geo-location & OpenStreetMap APIs
   - **English Card:** Crawled 16,272 words (Python)
   - **Clock:** SVG text
   - **News:** News API
@@ -89,7 +89,7 @@ A Customized Chrome New Tab using **TypeScript & React**.
 - Editable city name with instant search
 - 6 display modes
 - Get user's current latitude & longitude through Geo-location API
-- Get user's current located city through OpenSourceMap API
+- Get user's current located city through OpenStreetMap API
 - Get city's weather through CWB API
 
 #### English Card
@@ -157,7 +157,7 @@ A Customized Chrome New Tab using **TypeScript & React**.
 - News API
 - Unsplash
 - Geo-location
-- OpenSourceMap
+- OpenStreetMap
 - CWB (Central Weather Bureau)
 
 ## License
