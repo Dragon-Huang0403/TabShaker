@@ -1,25 +1,24 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "short_name": "TabShaker",
+  "name": "TabShaker",
+  "description": "A customized chrome new tab.",
+  "author": "Dragon Huang",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqTfzf4UfzSmt0EWJvgO23jy7kUzVryK90rBF+QF1K8yZdNpJcFOJfv/5YmqAMDp5Lo78Wro70q5qBD8j/H/7+YY54bP+twejvvfosXlB+7FeSiAVBQjkKwQ7MIwMNI09xr7HFYTOQxA6zVHQGy3v1w67nfnwkGhSf6uz2O917utHPEy9/7nE9ZuZTM77PUv4txbKD5LmHvUbFUvu0RRMjiTDs8dBB4YpRPDWNLrC6YrgvP46K4rZaypZGD41n+P3d4CPvrrh36stWtgM8lKymPbVoicW1rJZ8bbGWsnYfNX0igAQBtKSG19mdtmHKEdLN8GJoEKN8e9eciHCqgwrdQIDAQAB",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "icons": {
+    "16": "logo16.png",
+    "32": "logo32.png",
+    "48": "logo48.png",
+    "128": "logo128.png"
+  },
+  "manifest_version": 3,
+  "oauth2": {
+    "client_id": "728982193090-p33gadj656ntoskdrp91qn99ifvg0705.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/calendar.readonly"]
+  },
+  "offline_enabled": true,
+  "permissions": ["geolocation", "identity", "storage"],
+  "version": "1.0.0"
 }

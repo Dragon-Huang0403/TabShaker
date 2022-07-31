@@ -1,46 +1,161 @@
-# Getting Started with Create React App
+# TabShaker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Customized Chrome New Tab using **TypeScript & React**.
 
-## Available Scripts
+<a href="https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg">
+<img src="./asset/TabShaker_Demo.gif" title="Project demo"/>
+</a>
 
-In the project directory, you can run:
+**Chrome Extension**: [Download](https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg)
 
-### `npm start`
+**Video Demo in Chinese** : [YouTube](https://youtu.be/N7jJCULq2Is)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Table of Contents
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- [About TabShaker](#about-tabshaker)
+- [Grid Layout](#grid-layout)
+  - [Event Flow](#event-flow)
+  - [Different Layout in different screen sizes](#different-layout-in-different-screen-sizes)
+  - [Independent Layout in different screen sizes](#independent-layout-in-different-screen-sizes)
+- [Widgets](#widgets)
+  - [Calendar](#calendar)
+  - [Note](#note)
+  - [Weather](#weather)
+  - [English Card](#english-card)
+  - [To-do List](#to-do-list)
+  - [News](#news)
+  - [Clock](#clock)
+- [Other Features](#other-features)
+  - [Add New Widget](#add-new-widget)
+  - [Short Cut](#short-cut)
+  - [Background View](#background-view)
+  - [Google Tools Menu](#google-tools-menu)
+- [APIs](#apis)
+- [License](#license)
 
-### `npm test`
+## About TabShaker
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- In-house user-friendly layout design for adjusting widget placement and smooth position conflict handling.
+- User can move / resize widgets with independent placement in different screen sizes.
+- Several productivity widgets with responsive visual styling, including:
+  - **Calendar:** Connect with Google Calendar through Google OAuth 2 (Verified)
+  - **Note:** Markdown editor
+  - **Weather:** Geo-location & OpenStreetMap APIs
+  - **English Card:** Crawled 16,272 words (Python)
+  - **Clock:** SVG text
+  - **News:** News API
+  - **To-do List:** CRUD to-dos
 
-### `npm run build`
+## Grid Layout
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Event Flow
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<img src="./asset/grid_layout_flow_chart.drawio.png"/>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### Different Layout in different screen sizes
 
-### `npm run eject`
+<img src="./asset/layout_breakpoint.gif" style="width:300px;"/>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### Independent Layout in different screen sizes
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<img src="./asset/layout_independent.gif" style="width:300px;"/>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Widgets
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### Calendar
 
-## Learn More
+- Connect to user's Google Calendar
+- Handle user log-in through Google OAuth 2
+- Handle Google Calendar's data to be shown in FullCalendar
+- Two display modes
+  - Monthly calendar in large size
+  - Weekly list calendar in small size
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+<img src="./asset/calendar_big.png" title="big calendar" style="height:250px;"/>
+<img src="./asset/calendar_small_long.png" title="small calendar" style="height:250px;"/>
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Note
+
+- Markdown editor with Lexical
+- Convert markdown data to json to be stored
+
+#### Weather
+
+- Show weather forecast
+- Editable city name with instant search
+- 6 display modes
+- Get user's current latitude & longitude through Geo-location API
+- Get user's current located city through OpenStreetMap API
+- Get city's weather through CWB API
+
+#### English Card
+
+- Collect multi-English-level words using Python
+- Random show 5 words everyday
+- Play sound of English words's pronunciation
+- Show definition, example & API of English Word
+- Switch & refresh words
+- Multi-level selections
+- Get data from Firebase Firestore
+
+#### To-do List
+
+- CRUD To-dos
+- Title editable
+- To-do re-editable
+- Filter all / completed / active to-dos
+
+#### News
+
+- Show top headlines in multiply countries (selectable)
+- Get news data through News API
+
+#### Clock
+
+- flexible font size based on container size
+- SVG text
+
+## Other Features
+
+#### Add New Widget
+
+- Calculate available position for adding new widget
+
+<img src="./asset/TabShaker_add_new_widget.gif" title="demo add new widget" style="width:300px;"/>
+
+#### Short Cut
+
+- Link to specified url with handling string (with or without https:// )
+- Show specified url's favicon
+- Debounce to show delete icon
+
+<img src="./asset/short_cut.gif" title="demo add short cut" style="width:300px;"/>
+
+#### Background View
+
+- Switch photos
+- Play / Pause playing
+- Lazy loading
+- Image loading performance fine tune
+- Get photos through unsplash APIs
+
+#### Google Tools Menu
+
+- Link to useful Google tools
+
+## APIs
+
+- Google OAuth 2
+- Google Calendar
+- Google Favicon
+- Chrome API
+- Firebase Firestore
+- News API
+- Unsplash
+- Geo-location
+- OpenStreetMap
+- CWB (Central Weather Bureau)
+
+## License
+
+MIT license
