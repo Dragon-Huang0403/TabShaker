@@ -6,36 +6,32 @@ A Customized Chrome New Tab using **TypeScript & React**.
 <img src="./asset/TabShaker_Demo.gif" title="Project demo"/>
 </a>
 
-**Chrome Extension**: It's Waiting for Google Chrome team review to be published
-
-**Website Demo**: [Link](https://tabshaker.web.app/about.html)
+**Chrome Extension**: [Download](https://chrome.google.com/webstore/detail/tabshaker/eigbinbgomoampdljpjabchdempfileg)
 
 **Video Demo in Chinese** : [YouTube](https://youtu.be/N7jJCULq2Is)
 
 ## Table of Contents
 
-- [TabShaker](#tabshaker)
-  - [Table of Contents](#table-of-contents)
-  - [About TabShaker](#about-tabshaker)
-  - [Grid Layout](#grid-layout)
-      - [Event Flow](#event-flow)
-      - [Different Layout in different screen sizes](#different-layout-in-different-screen-sizes)
-      - [Independent Layout in different screen sizes](#independent-layout-in-different-screen-sizes)
-  - [Widgets](#widgets)
-      - [Calendar](#calendar)
-      - [Note](#note)
-      - [Weather](#weather)
-      - [English Card](#english-card)
-      - [To-do List](#to-do-list)
-      - [News](#news)
-      - [Clock](#clock)
-  - [Other Features](#other-features)
-      - [Add New Widget](#add-new-widget)
-      - [Short Cut](#short-cut)
-      - [Background View](#background-view)
-      - [Google Tools Menu](#google-tools-menu)
-  - [APIs](#apis)
-  - [License](#license)
+- [About TabShaker](#about-tabshaker)
+- [Grid Layout](#grid-layout)
+  - [Event Flow](#event-flow)
+  - [Different Layout in different screen sizes](#different-layout-in-different-screen-sizes)
+  - [Independent Layout in different screen sizes](#independent-layout-in-different-screen-sizes)
+- [Widgets](#widgets)
+  - [Calendar](#calendar)
+  - [Note](#note)
+  - [Weather](#weather)
+  - [English Card](#english-card)
+  - [To-do List](#to-do-list)
+  - [News](#news)
+  - [Clock](#clock)
+- [Other Features](#other-features)
+  - [Add New Widget](#add-new-widget)
+  - [Short Cut](#short-cut)
+  - [Background View](#background-view)
+  - [Google Tools Menu](#google-tools-menu)
+- [APIs](#apis)
+- [License](#license)
 
 ## About TabShaker
 
